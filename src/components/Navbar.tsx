@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRetroMode } from "@/components/EasterEggs";
 
 const NAV_ITEMS = [
   { label: "Home", href: "#hero" },
@@ -16,6 +17,7 @@ const NAV_ITEMS = [
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const { handleLogoClick } = useRetroMode();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 50);
@@ -36,6 +38,11 @@ export function Navbar() {
           href="#hero"
           className="font-[family-name:var(--font-pixel)] text-sm text-[#00F5FF] transition-all hover:text-[#FF00E5]"
           data-cursor-hover
+          onClick={(e) => {
+            e.preventDefault();
+            handleLogoClick();
+            document.getElementById("hero")?.scrollIntoView({ behavior: "smooth" });
+          }}
         >
           VED.EXE
         </a>

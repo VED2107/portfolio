@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { SectionHeader } from "@/components/SectionHeader";
-import { PixelAvatar } from "@/components/PixelAvatar";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -122,17 +122,48 @@ export function PlayerProfile() {
             <div className="mb-6 h-[2px] w-full bg-gradient-to-r from-[#00F5FF] via-[#FF00E5] to-[#FFE600]" />
 
             <div className="mb-6 flex items-center gap-4">
-              {/* Pixel avatar with glow */}
-              <div className="relative">
+              {/* Live avatar */}
+              <div className="relative shrink-0">
                 <div
-                  className="flex h-20 w-20 items-center justify-center border-2 border-[#00F5FF] bg-[#050816] overflow-hidden"
-                  style={{ boxShadow: "0 0 20px rgba(0,245,255,0.15), inset 0 0 20px rgba(0,245,255,0.05)" }}
+                  className="relative h-28 w-28 overflow-hidden border-2 border-[#00F5FF] bg-[#050816]"
+                  style={{
+                    animation: "avatar-breathe 3s ease-in-out infinite",
+                  }}
                 >
-                  <PixelAvatar size={64} />
+                  <Image
+                    src="/avatar.png"
+                    alt="Ved Chauhan"
+                    width={112}
+                    height={112}
+                    className="h-full w-full object-cover"
+                    priority
+                  />
+                  {/* Scan line sweep */}
+                  <div
+                    className="pointer-events-none absolute inset-x-0 h-[3px]"
+                    style={{
+                      background: "linear-gradient(90deg, transparent, rgba(0,245,255,0.5), transparent)",
+                      filter: "blur(1px)",
+                      animation: "avatar-scan 3s linear infinite",
+                    }}
+                  />
+                  {/* Glitch flash */}
+                  <div
+                    className="pointer-events-none absolute inset-0"
+                    style={{
+                      background: "linear-gradient(90deg, rgba(0,245,255,0.3) 33%, rgba(255,0,229,0.3) 66%, transparent)",
+                      mixBlendMode: "screen",
+                      animation: "avatar-glitch-flash 6s step-end infinite",
+                    }}
+                  />
                 </div>
-                <div className="absolute -bottom-1 -right-1 h-4 w-4 border border-[#00FF88] bg-[#050816]">
+                {/* Online pulse indicator */}
+                <div className="absolute -bottom-1 -right-1 h-5 w-5 border border-[#00FF88] bg-[#050816]">
                   <div className="flex h-full w-full items-center justify-center">
-                    <div className="h-2 w-2 bg-[#00FF88]" style={{ boxShadow: "0 0 6px #00FF88" }} />
+                    <div
+                      className="h-2.5 w-2.5 bg-[#00FF88]"
+                      style={{ animation: "status-pulse 2s ease-in-out infinite" }}
+                    />
                   </div>
                 </div>
               </div>

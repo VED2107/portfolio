@@ -5,13 +5,15 @@ import { useState, useCallback, useEffect, useRef, createContext, useContext } f
 interface SoundContextType {
   enabled: boolean;
   toggle: () => void;
-  play: (type: "hover" | "click" | "section" | "success") => void;
+  play: (type: "hover" | "click" | "section" | "success" | "error") => void;
+  getAudioContext: () => AudioContext;
 }
 
 const SoundContext = createContext<SoundContextType>({
   enabled: false,
   toggle: () => {},
   play: () => {},
+  getAudioContext: () => new AudioContext(),
 });
 
 export const useSound = () => useContext(SoundContext);
@@ -21,6 +23,7 @@ const SOUNDS = {
   click: { freq: 600, duration: 0.08, type: "square" as OscillatorType },
   section: { freq: 440, duration: 0.15, type: "triangle" as OscillatorType },
   success: { freq: 880, duration: 0.2, type: "sine" as OscillatorType },
+  error: { freq: 150, duration: 0.35, type: "square" as OscillatorType },
 };
 
 export function SoundManager({ children }: { children: React.ReactNode }) {
@@ -48,6 +51,14 @@ export function SoundManager({ children }: { children: React.ReactNode }) {
 
         if (type === "success") {
           osc.frequency.exponentialRampToValueAtTime(config.freq * 1.5, ctx.currentTime + config.duration);
+        }
+
+        if (type === "error") {
+          osc.frequency.setValueAtTime(200, ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime + 0.15);
+          osc.frequency.setValueAtTime(160, ctx.currentTime + 0.15);
+          osc.frequency.exponentialRampToValueAtTime(60, ctx.currentTime + config.duration);
+          gain.gain.setValueAtTime(0.12, ctx.currentTime);
         }
 
         gain.gain.setValueAtTime(0.08, ctx.currentTime);
@@ -94,7 +105,7 @@ export function SoundManager({ children }: { children: React.ReactNode }) {
   }, [enabled, play]);
 
   return (
-    <SoundContext value={{ enabled, toggle, play }}>
+    <SoundContext value={{ enabled, toggle, play, getAudioContext: getCtx }}>
       {children}
     </SoundContext>
   );

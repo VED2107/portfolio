@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { TERMINAL_COMMANDS, SITE } from "@/lib/data";
 import { SectionHeader } from "@/components/SectionHeader";
+import { useSound } from "@/components/SoundManager";
+import { MatrixRain, RainEffect, HackMode, GodModeExplosion, MusicPlayer, CinemaCredits } from "@/components/EasterEggs";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -25,11 +27,15 @@ export function ContactTerminal() {
     { type: "output", text: 'Try: contact, projects, hire, sudo hire ved' },
     { type: "output", text: "" },
   ]);
+  const { play } = useSound();
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
+  const [easterEgg, setEasterEgg] = useState<"matrix" | "rain" | "hack" | "godmode" | "music" | "cinema" | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const dismissEgg = useCallback(() => setEasterEgg(null), []);
 
   const isInitialMount = useRef(true);
   const terminalBodyRef = useRef<HTMLDivElement>(null);
@@ -76,18 +82,38 @@ export function ContactTerminal() {
       { type: "input", text: `ved@portfolio:~ $ ${input}` },
     ];
 
+    const OVERLAY_CMDS: Record<string, { msg: string; egg: typeof easterEgg }> = {
+      "matrix":      { msg: "> ENTERING THE MATRIX...", egg: "matrix" },
+      "rain":        { msg: "> It's raining in Ved's world...", egg: "rain" },
+      "hack":        { msg: "> INITIATING BREACH PROTOCOL...", egg: "hack" },
+      "godmode":     { msg: "███ GOD MODE ACTIVATED ███", egg: "godmode" },
+      "god mode":    { msg: "███ GOD MODE ACTIVATED ███", egg: "godmode" },
+      "ved is god":  { msg: "███ GOD MODE ACTIVATED ███", egg: "godmode" },
+      "play music":  { msg: "> Loading chiptune playlist...", egg: "music" },
+      "cinema":      { msg: "> Rolling credits...", egg: "cinema" },
+      "credits":     { msg: "> Rolling credits...", egg: "cinema" },
+    };
+
     if (cmd === "clear") {
       setLines([
         { type: "output", text: "Terminal cleared." },
         { type: "output", text: 'Type "help" for available commands.' },
       ]);
+    } else if (OVERLAY_CMDS[cmd]) {
+      play("success");
+      const ov = OVERLAY_CMDS[cmd];
+      newLines.push({ type: ov.msg.includes("███") ? "system" : "output", text: ov.msg });
+      setLines(newLines);
+      setEasterEgg(ov.egg);
     } else {
       const response = TERMINAL_COMMANDS[cmd];
       if (response) {
+        play("success");
         response.split("\n").forEach((line) => {
           newLines.push({ type: "output", text: line });
         });
       } else {
+        play("error");
         newLines.push({
           type: "output",
           text: `bash: ${cmd}: command not found`,
@@ -137,6 +163,7 @@ export function ContactTerminal() {
   };
 
   return (
+    <>
     <section ref={sectionRef} id="contact" className="relative px-6 py-32">
       <div className="mx-auto max-w-4xl">
         <SectionHeader command="COMM_TERMINAL.init()" title="COMMUNICATION TERMINAL" level={7} />
@@ -247,6 +274,14 @@ export function ContactTerminal() {
           </p>
         </div>
       </div>
+
     </section>
+    {easterEgg === "matrix" && <MatrixRain onDone={dismissEgg} />}
+    {easterEgg === "rain" && <RainEffect onDone={dismissEgg} />}
+    {easterEgg === "hack" && <HackMode onDone={dismissEgg} />}
+    {easterEgg === "godmode" && <GodModeExplosion onDone={dismissEgg} />}
+    {easterEgg === "music" && <MusicPlayer onDone={dismissEgg} />}
+    {easterEgg === "cinema" && <CinemaCredits onDone={dismissEgg} />}
+    </>
   );
 }

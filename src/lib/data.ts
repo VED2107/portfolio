@@ -233,7 +233,7 @@ export const ACHIEVEMENTS = [
 ];
 
 export const TERMINAL_COMMANDS: Record<string, string> = {
-  help: "Available commands: about, skills, projects, github, mission, contact, socials, resume, hire, clear, sudo hire ved",
+  help: "Commands: about, skills, projects, github, mission, contact, socials, resume, hire, clear, sudo hire ved\n\nFun: matrix, rain, hack, godmode, stats, play, exit, rm -rf /\n\nTech: neofetch, vim, whoami, ping, git, curl, cat, ls, top, npm, sudo, cd, pwd\n\nExtreme Fun: play music, cinema",
   about:
     "Ved Chauhan — Full Stack Developer, UI/UX Designer, Creative Technologist. B.Tech CSE @ Ganpat University. Building production-grade systems that people actually use.",
   skills:
@@ -250,4 +250,36 @@ export const TERMINAL_COMMANDS: Record<string, string> = {
   clear: "__CLEAR__",
   "sudo hire ved":
     "ACCESS GRANTED\n\n> BEST DECISION DETECTED\n> PROCESSING HIRE REQUEST...\n> SUCCESS: You've unlocked a legendary developer.\n> Email sent to: vedchauhan2107@gmail.com\n\n🎮 Achievement Unlocked: Smart Recruiter",
+  neofetch:
+    "        ██╗   ██╗███████╗██████╗\n        ██║   ██║██╔════╝██╔══██╗\n        ██║   ██║█████╗  ██║  ██║\n        ╚██╗ ██╔╝██╔══╝  ██║  ██║\n         ╚████╔╝ ███████╗██████╔╝\n          ╚═══╝  ╚══════╝╚═════╝\n\n  OS:      Ved.EXE v2.1.07\n  Host:    Gujarat, India\n  Kernel:  Caffeine-6.0-LTS\n  Uptime:  since 2004\n  Shell:   chai-powered-bash\n  DE:      VS Code + Figma\n  CPU:     Brain™ i9 (overclocked)\n  GPU:     Imagination RTX 4090\n  RAM:     128GB (80% used by Chrome)\n  Disk:    ∞ ideas, finite time",
+  vim: "~\n~\n~\n~\n~  Welcome to Vim.\n~  You can never leave.\n~  :q? Nope.\n~  :wq? Nice try.\n~  :q!? STILL HERE.\n~\n~  Pro tip: just close the terminal tab.\n~  ...oh wait, you can't do that here either.",
+  whoami: "You? A curious visitor.\nVed? A legend in the making.\n\n> root access: DENIED\n> cool points: +10 for trying",
+  "ping ved":
+    "PING ved.chauhan (127.0.0.1) 56 bytes of data.\n64 bytes from ved: talent=immeasurable ttl=∞ time=0.01ms\n64 bytes from ved: creativity=overflowing ttl=∞ time=0.02ms\n64 bytes from ved: ambition=unlimited ttl=∞ time=0.00ms\n64 bytes from ved: sleep=not_found ttl=∞ time=999ms\n\n--- ved.chauhan ping statistics ---\n4 packets sent, 4 received, 0% loss\nrtt min/avg/max = legendary/goated/immeasurable",
+  "git blame":
+    "Every. Single. Line.\n\n  commit abc1234 (Ved Chauhan, 3:47 AM)\n    + Refactored entire codebase\n    + Fueled by: chai × lo-fi beats\n    + Mood: unstoppable\n    + Regrets: none\n\n> Blame accepted. Credit also accepted.",
+  "curl ved":
+    "  % Total    % Received\n  100  ████████████████████  100%\n\n> Downloading ved_brain.tar.gz...\n> Extracting: creativity.js ✓\n> Extracting: ambition.ts ✓\n> Extracting: sleep_schedule.txt — FILE NOT FOUND\n> Extracting: portfolio_magic.tsx ✓\n\n> Download complete.\n> Warning: contents may cause inspiration.",
+  "cat /etc/passwd": "root:x:0:0:root:/root:/bin/bash\nved:x:2107:2107:Ved Chauhan,Legend,∞:/home/ved:/bin/build-cool-stuff\nnobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin\n\n> Nice try, hacker. No secrets here.\n> ...or are there? 👀",
+  "ls -la":
+    "total 2107\ndrwxr-xr-x  ved ved  4096  dreams.txt\ndrwxr-xr-x  ved ved  8192  world_domination_plan.md\n-rw-r--r--  ved ved  1337  secret_projects.enc\n-rw-r--r--  ved ved   420  spotify_wrapped_2025.json\n-rwx------  ved ved  9999  hire_me_please.sh\ndrwxr-xr-x  ved ved  2048  3am_ideas/\n-rw-r--r--  ved ved     0  sleep_schedule.txt  [EMPTY]\n-rw-r--r--  ved ved  ∞     ambition.log",
+  top: "  PID  USER   %CPU  %MEM  COMMAND\n  001  ved    99.9  80.0  brain.exe\n  002  ved    87.3  45.2  creativity.service\n  003  ved    73.1  30.0  next-dev-server\n  004  ved    65.0  25.0  chrome (47 tabs)\n  005  ved    42.0  15.0  spotify-lofi-beats\n  006  ved    12.5   5.0  figma-designs\n  007  ved     2.1   0.5  sleep.daemon [SUSPENDED]\n  008  ved     0.0   0.0  social-life [NOT FOUND]\n\n> Load average: immeasurable\n> Uptime: too long, send help (and chai)",
+  "rm -rf /": "> Nice try.\n> Deleting... just kidding.\n> This portfolio is backed up on 7 continents.",
+  "rm -rf /*": "> Nice try.\n> Deleting... just kidding.\n> This portfolio is backed up on 7 continents.",
+  exit: "> There is no escape.\n> You're in Ved's world now.",
+  play: "═══ ARCADE ═══\n> Try these:\n>   play music — music visualizer\n>   cinema     — movie credits\n>   matrix     — enter the matrix\n>   hack       — breach the mainframe\n>   godmode    — ???",
+  game: "═══ ARCADE ═══\n> Try these:\n>   play music — music visualizer\n>   cinema     — movie credits\n>   matrix     — enter the matrix\n>   hack       — breach the mainframe\n>   godmode    — ???",
+  stats: "═══ DEV STATS ═══\n> Components:    18 hand-crafted\n> Lines of Code: ~4,500+\n> Animations:    30+ custom\n> Easter Eggs:   more than you've found\n> Coffee Cups:   ∞\n> Bugs:          none (copium)\n> Framework:     Next.js + GSAP + Framer Motion\n> Vibe:          immaculate",
+  ls: "total 2107\ndrwxr-xr-x  ved ved  4096  dreams.txt\ndrwxr-xr-x  ved ved  8192  world_domination_plan.md\n-rw-r--r--  ved ved  1337  secret_projects.enc\n-rw-r--r--  ved ved   420  spotify_wrapped_2025.json\n-rwx------  ved ved  9999  hire_me_please.sh\ndrwxr-xr-x  ved ved  2048  3am_ideas/\n-rw-r--r--  ved ved     0  sleep_schedule.txt  [EMPTY]\n-rw-r--r--  ved ved  ∞     ambition.log",
+  ping: "PING ved.chauhan (127.0.0.1) 56 bytes of data.\n64 bytes from ved: talent=immeasurable ttl=∞ time=0.01ms\n64 bytes from ved: creativity=overflowing ttl=∞ time=0.02ms\n64 bytes from ved: ambition=unlimited ttl=∞ time=0.00ms\n64 bytes from ved: sleep=not_found ttl=∞ time=999ms\n\n--- ved.chauhan ping statistics ---\n4 packets sent, 4 received, 0% loss\nrtt min/avg/max = legendary/goated/immeasurable",
+  cat: "root:x:0:0:root:/root:/bin/bash\nved:x:2107:2107:Ved Chauhan,Legend,∞:/home/ved:/bin/build-cool-stuff\nnobody:x:65534:65534:nobody:/nonexistent:/usr/sbin/nologin\n\n> Nice try, hacker. No secrets here.\n> ...or are there?",
+  git: "Every. Single. Line.\n\n  commit abc1234 (Ved Chauhan, 3:47 AM)\n    + Refactored entire codebase\n    + Fueled by: chai x lo-fi beats\n    + Mood: unstoppable\n    + Regrets: none\n\n> Blame accepted. Credit also accepted.",
+  curl: "  % Total    % Received\n  100  ████████████████████  100%\n\n> Downloading ved_brain.tar.gz...\n> Extracting: creativity.js ✓\n> Extracting: ambition.ts ✓\n> Extracting: sleep_schedule.txt — FILE NOT FOUND\n> Extracting: portfolio_magic.tsx ✓\n\n> Download complete.\n> Warning: contents may cause inspiration.",
+  sudo: "ved is not in the sudoers file. This incident will be reported.\n\n> ...just kidding. Try 'sudo hire ved' instead.",
+  cd: "> You're already in /home/ved/portfolio\n> There's nowhere better to be.",
+  pwd: "/home/ved/portfolio\n> The greatest directory on earth.",
+  echo: "> echo echo echo...\n> Ved's portfolio reverberates through the void.",
+  man: "> No manual entry for this command.\n> Try 'help' — that's the only manual you need here.",
+  grep: "> grep -r 'talent' /home/ved\n> /home/ved/*: match found in every file",
+  npm: "> npm install ved-chauhan\n> added 1 package: legendary-developer\n> found 0 vulnerabilities (because Ved writes clean code)",
 };
