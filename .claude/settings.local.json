@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:www.linkedin.com)",
+      "Bash(gh api *)",
+      "PowerShell(gh api *)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.vinnysvogue.in)",
+      "WebFetch(domain:stc.vercel.app)",
+      "PowerShell(python3 \"C:\\\\Users\\\\vedch\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"retro pixel arcade cyberpunk gaming portfolio developer\" --design-system -p \"VED.EXE\")",
+      "PowerShell(python \"C:\\\\Users\\\\vedch\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"retro pixel arcade cyberpunk gaming portfolio developer\" --design-system -p \"VED.EXE\")"
+    ]
+  }
+}
