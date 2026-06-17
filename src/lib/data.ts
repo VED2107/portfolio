@@ -52,6 +52,22 @@ export const PROJECTS: Project[] = [
     featured: true,
   },
   {
+    title: "Lunora Studio",
+    description: "Luxury handmade bouquet e-commerce platform",
+    longDescription:
+      "Full-scale luxury e-commerce for The Lunora Studio — handmade pipe-cleaner bouquets that never wilt. Features cinematic GSAP ScrollTrigger storytelling landing page, product catalog with variants & gallery, cart with guest-to-login merge, custom bouquet request workflow, WhatsApp/Instagram ordering mode toggle, Google OAuth, admin dashboard with revenue stats, order management pipeline, coupon engine, and CMS for homepage content.",
+    tech: ["Next.js", "TypeScript", "Supabase", "Tailwind CSS", "GSAP", "shadcn/ui"],
+    github: "https://github.com/VED2107/lunora-studio",
+    live: "https://lunorastudio.vercel.app",
+    image: "/screenshots/lunora-studio.png",
+    screenshots: [
+      { label: "Landing", src: "/screenshots/lunora-studio-landing.png" },
+      { label: "Shop", src: "/screenshots/lunora-studio-shop.png" },
+    ],
+    category: "fullstack",
+    featured: true,
+  },
+  {
     title: "STC Academy",
     description: "Online education platform for Gujarat students",
     longDescription:
@@ -239,11 +255,11 @@ export const TERMINAL_COMMANDS: Record<string, string> = {
   skills:
     "Frontend: React, Next.js, TypeScript, Tailwind, GSAP\nBackend: Node.js, Supabase, PostgreSQL\nMobile: React Native, Expo, Flutter\nDesign: Figma, UI/UX\nTools: Git, Vercel, Turborepo",
   projects:
-    "1. Vinnys Vogue — Luxury e-commerce [LIVE]\n2. STC Academy — Education platform [LIVE]\n3. Cipher Clash — Multiplayer word game\n4. Filmica — Flutter camera app",
+    "1. Vinnys Vogue — Luxury e-commerce [LIVE]\n2. Lunora Studio — Bouquet e-commerce [LIVE]\n3. STC Academy — Education platform [LIVE]\n4. Cipher Clash — Multiplayer word game\n5. Filmica — Flutter camera app",
   contact: "Email: vedchauhan2107@gmail.com\nLinkedIn: /in/ved-chauhan2107\nGitHub: /VED2107",
   socials:
     "GitHub: github.com/VED2107\nLinkedIn: linkedin.com/in/ved-chauhan2107\nInstagram: @_v_e_d_2107",
-  github: "GitHub: github.com/VED2107\n> Repos: 10+ | Stars: ★ | Languages: TypeScript, Dart, JavaScript\n> Pinned: Vinnys Vogue, STC, Cipher Clash, Filmica\n> Status: Building daily",
+  github: "GitHub: github.com/VED2107\n> Repos: 10+ | Stars: ★ | Languages: TypeScript, Dart, JavaScript\n> Pinned: Vinnys Vogue, Lunora Studio, STC, Cipher Clash, Filmica\n> Status: Building daily",
   mission: "MISSION CONTROL — ACTIVE\n> Commits this year: scanning...\n> Top languages: TypeScript, Dart, JavaScript\n> Contribution streak: consistent\n> Scroll up to #mission-control for full dashboard",
   resume: "[DOWNLOADING resume.pdf...]\n> Just kidding. Email me: vedchauhan2107@gmail.com",
   hire: "INITIATING HIRE PROTOCOL...\n> Candidate: Ved Chauhan\n> Status: Available for opportunities\n> Contact: vedchauhan2107@gmail.com",
