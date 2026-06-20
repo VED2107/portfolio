@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="https://vedchauhan.dev">Live Demo</a> &bull;
+  <a href="https://ved.exe.snowbros.me">Live Demo</a> &bull;
   <a href="#-quick-start">Quick Start</a> &bull;
   <a href="#-make-it-yours">Customize</a> &bull;
   <a href="#-deploy">Deploy</a>
