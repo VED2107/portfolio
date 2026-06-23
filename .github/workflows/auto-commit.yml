@@ -1,0 +1,114 @@
+name: 🤖 Auto Commit Bot
+
+on:
+  schedule:
+    # 3 commits per day at different times (IST = UTC + 5:30)
+    - cron: '30 4 * * *'   # 10:00 AM IST — Morning push
+    - cron: '0 11 * * *'   # 4:30 PM IST  — Afternoon push
+    - cron: '45 14 * * *'  # 8:15 PM IST  — Evening push
+  workflow_dispatch: # Allow manual trigger from GitHub Actions tab
+
+permissions:
+  contents: write
+
+jobs:
+  auto-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 🕐 Update Contribution Tracker
+        run: |
+          # Get current timestamp
+          TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+          DATE_READABLE=$(date -u +"%B %d, %Y %H:%M UTC")
+          DAY_OF_YEAR=$(date -u +"%j")
+          WEEK_NUMBER=$(date -u +"%U")
+          
+          # Motivational quotes array
+          QUOTES=(
+            "Code is like humor. When you have to explain it, it's bad."
+            "First, solve the problem. Then, write the code."
+            "Experience is the name everyone gives to their mistakes."
+            "The best error message is the one that never shows up."
+            "Simplicity is the soul of efficiency."
+            "Make it work, make it right, make it fast."
+            "Any fool can write code that a computer can understand."
+            "Programming isn't about what you know; it's about what you can figure out."
+            "The only way to learn a new programming language is by writing programs in it."
+            "Talk is cheap. Show me the code."
+            "Perfection is achieved not when there is nothing more to add, but when there is nothing left to take away."
+            "Java is to JavaScript what car is to carpet."
+            "Code never lies, comments sometimes do."
+            "Deleted code is debugged code."
+            "It works on my machine."
+            "There are only two hard things in computer science: cache invalidation and naming things."
+            "The best time to plant a tree was 20 years ago. The second best time is now."
+            "Consistency is the key to mastery."
+            "Every expert was once a beginner."
+            "Small daily improvements lead to stunning results."
+          )
+          
+          # Pick a random quote
+          RANDOM_INDEX=$((RANDOM % ${#QUOTES[@]}))
+          QUOTE="${QUOTES[$RANDOM_INDEX]}"
+          
+          # Calculate streak info
+          if [ -f contribution-tracker.json ]; then
+            COMMIT_COUNT=$(python3 -c "
+          import json
+          try:
+              with open('contribution-tracker.json') as f:
+                  data = json.load(f)
+              print(data.get('total_commits', 0))
+          except:
+              print(0)
+          ")
+          else
+            COMMIT_COUNT=0
+          fi
+          
+          NEW_COUNT=$((COMMIT_COUNT + 1))
+          
+          # Generate the tracker file
+          cat > contribution-tracker.json << EOF
+          {
+            "last_updated": "$TIMESTAMP",
+            "last_updated_readable": "$DATE_READABLE",
+            "total_commits": $NEW_COUNT,
+            "day_of_year": $DAY_OF_YEAR,
+            "week_number": $WEEK_NUMBER,
+            "quote_of_the_day": "$QUOTE",
+            "bot_version": "1.0.0",
+            "author": "VED2107",
+            "repo": "portfolio",
+            "message": "🤖 Keeping the streak alive! Commit #$NEW_COUNT"
+          }
+          EOF
+          
+          echo "✅ Updated tracker — Commit #$NEW_COUNT"
+          echo "📝 Quote: $QUOTE"
+
+      - name: 📤 Commit and Push
+        run: |
+          git config --global user.name "VED2107"
+          git config --global user.email "VEDCHAUHAN2107@gmail.com"
+          
+          git add contribution-tracker.json
+          
+          # Check if there are changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            COMMIT_NUM=$(python3 -c "
+          import json
+          with open('contribution-tracker.json') as f:
+              data = json.load(f)
+          print(data.get('total_commits', 0))
+          ")
+            git commit -m "🤖 Auto-commit #$COMMIT_NUM — $(date -u +%Y-%m-%d) | Keeping the streak alive!"
+            git push
+            echo "🚀 Successfully pushed commit #$COMMIT_NUM"
+          fi
