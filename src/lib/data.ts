@@ -37,6 +37,18 @@ export interface Project {
 
 export const PROJECTS: Project[] = [
   {
+    title: "SNOWBROS",
+    description: "Independent software engineering studio — business site",
+    longDescription:
+      "Official business site for SNOWBROS, an independent software engineering studio. Built on the latest Next.js 16 + React 19 stack with Tailwind CSS 4, showcasing studio services, work, and client engagement — production-grade from day one.",
+    tech: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS 4"],
+    github: "https://github.com/VED2107/snowbros",
+    live: "https://snowbros.me",
+    image: "/screenshots/snowbros-mockup.png",
+    category: "fullstack",
+    featured: true,
+  },
+  {
     title: "Vinnys Vogue",
     description: "Luxury bridal & festive wear e-commerce platform",
     longDescription:
@@ -211,6 +223,12 @@ export const QUESTS: Quest[] = [
 
 export const ACHIEVEMENTS = [
   {
+    title: "Studio Founder",
+    description: "Shipped SNOWBROS — own software engineering studio",
+    score: 9000,
+    rank: "S",
+  },
+  {
     title: "IEEE Leadership",
     description: "Secretary of IEEE GUNI Student Branch",
     score: 9500,
@@ -255,11 +273,11 @@ export const TERMINAL_COMMANDS: Record<string, string> = {
   skills:
     "Frontend: React, Next.js, TypeScript, Tailwind, GSAP\nBackend: Node.js, Supabase, PostgreSQL\nMobile: React Native, Expo, Flutter\nDesign: Figma, UI/UX\nTools: Git, Vercel, Turborepo",
   projects:
-    "1. Vinnys Vogue — Luxury e-commerce [LIVE]\n2. Lunora Studio — Bouquet e-commerce [LIVE]\n3. STC Academy — Education platform [LIVE]\n4. Cipher Clash — Multiplayer word game\n5. Filmica — Flutter camera app",
+    "1. SNOWBROS — Software studio site [LIVE]\n2. Vinnys Vogue — Luxury e-commerce [LIVE]\n3. Lunora Studio — Bouquet e-commerce [LIVE]\n4. STC Academy — Education platform [LIVE]\n5. Cipher Clash — Multiplayer word game\n6. Filmica — Flutter camera app",
   contact: "Email: vedchauhan2107@gmail.com\nLinkedIn: /in/ved-chauhan2107\nGitHub: /VED2107",
   socials:
     "GitHub: github.com/VED2107\nLinkedIn: linkedin.com/in/ved-chauhan2107\nInstagram: @_v_e_d_2107",
-  github: "GitHub: github.com/VED2107\n> Repos: 10+ | Stars: ★ | Languages: TypeScript, Dart, JavaScript\n> Pinned: Vinnys Vogue, Lunora Studio, STC, Cipher Clash, Filmica\n> Status: Building daily",
+  github: "GitHub: github.com/VED2107\n> Repos: 10+ | Stars: ★ | Languages: TypeScript, Dart, JavaScript\n> Pinned: SNOWBROS, Vinnys Vogue, Lunora Studio, STC, Cipher Clash, Filmica\n> Status: Building daily",
   mission: "MISSION CONTROL — ACTIVE\n> Commits this year: scanning...\n> Top languages: TypeScript, Dart, JavaScript\n> Contribution streak: consistent\n> Scroll up to #mission-control for full dashboard",
   resume: "[DOWNLOADING resume.pdf...]\n> Just kidding. Email me: vedchauhan2107@gmail.com",
   hire: "INITIATING HIRE PROTOCOL...\n> Candidate: Ved Chauhan\n> Status: Available for opportunities\n> Contact: vedchauhan2107@gmail.com",

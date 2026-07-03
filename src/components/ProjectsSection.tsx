@@ -124,14 +124,17 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           </span>
         </div>
         {project.featured && (
-          <span className="border border-[#FFE600]/20 bg-[#FFE600]/5 px-2 py-0.5 font-[family-name:var(--font-pixel)] text-[7px] text-[#FFE600]">
+          <span
+            className="border border-[#FFE600]/30 bg-[#FFE600]/5 px-2 py-0.5 font-[family-name:var(--font-pixel)] text-[7px] text-[#FFE600]"
+            style={{ boxShadow: "0 0 8px rgba(255,230,0,0.15)" }}
+          >
             FEATURED
           </span>
         )}
       </div>
 
       {(project.screenshots || project.image) && (
-        <div className="relative h-44 overflow-hidden border-b border-white/5 bg-[#050816]" style={{ transformStyle: "flat" }}>
+        <div className="relative h-56 overflow-hidden border-b border-white/5 bg-[#050816]" style={{ transformStyle: "flat" }}>
           {project.screenshots ? (
             <>
               {project.screenshots.map((shot, i) => (
@@ -169,7 +172,7 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
             <img
               src={project.image}
               alt={`Screenshot of ${project.title}`}
-              className="h-full w-full object-cover object-top opacity-60 transition-all duration-500 group-hover:opacity-90 group-hover:scale-105"
+              className="h-full w-full object-cover object-center opacity-60 transition-all duration-500 group-hover:opacity-90 group-hover:scale-105"
               loading="lazy"
               onError={(e) => {
                 (e.target as HTMLImageElement).style.display = "none";

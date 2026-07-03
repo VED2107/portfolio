@@ -220,6 +220,13 @@ body {
   100% { top: -200%; }
 }
 
+/* Keyboard focus ring — neon, matches theme instead of default browser blue */
+:focus-visible {
+  outline: 2px solid #00f5ff;
+  outline-offset: 2px;
+  box-shadow: 0 0 8px rgba(0, 245, 255, 0.4);
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *,

@@ -51,9 +51,9 @@ export function SkillsSection() {
             <button
               key={cat.key}
               onClick={() => setActiveCategory(cat.key)}
-              className={`border px-4 py-2 font-[family-name:var(--font-pixel)] text-[10px] transition-all ${
+              className={`cursor-pointer border px-4 py-2 font-[family-name:var(--font-pixel)] text-[10px] transition-all ${
                 activeCategory === cat.key
-                  ? "bg-opacity-10"
+                  ? ""
                   : "border-white/10 text-[#A0A0A0] hover:border-white/30"
               }`}
               style={
