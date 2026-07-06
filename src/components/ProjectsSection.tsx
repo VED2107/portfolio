@@ -11,6 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 const CATEGORIES = [
   { key: "all", label: "ALL" },
   { key: "fullstack", label: "FULL STACK" },
+  { key: "tool", label: "TOOLS" },
   { key: "mobile", label: "MOBILE" },
   { key: "game", label: "GAMES" },
 ];

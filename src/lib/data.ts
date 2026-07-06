@@ -37,6 +37,17 @@ export interface Project {
 
 export const PROJECTS: Project[] = [
   {
+    title: "Snowbros Atlas",
+    description: "Deterministic static-analysis engine for JS/TS, in Rust",
+    longDescription:
+      "A deterministic engineering-intelligence platform for JavaScript, TypeScript, React, and Next.js — written in Rust. A Tree-sitter frontend feeds a semantic engine that builds whole-project symbol, import, and file graphs plus Next.js and React models, then reports problems it can prove — circular imports, dead files, server/client boundary leaks, React hook misuse, unused deps, hardcoded secrets — each with an evidence chain. Ships a built-in LSP and a first-party VS Code extension, SARIF/JSON/HTML/Markdown reports, and a guarded auto-fix engine. 19 rules, 265 passing tests, cross-platform (Windows/Linux/macOS), published to npm, Homebrew, and the VS Code Marketplace.",
+    tech: ["Rust", "Tree-sitter", "LSP", "TypeScript", "VS Code API"],
+    github: "https://github.com/snowbros-labs/atlas",
+    live: "https://snowbros.me/atlas",
+    category: "tool",
+    featured: true,
+  },
+  {
     title: "SNOWBROS",
     description: "Independent software engineering studio — business site",
     longDescription:
@@ -140,6 +151,7 @@ export const SKILLS: Skill[] = [
   { name: "Framer Motion", level: 75, category: "frontend" },
   { name: "GSAP", level: 70, category: "frontend" },
   { name: "Node.js", level: 80, category: "backend" },
+  { name: "Rust", level: 70, category: "backend" },
   { name: "Supabase", level: 88, category: "backend" },
   { name: "REST APIs", level: 85, category: "backend" },
   { name: "Edge Functions", level: 72, category: "backend" },
@@ -229,6 +241,13 @@ export const ACHIEVEMENTS = [
     rank: "S",
   },
   {
+    title: "Systems Engineer",
+    description:
+      "Shipped Snowbros Atlas — Rust static-analysis engine on npm, Homebrew & VS Code Marketplace",
+    score: 9200,
+    rank: "S",
+  },
+  {
     title: "IEEE Leadership",
     description: "Secretary of IEEE GUNI Student Branch",
     score: 9500,
@@ -271,14 +290,14 @@ export const TERMINAL_COMMANDS: Record<string, string> = {
   about:
     "Ved Chauhan — Full Stack Developer, UI/UX Designer, Creative Technologist. B.Tech CSE @ Ganpat University. Building production-grade systems that people actually use.",
   skills:
-    "Frontend: React, Next.js, TypeScript, Tailwind, GSAP\nBackend: Node.js, Supabase, PostgreSQL\nMobile: React Native, Expo, Flutter\nDesign: Figma, UI/UX\nTools: Git, Vercel, Turborepo",
+    "Frontend: React, Next.js, TypeScript, Tailwind, GSAP\nBackend: Node.js, Rust, Supabase, PostgreSQL\nMobile: React Native, Expo, Flutter\nDesign: Figma, UI/UX\nTools: Git, Vercel, Turborepo, Tree-sitter, LSP",
   projects:
-    "1. SNOWBROS — Software studio site [LIVE]\n2. Vinnys Vogue — Luxury e-commerce [LIVE]\n3. Lunora Studio — Bouquet e-commerce [LIVE]\n4. STC Academy — Education platform [LIVE]\n5. Cipher Clash — Multiplayer word game\n6. Filmica — Flutter camera app",
+    "1. Snowbros Atlas — Rust static-analysis engine [LIVE]\n2. SNOWBROS — Software studio site [LIVE]\n3. Vinnys Vogue — Luxury e-commerce [LIVE]\n4. Lunora Studio — Bouquet e-commerce [LIVE]\n5. STC Academy — Education platform [LIVE]\n6. Cipher Clash — Multiplayer word game\n7. Filmica — Flutter camera app",
   contact: "Email: vedchauhan2107@gmail.com\nLinkedIn: /in/ved-chauhan2107\nGitHub: /VED2107",
   socials:
     "GitHub: github.com/VED2107\nLinkedIn: linkedin.com/in/ved-chauhan2107\nInstagram: @_v_e_d_2107",
-  github: "GitHub: github.com/VED2107\n> Repos: 10+ | Stars: ★ | Languages: TypeScript, Dart, JavaScript\n> Pinned: SNOWBROS, Vinnys Vogue, Lunora Studio, STC, Cipher Clash, Filmica\n> Status: Building daily",
-  mission: "MISSION CONTROL — ACTIVE\n> Commits this year: scanning...\n> Top languages: TypeScript, Dart, JavaScript\n> Contribution streak: consistent\n> Scroll up to #mission-control for full dashboard",
+  github: "GitHub: github.com/VED2107\n> Repos: 10+ | Stars: ★ | Languages: TypeScript, Rust, Dart, JavaScript\n> Pinned: Snowbros Atlas, SNOWBROS, Vinnys Vogue, Lunora Studio, STC, Cipher Clash\n> Status: Building daily",
+  mission: "MISSION CONTROL — ACTIVE\n> Commits this year: scanning...\n> Top languages: TypeScript, Rust, Dart, JavaScript\n> Contribution streak: consistent\n> Scroll up to #mission-control for full dashboard",
   resume: "[DOWNLOADING resume.pdf...]\n> Just kidding. Email me: vedchauhan2107@gmail.com",
   hire: "INITIATING HIRE PROTOCOL...\n> Candidate: Ved Chauhan\n> Status: Available for opportunities\n> Contact: vedchauhan2107@gmail.com",
   clear: "__CLEAR__",
