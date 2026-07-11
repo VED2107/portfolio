@@ -15,7 +15,6 @@ export function HeroSection() {
   const subtitleRef = useRef<HTMLDivElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
   const statusRef = useRef<HTMLDivElement>(null);
-  const scrollRef = useRef<HTMLDivElement>(null);
   const orb1Ref = useRef<HTMLDivElement>(null);
   const orb2Ref = useRef<HTMLDivElement>(null);
   const orb3Ref = useRef<HTMLDivElement>(null);
@@ -24,6 +23,9 @@ export function HeroSection() {
   const [typedRole, setTypedRole] = useState("");
 
   useEffect(() => {
+    // Don't cycle roles for users who prefer reduced motion — the typing effect
+    // below renders the current role statically instead.
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     const interval = setInterval(() => {
       setRoleIndex((prev) => (prev + 1) % SITE.roles.length);
     }, 4000);
@@ -32,6 +34,10 @@ export function HeroSection() {
 
   useEffect(() => {
     const role = SITE.roles[roleIndex];
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setTypedRole(role);
+      return;
+    }
     let i = 0;
     setTypedRole("");
     const type = setInterval(() => {
@@ -78,12 +84,6 @@ export function HeroSection() {
           { opacity: 0, y: 20 },
           { opacity: 1, y: 0, duration: 0.6 },
           1.2
-        )
-        .fromTo(
-          scrollRef.current,
-          { opacity: 0 },
-          { opacity: 1, duration: 1 },
-          1.8
         );
     }, sectionRef);
 
@@ -242,32 +242,6 @@ export function HeroSection() {
             <span className="relative z-10">CONTACT</span>
             <div className="absolute inset-0 -translate-x-full bg-[#FF00E5]/10 transition-transform duration-300 group-hover:translate-x-0" />
           </MagneticButton>
-        </div>
-
-        {/* Scroll indicator */}
-        <div ref={scrollRef} className="absolute bottom-8 left-1/2 -translate-x-1/2" style={{ opacity: 0 }}>
-          <div className="flex flex-col items-center gap-2">
-            <span className="font-[family-name:var(--font-pixel)] text-[8px] text-[#A0A0A0]/40">
-              SCROLL DOWN
-            </span>
-            <div className="flex flex-col items-center gap-1">
-              <div className="h-6 w-3 border border-[#00F5FF]/20 rounded-sm">
-                <div
-                  className="mx-auto mt-0.5 h-1.5 w-1 bg-[#00F5FF]/60 rounded-sm"
-                  style={{ animation: "float 1.5s ease-in-out infinite" }}
-                />
-              </div>
-              <svg
-                width="10"
-                height="6"
-                viewBox="0 0 10 6"
-                className="text-[#00F5FF]/30"
-                style={{ animation: "float 1.5s ease-in-out infinite", animationDelay: "0.3s" }}
-              >
-                <path d="M1 1L5 5L9 1" stroke="currentColor" strokeWidth="1" fill="none" />
-              </svg>
-            </div>
-          </div>
         </div>
       </div>
     </section>

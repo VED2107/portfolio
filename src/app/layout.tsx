@@ -79,6 +79,12 @@ export default function RootLayout({
   return (
     <html lang="en" className={`h-full ${pixelFont.variable} ${bodyFont.variable}`}>
       <body className="min-h-full bg-[#050816] text-white antialiased">
+        <a
+          href="#hero"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[10000] focus:bg-[#050816] focus:px-4 focus:py-2 focus:font-[family-name:var(--font-pixel)] focus:text-xs focus:text-[#00F5FF] focus:outline focus:outline-2 focus:outline-[#00F5FF]"
+        >
+          Skip to content
+        </a>
         <SoundManager>
           <SmoothScroll>
             <ScrollProgressBar />
