@@ -223,10 +223,10 @@ export function HeroSection() {
           </p>
         </div>
 
-        <div ref={buttonsRef} className="mt-10 flex items-center justify-center gap-4" style={{ opacity: 0 }}>
+        <div ref={buttonsRef} className="mx-auto mt-10 flex w-full max-w-xs flex-col items-center justify-center gap-3 px-6 sm:w-auto sm:max-w-none sm:flex-row sm:gap-4 sm:px-0" style={{ opacity: 0 }}>
           <MagneticButton
             href="#projects"
-            className="group relative overflow-hidden pixel-border bg-[#00F5FF]/10 px-8 py-3 font-[family-name:var(--font-pixel)] text-xs text-[#00F5FF] transition-all hover:bg-[#00F5FF]/20 hover:shadow-[0_0_30px_rgba(0,245,255,0.3)]"
+            className="group relative w-full overflow-hidden pixel-border bg-[#00F5FF]/10 px-8 py-3 text-center font-[family-name:var(--font-pixel)] text-xs text-[#00F5FF] transition-all hover:bg-[#00F5FF]/20 hover:shadow-[0_0_30px_rgba(0,245,255,0.3)] sm:w-auto"
             strength={0.35}
             data-cursor-hover
           >
@@ -235,7 +235,7 @@ export function HeroSection() {
           </MagneticButton>
           <MagneticButton
             href="#contact"
-            className="group relative overflow-hidden border border-[#FF00E5]/50 bg-transparent px-8 py-3 font-[family-name:var(--font-pixel)] text-xs text-[#FF00E5] transition-all hover:border-[#FF00E5] hover:bg-[#FF00E5]/10"
+            className="group relative w-full overflow-hidden border border-[#FF00E5]/50 bg-transparent px-8 py-3 text-center font-[family-name:var(--font-pixel)] text-xs text-[#FF00E5] transition-all hover:border-[#FF00E5] hover:bg-[#FF00E5]/10 sm:w-auto"
             strength={0.35}
             data-cursor-hover
           >
@@ -245,7 +245,7 @@ export function HeroSection() {
           <MagneticButton
             href={SITE.resume}
             download="Ved_Chauhan_RESUME.pdf"
-            className="group relative overflow-hidden border border-[#00FF88]/50 bg-transparent px-8 py-3 font-[family-name:var(--font-pixel)] text-xs text-[#00FF88] transition-all hover:border-[#00FF88] hover:bg-[#00FF88]/10"
+            className="group relative w-full overflow-hidden border border-[#00FF88]/50 bg-transparent px-8 py-3 text-center font-[family-name:var(--font-pixel)] text-xs text-[#00FF88] transition-all hover:border-[#00FF88] hover:bg-[#00FF88]/10 sm:w-auto"
             strength={0.35}
             data-cursor-hover
             aria-label="Download résumé (PDF)"
