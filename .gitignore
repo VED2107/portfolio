@@ -52,3 +52,10 @@ next-env.d.ts
 .claude/
 CODEBASE.md
 AGENTS.md
+
+# stray lockfiles — project standardizes on npm (package-lock.json)
+pnpm-lock.yaml
+pnpm-workspace.yaml
+
+# scratch/reference images at repo root (real assets live in /public)
+/*.png
