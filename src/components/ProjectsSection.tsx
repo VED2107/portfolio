@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import Image from "next/image";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { PROJECTS, type Project } from "@/lib/data";
@@ -139,16 +140,17 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
           {project.screenshots ? (
             <>
               {project.screenshots.map((shot, i) => (
-                <img
+                <Image
                   key={shot.label}
                   src={shot.src}
                   alt={`${project.title} — ${shot.label}`}
-                  className={`absolute inset-0 h-full w-full object-cover object-top transition-all duration-500 ${
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className={`object-cover object-top transition-all duration-500 ${
                     activeShot === i
                       ? "opacity-70 group-hover:opacity-95 scale-100 group-hover:scale-105"
                       : "opacity-0 scale-95"
                   }`}
-                  loading="lazy"
                 />
               ))}
               <div className="absolute bottom-3 right-3 z-20 flex gap-1.5" style={{ pointerEvents: "auto" }}>
@@ -157,6 +159,8 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
                     key={shot.label}
                     onClick={(e) => { e.preventDefault(); e.stopPropagation(); setActiveShot(i); }}
                     onMouseDown={(e) => e.stopPropagation()}
+                    aria-pressed={activeShot === i}
+                    aria-label={`Show ${shot.label} screenshot of ${project.title}`}
                     className={`px-3 py-1 font-[family-name:var(--font-pixel)] text-[8px] transition-all cursor-pointer ${
                       activeShot === i
                         ? "bg-[#00F5FF]/25 text-[#00F5FF] border border-[#00F5FF]/50 shadow-[0_0_8px_rgba(0,245,255,0.2)]"
@@ -170,11 +174,12 @@ function ProjectCard({ project, index }: { project: Project; index: number }) {
               </div>
             </>
           ) : project.image ? (
-            <img
+            <Image
               src={project.image}
               alt={`Screenshot of ${project.title}`}
-              className="h-full w-full object-cover object-center opacity-60 transition-all duration-500 group-hover:opacity-90 group-hover:scale-105"
-              loading="lazy"
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover object-center opacity-60 transition-all duration-500 group-hover:opacity-90 group-hover:scale-105"
               onError={(e) => {
                 (e.target as HTMLImageElement).style.display = "none";
               }}

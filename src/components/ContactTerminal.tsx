@@ -223,8 +223,7 @@ export function ContactTerminal() {
                 placeholder="type a command..."
                 autoComplete="off"
                 spellCheck={false}
-                tabIndex={-1}
-                onFocus={(e) => e.target.setAttribute("tabindex", "0")}
+                aria-label="Terminal command input — type a command like help, contact, or hire"
               />
             </form>
           </div>

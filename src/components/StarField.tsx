@@ -25,6 +25,9 @@ export function StarField() {
     let animationId: number;
     let isVisible = true;
 
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
     const isMobile = window.innerWidth < 768;
     const starCount = isMobile ? 60 : 150;
 
@@ -102,8 +105,38 @@ export function StarField() {
       { threshold: 0 }
     );
 
+    // Static one-frame render for reduced-motion users (no parallax, no scroll/twinkle).
+    const drawStatic = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (const star of starsRef.current) {
+        ctx.fillStyle =
+          star.size > 1.5
+            ? `rgba(0, 245, 255, ${star.opacity})`
+            : `rgba(255, 255, 255, ${star.opacity * 0.6})`;
+        ctx.fillRect(
+          (star.x + 0.5) | 0,
+          (star.y + 0.5) | 0,
+          Math.ceil(star.size),
+          Math.ceil(star.size)
+        );
+      }
+    };
+
     resize();
     initStars();
+
+    if (prefersReducedMotion) {
+      drawStatic();
+      // Redraw static field on resize; skip the animation loop and mouse parallax entirely.
+      const onResizeStatic = () => {
+        resize();
+        initStars();
+        drawStatic();
+      };
+      window.addEventListener("resize", onResizeStatic);
+      return () => window.removeEventListener("resize", onResizeStatic);
+    }
+
     draw();
     observer.observe(canvas);
 

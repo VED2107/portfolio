@@ -92,6 +92,11 @@ export async function fetchGitHubData(): Promise<GitHubData | null> {
     return null;
   }
 
+  // Bound the request so a slow/hanging GitHub API can't stall the server render
+  // (this fetch is awaited in the RSC render path and during ISR revalidation).
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10_000);
+
   try {
     const res = await fetch(GITHUB_GRAPHQL, {
       method: "POST",
@@ -101,9 +106,13 @@ export async function fetchGitHubData(): Promise<GitHubData | null> {
       },
       body: JSON.stringify({ query: QUERY, variables: { login: USERNAME } }),
       next: { revalidate: 3600 },
+      signal: controller.signal,
     });
 
-    if (!res.ok) return null;
+    if (!res.ok) {
+      console.error(`GitHub API returned ${res.status} ${res.statusText}`);
+      return null;
+    }
 
     const json = await res.json();
     if (json.errors) {
@@ -179,7 +188,13 @@ export async function fetchGitHubData(): Promise<GitHubData | null> {
       fetchedAt: new Date().toISOString(),
     };
   } catch (e) {
-    console.error("GitHub fetch failed:", e);
+    if (e instanceof Error && e.name === "AbortError") {
+      console.error("GitHub fetch aborted — exceeded 10s timeout");
+    } else {
+      console.error("GitHub fetch failed:", e);
+    }
     return null;
+  } finally {
+    clearTimeout(timeout);
   }
 }
