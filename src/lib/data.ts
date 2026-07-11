@@ -6,6 +6,7 @@ export const SITE = {
   github: "https://github.com/VED2107",
   linkedin: "https://www.linkedin.com/in/ved-chauhan2107/",
   instagram: "https://www.instagram.com/_v_e_d_2107",
+  resume: "/Ved_Chauhan_RESUME.pdf",
 } as const;
 
 export const BOOT_SEQUENCE = [
@@ -298,7 +299,7 @@ export const TERMINAL_COMMANDS: Record<string, string> = {
     "GitHub: github.com/VED2107\nLinkedIn: linkedin.com/in/ved-chauhan2107\nInstagram: @_v_e_d_2107",
   github: "GitHub: github.com/VED2107\n> Repos: 10+ | Stars: ★ | Languages: TypeScript, Rust, Dart, JavaScript\n> Pinned: Snowbros Atlas, SNOWBROS, Vinnys Vogue, Lunora Studio, STC, Cipher Clash\n> Status: Building daily",
   mission: "MISSION CONTROL — ACTIVE\n> Commits this year: scanning...\n> Top languages: TypeScript, Rust, Dart, JavaScript\n> Contribution streak: consistent\n> Scroll up to #mission-control for full dashboard",
-  resume: "[DOWNLOADING resume.pdf...]\n> Just kidding. Email me: vedchauhan2107@gmail.com",
+  resume: "◄ EJECTING DATA CARTRIDGE ►\n> Ved_Chauhan_RESUME.pdf\n> Software Engineer — Full-Stack Web Applications\n> Founder @ Snowbros | B.Tech CompE\n\n[■■■■■■■■■■] 100% — download started\n> Tip: also grab it from the RESUME button up top.",
   hire: "INITIATING HIRE PROTOCOL...\n> Candidate: Ved Chauhan\n> Status: Available for opportunities\n> Contact: vedchauhan2107@gmail.com",
   clear: "__CLEAR__",
   "sudo hire ved":

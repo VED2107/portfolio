@@ -57,5 +57,6 @@ AGENTS.md
 pnpm-lock.yaml
 pnpm-workspace.yaml
 
-# scratch/reference images at repo root (real assets live in /public)
+# scratch/reference files at repo root (real assets live in /public)
 /*.png
+/*.pdf

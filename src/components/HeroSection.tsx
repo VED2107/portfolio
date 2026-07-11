@@ -242,6 +242,17 @@ export function HeroSection() {
             <span className="relative z-10">CONTACT</span>
             <div className="absolute inset-0 -translate-x-full bg-[#FF00E5]/10 transition-transform duration-300 group-hover:translate-x-0" />
           </MagneticButton>
+          <MagneticButton
+            href={SITE.resume}
+            download="Ved_Chauhan_RESUME.pdf"
+            className="group relative overflow-hidden border border-[#00FF88]/50 bg-transparent px-8 py-3 font-[family-name:var(--font-pixel)] text-xs text-[#00FF88] transition-all hover:border-[#00FF88] hover:bg-[#00FF88]/10"
+            strength={0.35}
+            data-cursor-hover
+            aria-label="Download résumé (PDF)"
+          >
+            <span className="relative z-10">RÉSUMÉ</span>
+            <div className="absolute inset-0 -translate-x-full bg-[#00FF88]/10 transition-transform duration-300 group-hover:translate-x-0" />
+          </MagneticButton>
         </div>
       </div>
     </section>

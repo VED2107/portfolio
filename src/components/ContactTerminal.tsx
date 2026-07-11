@@ -37,6 +37,15 @@ export function ContactTerminal() {
 
   const dismissEgg = useCallback(() => setEasterEgg(null), []);
 
+  const triggerResumeDownload = useCallback(() => {
+    const a = document.createElement("a");
+    a.href = SITE.resume;
+    a.download = "Ved_Chauhan_RESUME.pdf";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }, []);
+
   const isInitialMount = useRef(true);
   const terminalBodyRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -73,7 +82,8 @@ export function ContactTerminal() {
     e.preventDefault();
     if (!input.trim()) return;
 
-    const cmd = input.trim().toLowerCase();
+    const raw = input.trim().toLowerCase();
+    const cmd = raw === "cv" || raw === "download resume" ? "resume" : raw;
     setHistory((prev) => [input, ...prev]);
     setHistoryIndex(-1);
 
@@ -112,6 +122,7 @@ export function ContactTerminal() {
         response.split("\n").forEach((line) => {
           newLines.push({ type: "output", text: line });
         });
+        if (cmd === "resume") triggerResumeDownload();
       } else {
         play("error");
         newLines.push({
@@ -232,16 +243,18 @@ export function ContactTerminal() {
         {/* Quick links */}
         <div className="mt-12 flex flex-wrap justify-center gap-4">
           {[
-            { label: "GitHub", url: SITE.github, color: "#A0A0A0" },
-            { label: "LinkedIn", url: SITE.linkedin, color: "#00F5FF" },
-            { label: "Instagram", url: SITE.instagram, color: "#FF00E5" },
-            { label: "Email", url: `mailto:${SITE.email}`, color: "#FFE600" },
+            { label: "GitHub", url: SITE.github, color: "#A0A0A0", download: false },
+            { label: "LinkedIn", url: SITE.linkedin, color: "#00F5FF", download: false },
+            { label: "Instagram", url: SITE.instagram, color: "#FF00E5", download: false },
+            { label: "Email", url: `mailto:${SITE.email}`, color: "#FFE600", download: false },
+            { label: "Résumé", url: SITE.resume, color: "#00FF88", download: true },
           ].map((link) => (
             <a
               key={link.label}
               href={link.url}
-              target={link.url.startsWith("mailto") ? undefined : "_blank"}
-              rel={link.url.startsWith("mailto") ? undefined : "noopener noreferrer"}
+              download={link.download ? "Ved_Chauhan_RESUME.pdf" : undefined}
+              target={link.url.startsWith("mailto") || link.download ? undefined : "_blank"}
+              rel={link.url.startsWith("mailto") || link.download ? undefined : "noopener noreferrer"}
               className="group relative overflow-hidden border border-white/10 bg-[#0a0f2e]/40 px-5 py-2.5 font-[family-name:var(--font-pixel)] text-[10px] text-[#A0A0A0] transition-all duration-300 hover:text-white"
               style={
                 {
