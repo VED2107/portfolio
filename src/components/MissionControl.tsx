@@ -10,6 +10,61 @@ gsap.registerPlugin(ScrollTrigger);
 
 const LEVEL_COLORS = ["#0a0f2e", "#00F5FF20", "#00F5FF50", "#00F5FF90", "#00F5FF"];
 
+const StarIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className={className}>
+    <path d="M12 2l2.9 6.9 7.1.6-5.4 4.6 1.7 7.3L12 17.6 5.7 21.4l1.7-7.3L2 9.5l7.1-.6z" />
+  </svg>
+);
+
+const ForkIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true" className={className}>
+    <path d="M5 3.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0zm0 2.122a2.25 2.25 0 1 0-1.5 0v.878A2.25 2.25 0 0 0 5.75 8.5h1.5v2.128a2.251 2.251 0 1 0 1.5 0V8.5h1.5a2.25 2.25 0 0 0 2.25-2.25v-.878a2.25 2.25 0 1 0-1.5 0v.878a.75.75 0 0 1-.75.75h-4.5A.75.75 0 0 1 5 6.25v-.878zm3.75 7.378a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0zm3-8.75a.75.75 0 1 1 0-1.5.75.75 0 0 1 0 1.5z" />
+  </svg>
+);
+
+// Arcade-style score rollup — counts to the value once the element scrolls into
+// view. Respects prefers-reduced-motion by rendering the final number instantly.
+function CountUp({ value }: { value: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      el.textContent = value.toLocaleString();
+      return;
+    }
+
+    let raf = 0;
+    let started = false;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting || started) return;
+        started = true;
+        const duration = 1200;
+        const start = performance.now();
+        const tick = (now: number) => {
+          const p = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+          el.textContent = Math.round(value * eased).toLocaleString();
+          if (p < 1) raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
+      },
+      { threshold: 0.4 }
+    );
+    io.observe(el);
+
+    return () => {
+      io.disconnect();
+      cancelAnimationFrame(raf);
+    };
+  }, [value]);
+
+  return <span ref={ref}>0</span>;
+}
+
 function getWeeks(days: GitHubData["contributions"]) {
   const weeks: GitHubData["contributions"][] = [];
   let week: GitHubData["contributions"] = [];
@@ -30,7 +85,7 @@ function StatBox({ label, value, color }: { label: string; value: string | numbe
   return (
     <div className="border border-white/5 bg-[#050816]/60 p-3 transition-all hover:border-[color:var(--c)]/20" style={{ "--c": color } as React.CSSProperties}>
       <div className="font-[family-name:var(--font-pixel)] text-[8px]" style={{ color }}>{label}</div>
-      <div className="mt-1 font-[family-name:var(--font-pixel)] text-sm text-white">{typeof value === "number" ? value.toLocaleString() : value}</div>
+      <div className="mt-1 font-[family-name:var(--font-pixel)] text-sm text-white [font-variant-numeric:tabular-nums]">{typeof value === "number" ? <CountUp value={value} /> : value}</div>
     </div>
   );
 }
@@ -102,7 +157,11 @@ export function MissionControl({ data }: { data: GitHubData | null }) {
               </div>
 
               <div className="overflow-x-auto">
-                <div className="min-w-[680px]">
+                <div
+                  className="min-w-[680px]"
+                  role="img"
+                  aria-label={`GitHub contribution activity grid: ${stats.totalContributions.toLocaleString()} contributions in the last year`}
+                >
                   <div className="flex gap-[3px]">
                     <div className="flex flex-col gap-[3px] pr-1">
                       {["", "M", "", "W", "", "F", ""].map((d, i) => (
@@ -145,12 +204,12 @@ export function MissionControl({ data }: { data: GitHubData | null }) {
                 <span className="font-[family-name:var(--font-pixel)] text-[9px] text-[#FF00E5]">LANGUAGE DISTRIBUTION</span>
               </div>
 
-              <div className="mb-3 flex h-2 overflow-hidden border border-white/5">
+              <div className="mb-3 flex h-2 gap-[2px]">
                 {languages.map((lang) => (
                   <div
                     key={lang.name}
-                    className="h-full transition-all hover:brightness-125"
-                    style={{ width: `${lang.percentage}%`, backgroundColor: lang.color }}
+                    className="h-full transition-all first:rounded-l-sm last:rounded-r-sm hover:brightness-125"
+                    style={{ flex: lang.percentage, backgroundColor: lang.color }}
                     title={`${lang.name}: ${lang.percentage}%`}
                   />
                 ))}
@@ -190,7 +249,9 @@ export function MissionControl({ data }: { data: GitHubData | null }) {
                     <div className="flex items-center justify-between">
                       <span className="font-[family-name:var(--font-pixel)] text-[9px] text-[#00F5FF]">{repo.name}</span>
                       {repo.stars > 0 && (
-                        <span className="font-[family-name:var(--font-pixel)] text-[8px] text-[#FFE600]">★ {repo.stars}</span>
+                        <span className="flex items-center gap-1 font-[family-name:var(--font-pixel)] text-[8px] text-[#FFE600]">
+                          <StarIcon className="h-2.5 w-2.5" /> {repo.stars}
+                        </span>
                       )}
                     </div>
                     {repo.description && (
@@ -206,7 +267,9 @@ export function MissionControl({ data }: { data: GitHubData | null }) {
                         </div>
                       )}
                       {repo.forks > 0 && (
-                        <span className="font-[family-name:var(--font-body)] text-[9px] text-[#A0A0A0]/40">⑂ {repo.forks}</span>
+                        <span className="flex items-center gap-1 font-[family-name:var(--font-body)] text-[9px] text-[#A0A0A0]/40">
+                          <ForkIcon className="h-2.5 w-2.5" /> {repo.forks}
+                        </span>
                       )}
                     </div>
                   </a>
