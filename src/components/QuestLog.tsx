@@ -19,6 +19,13 @@ export function QuestLog() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // GSAP tweens bypass the CSS reduced-motion query — reveal cards instantly.
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.utils.toArray<HTMLElement>(".quest-card").forEach((card) =>
+          gsap.set(card, { opacity: 1, x: 0 })
+        );
+        return;
+      }
       gsap.utils.toArray<HTMLElement>(".quest-card").forEach((card, i) => {
         gsap.fromTo(
           card,
@@ -67,7 +74,7 @@ export function QuestLog() {
                     <div className="mb-3 flex items-start justify-between">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span style={{ color: config.color }}>{config.icon}</span>
+                          <span style={{ color: config.color }} aria-hidden="true">{config.icon}</span>
                           <h4 className="font-[family-name:var(--font-pixel)] text-xs text-white">
                             {quest.title}
                           </h4>

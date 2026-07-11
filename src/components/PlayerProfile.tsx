@@ -31,6 +31,19 @@ export function PlayerProfile() {
 
   useEffect(() => {
     const ctx = gsap.context(() => {
+      // GSAP JS tweens ignore the CSS prefers-reduced-motion query, so honor it
+      // explicitly: snap everything to its final state and skip the animations.
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.set([cardRef.current, skillsRef.current], { opacity: 1, x: 0, rotateY: 0 });
+        gsap.utils.toArray<HTMLElement>(".stat-card").forEach((c) =>
+          gsap.set(c, { opacity: 1, y: 0, scale: 1 })
+        );
+        gsap.utils.toArray<HTMLElement>(".skill-bar-fill").forEach((b) =>
+          gsap.set(b, { width: b.dataset.width })
+        );
+        return;
+      }
+
       gsap.fromTo(
         cardRef.current,
         { opacity: 0, x: -60, rotateY: 10 },
@@ -194,6 +207,7 @@ export function PlayerProfile() {
                     <span
                       className="font-[family-name:var(--font-pixel)] text-[8px]"
                       style={{ color: stat.color }}
+                      aria-hidden="true"
                     >
                       {stat.icon}
                     </span>
@@ -256,7 +270,14 @@ export function PlayerProfile() {
                     {skill.xp}/100 XP
                   </span>
                 </div>
-                <div className="h-3 w-full bg-[#0a0f2e] border border-white/5 overflow-hidden">
+                <div
+                  className="h-3 w-full bg-[#0a0f2e] border border-white/5 overflow-hidden"
+                  role="progressbar"
+                  aria-label={`${skill.name} proficiency`}
+                  aria-valuenow={skill.xp}
+                  aria-valuemin={0}
+                  aria-valuemax={100}
+                >
                   <div
                     className="skill-bar-fill h-full transition-shadow duration-300 group-hover:shadow-lg"
                     data-width={`${skill.xp}%`}
