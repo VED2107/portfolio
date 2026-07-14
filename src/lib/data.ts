@@ -39,10 +39,10 @@ export interface Project {
 export const PROJECTS: Project[] = [
   {
     title: "Snowbros Atlas",
-    description: "Deterministic static-analysis engine for JS/TS, in Rust",
+    description: "Deterministic multi-language static-analysis engine, in Rust",
     longDescription:
-      "A deterministic engineering-intelligence platform for JavaScript, TypeScript, React, and Next.js — written in Rust. A Tree-sitter frontend feeds a semantic engine that builds whole-project symbol, import, and file graphs plus Next.js and React models, then reports problems it can prove — circular imports, dead files, server/client boundary leaks, React hook misuse, unused deps, hardcoded secrets — each with an evidence chain. Ships a built-in LSP and a first-party VS Code extension, SARIF/JSON/HTML/Markdown reports, and a guarded auto-fix engine. 19 rules, 265 passing tests, cross-platform (Windows/Linux/macOS), published to npm, Homebrew, and the VS Code Marketplace.",
-    tech: ["Rust", "Tree-sitter", "LSP", "TypeScript", "VS Code API"],
+      "A deterministic engineering-intelligence platform for JavaScript, TypeScript, React, Next.js, and Python — written in Rust. As of v0.4.0 it is multi-language by architecture: every language lowers into one shared semantic IR, and a rule is either language-agnostic or scoped to a language family in one place — never an `if language ==` branch inside a detector. Tree-sitter frontends feed a semantic engine that builds whole-project symbol, import, and file graphs plus Next.js and React models, then reports problems it can prove — circular imports, dead files, server/client boundary leaks, React hook misuse, unused deps, hardcoded secrets, and the cross-language large-function rule — each with an evidence chain. Validated by dogfooding FastAPI with zero Python-specific false positives. Ships a built-in LSP and a first-party VS Code extension, SARIF/JSON/HTML/Markdown reports, and a guarded auto-fix engine. 23 rules, cross-platform (Windows/Linux/macOS), published to npm, Homebrew, crates.io, and the VS Code Marketplace.",
+    tech: ["Rust", "Tree-sitter", "Python", "TypeScript", "LSP", "VS Code API"],
     github: "https://github.com/snowbros-labs/atlas",
     live: "https://snowbros.me/atlas",
     category: "tool",
