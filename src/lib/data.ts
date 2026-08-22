@@ -61,6 +61,32 @@ export const PROJECTS: Project[] = [
     featured: true,
   },
   {
+    title: "Vinny's Atelier",
+    description: "Retail operating system for a working fashion boutique",
+    longDescription:
+      "The system Vinny's Fashion Hub runs its counter on. A keyboard-first till takes garments from the catalogue on a keystroke, applies per-line and invoice discounts, and settles to cash, the shop's UPI QR, or a Razorpay dynamic QR — then prints a PDF or a thermal receipt. Behind it: variant-level inventory with a stock-movement ledger the till deducts against, customer records ranked by lifetime spend, trade reports net of discounts, and a public storefront. Money is an integer paise type end to end, so no float ever touches a rupee. Access is Supabase Auth plus an operator allowlist enforced by a database trigger — there is no public sign-up — with row-level security underneath. The same codebase is packaged with Tauri 2 as a Windows desktop app: a shell over the live deployment, not a second frontend. Covered by a Playwright suite that runs against the real database and cleans up after itself.",
+    tech: [
+      "Next.js 16",
+      "React 19",
+      "TypeScript",
+      "PostgreSQL",
+      "Supabase",
+      "Drizzle ORM",
+      "Tauri 2",
+      "Razorpay",
+      "Tailwind CSS 4",
+    ],
+    live: "https://atelier.vinnysvogue.in",
+    image: "/screenshots/vinnys-atelier.png",
+    screenshots: [
+      { label: "Till", src: "/screenshots/vinnys-atelier.png" },
+      { label: "Reports", src: "/screenshots/vinnys-atelier-reports.png" },
+      { label: "Inventory", src: "/screenshots/vinnys-atelier-inventory.png" },
+    ],
+    category: "fullstack",
+    featured: true,
+  },
+  {
     title: "Vinnys Vogue",
     description: "Luxury bridal & festive wear e-commerce platform",
     longDescription:
