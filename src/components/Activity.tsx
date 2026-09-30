@@ -90,7 +90,7 @@ export function Activity({ data }: { data: Data | null }) {
 
       {data.year && data.year.weeks.length > 0 && <Trace weeks={data.year.weeks} />}
 
-      <div className="grid gap-8 md:grid-cols-2">
+      <div className="grid gap-8 md:grid-cols-2 [&>*]:min-w-0">
         <div>
           <h4 className="t-h3 mb-3">Languages, by repository</h4>
           <div className="flex h-3 w-full gap-[3px]" aria-hidden>
@@ -112,7 +112,7 @@ export function Activity({ data }: { data: Data | null }) {
           <ul className="grid">
             {data.recent.map((r) => (
               <li key={r.name}>
-                <a href={r.url} target="_blank" rel="noreferrer" className="group flex items-baseline justify-between gap-3 border-b border-[var(--rule-soft)] py-2 no-underline">
+                <a href={r.url} target="_blank" rel="noreferrer" className="group flex flex-wrap items-baseline justify-between gap-x-3 gap-y-0.5 border-b border-[var(--rule-soft)] py-2 no-underline">
                   <span className="font-mono text-[0.88rem] transition-colors duration-200 group-hover:text-[var(--accent)]">{r.name}</span>
                   <span className="t-small flex items-center gap-1.5 whitespace-nowrap">
                     {r.language ?? ""} {r.language ? "·" : ""} {ago(r.pushedAt)}

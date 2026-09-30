@@ -42,7 +42,7 @@ function Cover() {
           <p className="t-num ink-3 enter" style={{ "--i": 0 } as React.CSSProperties}>
             (54)
           </p>
-          <h1 id="cover-title" className="t-display enter mt-1" style={{ "--i": 1 } as React.CSSProperties}>
+          <h1 id="cover-title" className="t-display enter mt-3 lg:text-[clamp(3.5rem,calc(6vw+0.25rem),6rem)]" style={{ "--i": 1 } as React.CSSProperties}>
             VED<span className="accent">.</span>EXE
           </h1>
           <p className="t-lede enter mt-6 max-w-[30ch]" style={{ "--i": 2 } as React.CSSProperties}>

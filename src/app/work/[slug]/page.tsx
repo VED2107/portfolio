@@ -125,19 +125,19 @@ export default async function FilingPage({ params }: PageProps<"/work/[slug]">) 
               <p className="mt-4 text-[clamp(1.3rem,1.05rem+1vw,1.85rem)] leading-[1.35] tracking-[-0.012em] text-pretty">{f.abstract}</p>
             </div>
 
-            <div className="col-span-12 grid grid-cols-subgrid gap-y-4">
-              <h2 className="t-h2 col-span-12 lg:col-span-2">Background</h2>
-              <div className="col-span-12 lg:col-span-7 lg:col-start-3">
+            <div className="col-span-12 grid grid-cols-subgrid gap-y-5">
+              <h2 className="t-h2 col-span-12 lg:col-span-8 lg:col-start-3">Background</h2>
+              <div className="col-span-12 lg:col-span-8 lg:col-start-3">
                 <Para n={++p}>{f.background}</Para>
               </div>
             </div>
 
-            <div className="col-span-12 grid grid-cols-subgrid gap-y-4">
-              <h2 className="t-h2 col-span-12 lg:col-span-2">Drawings</h2>
-              <ol className="col-span-12 grid gap-2 lg:col-span-7 lg:col-start-3">
+            <div className="col-span-12 grid grid-cols-subgrid gap-y-5">
+              <h2 className="t-h2 col-span-12 lg:col-span-8 lg:col-start-3">Drawings</h2>
+              <ol className="col-span-12 grid gap-2 lg:col-span-8 lg:col-start-3">
                 {f.figures.map((fig, k) => (
                   <li key={k} className="grid grid-cols-[4.5rem_1fr] gap-2">
-                    <a href={`#fig-${k + 1}`} className="link font-semibold [font-stretch:110%]">
+                    <a href={`#fig-${k + 1}`} className="link justify-self-start self-start font-semibold [font-stretch:110%]">
                       FIG. {k + 1}
                     </a>
                     <span className="ink-2">{fig.caption}</span>
