@@ -1,157 +1,35 @@
 import { ImageResponse } from "next/og";
+import { getFiling } from "@/lib/work";
 
 export const runtime = "edge";
 
-export async function GET() {
+// A cover sheet as an image: title, abstract, filing number. Drafting white, graphite, one cobalt.
+export async function GET(req: Request) {
+  const slug = new URL(req.url).searchParams.get("slug");
+  const f = slug ? getFiling(slug) : undefined;
+  const title = f ? f.title : "VED.EXE";
+  const line = f ? f.short : "Software engineer building developer tools and full-stack products.";
+  const ref = f ? `Filing ${f.no}` : "Ved S. Chauhan · SNOWBROS";
+
   return new ImageResponse(
     (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "#050816",
-          fontFamily: "monospace",
-          position: "relative",
-        }}
-      >
-        {/* Grid background */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage:
-              "linear-gradient(rgba(0, 245, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 245, 255, 0.05) 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
-          }}
-        />
-
-        {/* Glow orbs */}
-        <div
-          style={{
-            position: "absolute",
-            width: 400,
-            height: 400,
-            borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(0,245,255,0.08) 0%, transparent 70%)",
-            top: 50,
-            left: 100,
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            width: 300,
-            height: 300,
-            borderRadius: "50%",
-            background: "radial-gradient(circle, rgba(255,0,229,0.06) 0%, transparent 70%)",
-            bottom: 50,
-            right: 150,
-          }}
-        />
-
-        {/* Title */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginBottom: 24,
-          }}
-        >
-          <div
-            style={{
-              fontSize: 96,
-              fontWeight: 900,
-              color: "#00F5FF",
-              textShadow: "0 0 40px rgba(0,245,255,0.5), 0 0 80px rgba(0,245,255,0.3)",
-              letterSpacing: 8,
-            }}
-          >
-            VED
+      <div style={{ width: "100%", height: "100%", display: "flex", background: "#eef0f1", color: "#0e1116", padding: 64, fontFamily: "sans-serif" }}>
+        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: "100%", border: "2px solid #0e1116", padding: 48 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", fontSize: 24, color: "#5b636e" }}>
+            <span>(54)</span>
+            <span>{ref}</span>
           </div>
-          <div
-            style={{
-              fontSize: 96,
-              fontWeight: 900,
-              color: "#FF00E5",
-              textShadow: "0 0 40px rgba(255,0,229,0.5)",
-            }}
-          >
-            .
+          <div style={{ display: "flex", flexDirection: "column" }}>
+            <div style={{ fontSize: title.length > 12 ? 92 : 128, fontWeight: 800, letterSpacing: -4, lineHeight: 1 }}>{title}</div>
+            <div style={{ marginTop: 28, fontSize: 34, lineHeight: 1.3, color: "#353c46", maxWidth: 900 }}>{line}</div>
           </div>
-          <div
-            style={{
-              fontSize: 96,
-              fontWeight: 900,
-              color: "#FF00E5",
-              textShadow: "0 0 40px rgba(255,0,229,0.5), 0 0 80px rgba(255,0,229,0.3)",
-              letterSpacing: 8,
-            }}
-          >
-            EXE
+          <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 24 }}>
+            <div style={{ width: 18, height: 18, background: "#2f3bff" }} />
+            <span>ved.exe.snowbros.me</span>
           </div>
-        </div>
-
-        {/* Subtitle */}
-        <div
-          style={{
-            fontSize: 24,
-            color: "#A0A0A0",
-            letterSpacing: 6,
-            textTransform: "uppercase",
-          }}
-        >
-          Full Stack Developer & Creative Technologist
-        </div>
-
-        {/* Status bar */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: 8,
-            marginTop: 32,
-            fontSize: 14,
-            color: "#00FF88",
-            letterSpacing: 4,
-          }}
-        >
-          <div
-            style={{
-              width: 8,
-              height: 8,
-              backgroundColor: "#00FF88",
-              boxShadow: "0 0 10px #00FF88",
-            }}
-          />
-          SYSTEM ONLINE
-        </div>
-
-        {/* Bottom bar */}
-        <div
-          style={{
-            position: "absolute",
-            bottom: 30,
-            display: "flex",
-            gap: 40,
-            fontSize: 12,
-            color: "rgba(160,160,160,0.4)",
-            letterSpacing: 2,
-          }}
-        >
-          <span>VED.EXE v2.1.07</span>
-          <span>vedchauhan2107@gmail.com</span>
-          <span>github.com/VED2107</span>
         </div>
       </div>
     ),
-    {
-      width: 1200,
-      height: 630,
-    }
+    { width: 1200, height: 630 },
   );
 }

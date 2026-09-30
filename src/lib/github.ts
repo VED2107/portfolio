@@ -4,197 +4,136 @@ const USERNAME = "VED2107";
 const QUERY = `
 query($login: String!) {
   user(login: $login) {
-    followers { totalCount }
-    following { totalCount }
-    repositories(first: 100, ownerAffiliations: OWNER, orderBy: { field: STARGAZERS, direction: DESC }) {
+    repositories(first: 100, ownerAffiliations: OWNER, privacy: PUBLIC, orderBy: { field: PUSHED_AT, direction: DESC }) {
       totalCount
       nodes {
         name
-        stargazerCount
-        primaryLanguage { name color }
-      }
-    }
-    pinnedItems(first: 6, types: REPOSITORY) {
-      nodes {
-        ... on Repository {
-          name
-          description
-          stargazerCount
-          forkCount
-          primaryLanguage { name color }
-          url
-        }
+        url
+        pushedAt
+        primaryLanguage { name }
       }
     }
     contributionsCollection {
       totalCommitContributions
       totalPullRequestContributions
-      totalIssueContributions
       contributionCalendar {
         totalContributions
         weeks {
-          contributionDays {
-            contributionCount
-            date
-            contributionLevel
-          }
+          contributionDays { contributionCount date }
         }
       }
     }
   }
 }`;
 
-export interface GitHubData {
-  stats: {
-    followers: number;
-    following: number;
-    publicRepos: number;
-    totalStars: number;
-    totalCommits: number;
-    totalPRs: number;
-    totalIssues: number;
-    totalContributions: number;
+export type Activity = {
+  source: "graphql" | "rest";
+  publicRepos: number;
+  /** Only present with a token (GraphQL). */
+  year?: {
+    total: number;
+    commits: number;
+    pullRequests: number;
+    /** One entry per week, oldest first. */
+    weeks: { start: string; count: number }[];
   };
-  pinnedRepos: {
-    name: string;
-    description: string | null;
-    stars: number;
-    forks: number;
-    language: { name: string; color: string } | null;
-    url: string;
-  }[];
-  topRepos: {
-    name: string;
-    stars: number;
-    language: { name: string; color: string } | null;
-  }[];
-  languages: { name: string; color: string; count: number; percentage: number }[];
-  contributions: {
-    date: string;
-    count: number;
-    level: number;
-  }[];
+  languages: { name: string; share: number }[];
+  recent: { name: string; url: string; pushedAt: string; language: string | null }[];
   fetchedAt: string;
-}
-
-const LEVEL_MAP: Record<string, number> = {
-  NONE: 0,
-  FIRST_QUARTILE: 1,
-  SECOND_QUARTILE: 2,
-  THIRD_QUARTILE: 3,
-  FOURTH_QUARTILE: 4,
 };
 
-export async function fetchGitHubData(): Promise<GitHubData | null> {
-  const token = process.env.GITHUB_TOKEN;
-  if (!token) {
-    console.warn("GITHUB_TOKEN not set — Mission Control will use fallback data");
-    return null;
-  }
+type RepoNode = { name: string; url: string; pushedAt: string; primaryLanguage: { name: string } | null };
 
-  // Bound the request so a slow/hanging GitHub API can't stall the server render
-  // (this fetch is awaited in the RSC render path and during ISR revalidation).
+function languagesFrom(repos: { language: string | null }[]) {
+  const counts = new Map<string, number>();
+  for (const r of repos) if (r.language) counts.set(r.language, (counts.get(r.language) ?? 0) + 1);
+  const total = [...counts.values()].reduce((a, b) => a + b, 0) || 1;
+  return [...counts.entries()]
+    .map(([name, n]) => ({ name, share: n / total }))
+    .sort((a, b) => b.share - a.share)
+    .slice(0, 6);
+}
+
+// Hourly heartbeat repo and profile README are not work.
+const NOISE = new Set(["daily-log", "VED2107", "VED2107.github.io"]);
+
+async function withTimeout<T>(run: (signal: AbortSignal) => Promise<T>): Promise<T> {
+  // Bound the request so a slow GitHub API can't stall the server render or ISR.
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 10_000);
-
+  const timer = setTimeout(() => controller.abort(), 8_000);
   try {
-    const res = await fetch(GITHUB_GRAPHQL, {
+    return await run(controller.signal);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+async function fromGraphQL(token: string): Promise<Activity | null> {
+  const res = await withTimeout((signal) =>
+    fetch(GITHUB_GRAPHQL, {
       method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
+      headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
       body: JSON.stringify({ query: QUERY, variables: { login: USERNAME } }),
       next: { revalidate: 3600 },
-      signal: controller.signal,
-    });
+      signal,
+    }),
+  );
+  if (!res.ok) return null;
+  const json = await res.json();
+  if (json.errors || !json.data?.user) return null;
 
-    if (!res.ok) {
-      console.error(`GitHub API returned ${res.status} ${res.statusText}`);
-      return null;
-    }
+  const user = json.data.user;
+  const repos: RepoNode[] = user.repositories.nodes.filter((r: RepoNode) => !NOISE.has(r.name));
+  const cal = user.contributionsCollection.contributionCalendar;
+  const weeks = cal.weeks.map((w: { contributionDays: { contributionCount: number; date: string }[] }) => ({
+    start: w.contributionDays[0]?.date ?? "",
+    count: w.contributionDays.reduce((s, d) => s + d.contributionCount, 0),
+  }));
+  const recent = repos.map((r) => ({ name: r.name, url: r.url, pushedAt: r.pushedAt, language: r.primaryLanguage?.name ?? null }));
 
-    const json = await res.json();
-    if (json.errors) {
-      console.error("GitHub GraphQL errors:", json.errors);
-      return null;
-    }
+  return {
+    source: "graphql",
+    publicRepos: repos.length,
+    year: {
+      total: cal.totalContributions,
+      commits: user.contributionsCollection.totalCommitContributions,
+      pullRequests: user.contributionsCollection.totalPullRequestContributions,
+      weeks,
+    },
+    languages: languagesFrom(recent),
+    recent: recent.slice(0, 5),
+    fetchedAt: new Date().toISOString(),
+  };
+}
 
-    const user = json.data.user;
-    const repos = user.repositories.nodes || [];
-    const pinned = user.pinnedItems.nodes || [];
-    const contrib = user.contributionsCollection;
-    const calendar = contrib.contributionCalendar;
+async function fromREST(): Promise<Activity | null> {
+  const res = await withTimeout((signal) =>
+    fetch(`https://api.github.com/users/${USERNAME}/repos?per_page=100&sort=pushed&type=owner`, {
+      headers: { Accept: "application/vnd.github+json" },
+      next: { revalidate: 3600 },
+      signal,
+    }),
+  );
+  if (!res.ok) return null;
+  const list: { name: string; html_url: string; pushed_at: string; language: string | null; fork: boolean }[] = await res.json();
+  const repos = list
+    .filter((r) => !r.fork && !NOISE.has(r.name))
+    .map((r) => ({ name: r.name, url: r.html_url, pushedAt: r.pushed_at, language: r.language }));
+  return {
+    source: "rest",
+    publicRepos: repos.length,
+    languages: languagesFrom(repos),
+    recent: repos.slice(0, 5),
+    fetchedAt: new Date().toISOString(),
+  };
+}
 
-    const totalStars = repos.reduce((s: number, r: { stargazerCount: number }) => s + r.stargazerCount, 0);
-
-    const langMap = new Map<string, { color: string; count: number }>();
-    for (const repo of repos) {
-      if (repo.primaryLanguage) {
-        const existing = langMap.get(repo.primaryLanguage.name);
-        if (existing) {
-          existing.count++;
-        } else {
-          langMap.set(repo.primaryLanguage.name, { color: repo.primaryLanguage.color || "#A0A0A0", count: 1 });
-        }
-      }
-    }
-    const totalLangRepos = Array.from(langMap.values()).reduce((s, l) => s + l.count, 0);
-    const languages = Array.from(langMap.entries())
-      .map(([name, { color, count }]) => ({
-        name,
-        color,
-        count,
-        percentage: Math.round((count / totalLangRepos) * 100),
-      }))
-      .sort((a, b) => b.count - a.count)
-      .slice(0, 8);
-
-    const contributions = calendar.weeks
-      .flatMap((w: { contributionDays: { date: string; contributionCount: number; contributionLevel: string }[] }) =>
-        w.contributionDays.map((d) => ({
-          date: d.date,
-          count: d.contributionCount,
-          level: LEVEL_MAP[d.contributionLevel] ?? 0,
-        }))
-      );
-
-    return {
-      stats: {
-        followers: user.followers.totalCount,
-        following: user.following.totalCount,
-        publicRepos: user.repositories.totalCount,
-        totalStars,
-        totalCommits: contrib.totalCommitContributions,
-        totalPRs: contrib.totalPullRequestContributions,
-        totalIssues: contrib.totalIssueContributions,
-        totalContributions: calendar.totalContributions,
-      },
-      pinnedRepos: pinned.map((r: { name: string; description: string | null; stargazerCount: number; forkCount: number; primaryLanguage: { name: string; color: string } | null; url: string }) => ({
-        name: r.name,
-        description: r.description,
-        stars: r.stargazerCount,
-        forks: r.forkCount,
-        language: r.primaryLanguage,
-        url: r.url,
-      })),
-      topRepos: repos.slice(0, 5).map((r: { name: string; stargazerCount: number; primaryLanguage: { name: string; color: string } | null }) => ({
-        name: r.name,
-        stars: r.stargazerCount,
-        language: r.primaryLanguage,
-      })),
-      languages,
-      contributions,
-      fetchedAt: new Date().toISOString(),
-    };
+export async function fetchActivity(): Promise<Activity | null> {
+  try {
+    const token = process.env.GITHUB_TOKEN;
+    return (token && (await fromGraphQL(token))) || (await fromREST());
   } catch (e) {
-    if (e instanceof Error && e.name === "AbortError") {
-      console.error("GitHub fetch aborted — exceeded 10s timeout");
-    } else {
-      console.error("GitHub fetch failed:", e);
-    }
+    console.error("GitHub activity fetch failed:", e instanceof Error ? e.message : e);
     return null;
-  } finally {
-    clearTimeout(timeout);
   }
 }

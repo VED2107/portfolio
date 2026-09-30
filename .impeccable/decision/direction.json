@@ -1,0 +1,130 @@
+{
+  "title": "Choose the visual world for VED.EXE",
+  "question": "The roll assigned The Patent Filing. Keep it, take an alternate, or re-roll.",
+  "options": [
+    {
+      "id": "assigned",
+      "label": "The Patent Filing",
+      "kicker": "THE ROLL",
+      "lineage": "utility patent specifications: cover sheet, drawing sheets, numbered claims",
+      "thesis": "Every project is filed as an invention: a figure with numbered callouts and claims that state exactly what the engineering does.",
+      "palette": ["#EEF0F1", "#0E1116", "#2F3BFF", "#8A9099"],
+      "materials": ["line-art drawing sheets", "reference numerals with lead lines", "two-column spec with gutter line numbers"],
+      "viewport": "Cover sheet: bibliographic block (Title, Inventor Ved S. Chauhan, Assignee SNOWBROS, Abstract) left; FIG. 1 right, an exploded axonometric stack of real project screenshots with numbered callouts you hover to lift and click to open.",
+      "risk": "Can tip into costume if the codes and FIG labels are decorative rather than navigational; the wit must stay dry and every claim true.",
+      "raised": [
+        { "from": "challenger-understory", "raise": "Attention is the light: the hovered callout and its plate take the single cobalt ink, everything else stays graphite." },
+        { "from": "challenger-labanotation", "raise": "One strict gutter rules every sheet, with line numbers in the margin, the way a spec body is set." },
+        { "from": "challenger-darkroom", "raise": "Figures draw themselves once as they enter, a single timed emergence, then hold still." },
+        { "from": "challenger-telop", "raise": "Type scale is mapped to importance of the claim, never to decoration." }
+      ]
+    },
+    {
+      "id": "model-pick",
+      "label": "The Component Datasheet",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "semiconductor datasheets: pinouts, electrical characteristics, revision history",
+      "thesis": "Each project is a part you could drop into a system: pinout for architecture, characteristics table for real numbers, revision history for releases.",
+      "palette": ["#F2F3F4", "#111418", "#E4002B", "#5B6470"],
+      "materials": ["spec tables", "pinout diagrams", "typical-performance curves"],
+      "viewport": "Page 1 of a datasheet: part number VED.EXE, features list, a pinout of the stack, ordering information as contact.",
+      "risk": "Familiar to hardware engineers but dense; risks reading as a table-heavy PDF if the curves and diagrams are not generous."
+    },
+    {
+      "id": "challenger-darkroom",
+      "label": "Darkroom Safelight Bay",
+      "verdict": "declined",
+      "lineage": "print darkroom under amber safelight",
+      "thesis": "Projects develop into view station by station.",
+      "palette": ["#C8641E", "#1A1512", "#B9B6AE"],
+      "materials": ["wet silver prints", "test strips"],
+      "viewport": "A developer tray where a screenshot emerges from gray.",
+      "case": "Fuses loosely: the reveal suits screenshots but engineers do not identify with photo chemistry, and amber hurts reading.",
+      "risk": "Amber-only ground fails long reading.",
+      "kept": "One timed emergence per figure instead of scattered reveals.",
+      "hero": "https://impeccable.style/worlds/cards/signals-instruments-darkroom-safelight-bay-hero.webp"
+    },
+    {
+      "id": "challenger-labanotation",
+      "label": "Labanotation Score",
+      "verdict": "declined",
+      "lineage": "dance notation staff",
+      "thesis": "Time reads upward on a bilateral staff.",
+      "palette": ["#FFFFFF", "#000000", "#D9D9D9"],
+      "materials": ["shaded symbol blocks"],
+      "viewport": "A center staff with build activity as notation.",
+      "case": "Fuses poorly: elegant for the activity graph, opaque for case studies.",
+      "risk": "Unreadable without a legend.",
+      "kept": "A single strict layout law, the gutter, that every sheet obeys.",
+      "hero": "https://impeccable.style/worlds/cards/notation-diagram-systems-labanotation-hero.webp"
+    },
+    {
+      "id": "challenger-understory",
+      "label": "Luminescent Understory",
+      "verdict": "declined",
+      "lineage": "surreal bioluminescent forest",
+      "thesis": "Paths light themselves by proximity.",
+      "palette": ["#0B0F0C", "#5FE3E0", "#B69CFF"],
+      "materials": ["additive glow", "spore particles"],
+      "viewport": "A dark field where projects bloom near the pointer.",
+      "case": "Fuses poorly: the neon-on-black rut the brief bans, and it hides content.",
+      "risk": "Particles and glow the brief explicitly rules out.",
+      "kept": "Pointer attention as the only illumination.",
+      "hero": "https://impeccable.style/worlds/cards/dream-surreal-impossible-worlds-luminescent-alien-understory-hero.webp"
+    },
+    {
+      "id": "challenger-telop",
+      "label": "Variety Telop Captions",
+      "verdict": "declined",
+      "lineage": "Japanese variety-show captions",
+      "thesis": "Captions sized to the emotion of the moment.",
+      "palette": ["#FFE600", "#E3001B", "#FFFFFF"],
+      "materials": ["outlined type", "drop shadows"],
+      "viewport": "Project names landing as tilted outlined captions.",
+      "case": "Fuses poorly: loud where the brief asks for restraint.",
+      "risk": "Undercuts engineering credibility.",
+      "kept": "Type scale keyed to importance.",
+      "hero": "https://impeccable.style/worlds/cards/variety-telop-caption-field-hero.webp"
+    },
+    {
+      "id": "challenger-fluid",
+      "label": "Suminagashi Ink Basin",
+      "verdict": "declined",
+      "lineage": "Japanese marbling",
+      "thesis": "The page as a liquid surface you stir.",
+      "palette": ["#1B2A52", "#2B2B2B", "#F4F4F2"],
+      "materials": ["WebGL fluid"],
+      "viewport": "A basin where each drop is a project.",
+      "case": "Fuses poorly: a heavy WebGL scene the brief warns against, no product clarity.",
+      "risk": "Performance and meaning both suffer.",
+      "kept": "Controls named with honest verbs.",
+      "hero": "https://impeccable.style/worlds/cards/medium-native-fluid-ink-basin-hero.webp"
+    },
+    {
+      "id": "challenger-city",
+      "label": "Rain Night Cityscape",
+      "verdict": "declined",
+      "lineage": "urban nocturne",
+      "thesis": "Work as lights across a city at night.",
+      "palette": ["#12245C", "#F2A33A", "#0A0B0E"],
+      "materials": ["wet reflections", "neon"],
+      "viewport": "A skyline where windows are repos.",
+      "case": "Fuses poorly: atmospheric, but projects become anonymous windows.",
+      "risk": "Mood over proof.",
+      "kept": "One live state layer (build activity) as the only thing that changes with time.",
+      "hero": "https://impeccable.style/worlds/cards/light-shadow-caustics-rain-night-cityscape-hero.webp"
+    }
+  ],
+  "reroll": { "registers": ["safer", "bolder"] },
+  "buildPath": { "value": "code", "toggle": false },
+  "canon": true,
+  "canonCard": {
+    "label": "The category standard",
+    "thesis": "A premium dark developer portfolio, executed at full craft.",
+    "palette": ["#0A0A0B", "#EDEDED", "#5B8CFF"],
+    "materials": ["clean grid", "product screenshots"],
+    "viewport": "Name and role left, featured project right, sections below in the order visitors expect.",
+    "risk": "Indistinguishable from other strong dev portfolios by design."
+  },
+  "steer": true
+}
