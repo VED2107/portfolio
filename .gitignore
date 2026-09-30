@@ -60,3 +60,10 @@ pnpm-workspace.yaml
 # scratch/reference files at repo root (real assets live in /public)
 /*.png
 /*.pdf
+
+# design tooling scratch (captures may contain private data)
+.impeccable/capture/
+.impeccable/review/
+.impeccable/mocks/
+.playwright-mcp/
+.impeccable/questions/

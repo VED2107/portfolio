@@ -11,6 +11,19 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // React <ViewTransition> for the plate -> case study morph (docs: guides/view-transitions).
+  experimental: {
+    viewTransition: true,
+  },
+  images: {
+    qualities: [75, 90],
+  },
+  async redirects() {
+    return [
+      { source: "/resume", destination: "/Ved_Chauhan_RESUME.pdf", permanent: false },
+      { source: "/cv", destination: "/Ved_Chauhan_RESUME.pdf", permanent: false },
+    ];
+  },
   async headers() {
     return [
       {
