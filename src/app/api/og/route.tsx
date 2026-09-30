@@ -24,7 +24,10 @@ export async function GET(req: Request) {
             <div style={{ marginTop: 28, fontSize: 34, lineHeight: 1.3, color: "#353c46", maxWidth: 900 }}>{line}</div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 16, fontSize: 24 }}>
-            <div style={{ width: 18, height: 18, background: "#2f3bff" }} />
+            <svg width="38" height="32" viewBox="0 0 218 182">
+              <path d="M0 0 L56 0 L96.73 152 L137.46 0 L193.46 0 L144.69 182 L48.77 182 Z" fill="#0e1116" />
+              <rect x="171.02" y="136" width="46" height="46" fill="#2f3bff" />
+            </svg>
             <span>ved.exe.snowbros.me</span>
           </div>
         </div>

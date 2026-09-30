@@ -1,11 +1,11 @@
 {
   "name": "VED.EXE",
   "short_name": "VED.EXE",
-  "description": "Ved Chauhan — Full Stack Developer & Creative Technologist",
+  "description": "Ved S. Chauhan, software engineer. Developer tools and full-stack products, filed with their evidence.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#050816",
-  "theme_color": "#00F5FF",
+  "background_color": "#eef0f1",
+  "theme_color": "#eef0f1",
   "icons": [
     {
       "src": "/icon-192x192.png",
@@ -16,6 +16,12 @@
       "src": "/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "/icon-maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
