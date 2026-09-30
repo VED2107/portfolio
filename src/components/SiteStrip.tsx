@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { SHEETS, SITE } from "@/lib/site";
 import { FILINGS } from "@/lib/work";
+import { Mark } from "./Mark";
 import { SearchTrigger } from "./SearchTrigger";
 
 /** The header strip of every sheet: title, where you are in the filing, and the palette. */
@@ -68,9 +69,10 @@ export function SiteStrip() {
         <Link
           href="/"
           transitionTypes={onHome ? undefined : ["nav-back"]}
-          className="group flex items-baseline gap-2 no-underline"
+          className="group flex items-center gap-2 no-underline"
           aria-label="VED.EXE, home"
         >
+          <Mark className="h-[0.95rem] w-auto" />
           <span className="text-[1.05rem] font-extrabold tracking-[-0.02em] [font-stretch:125%]">
             VED<span className="transition-colors duration-200 group-hover:text-[var(--accent)]">.</span>EXE
           </span>
