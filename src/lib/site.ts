@@ -26,7 +26,7 @@ export type SheetId = (typeof SHEETS)[number]["id"];
 
 /** NOW. Edit this block when the work changes; `updated` is shown on the page. */
 export const NOW = {
-  updated: "2026-09-30",
+  updated: "2026-10-09",
   rows: [
     {
       verb: "Building",
@@ -35,10 +35,16 @@ export const NOW = {
       href: "/work/snowbros-atlas",
     },
     {
-      verb: "Exploring",
-      what: "AI developer tooling",
-      detail: "Mentor, an engineering orchestrator skill for Claude Code.",
-      href: "https://github.com/snowbros-labs/mentor-skill",
+      verb: "Shipping",
+      what: "SwiftDrop",
+      detail: "Phone-to-PC file transfer over local Wi-Fi. v1.1.0 for Windows and Android.",
+      href: "/work/swiftdrop",
+    },
+    {
+      verb: "Running",
+      what: "AMR docking campaign",
+      detail: "7,044 AutoDock Vina jobs for a client, from a Postgres queue.",
+      href: "/work/amr-drug-repurposing",
     },
     {
       verb: "Learning",
@@ -103,18 +109,18 @@ export const CAPABILITIES: { name: string; tools: string; filings: string[] }[] 
   },
   {
     name: "Data and backend",
-    tools: "PostgreSQL, Supabase, RLS, RPCs, Drizzle",
-    filings: ["accounic", "vinnys-atelier", "vinnys-vogue", "stc-academy"],
+    tools: "PostgreSQL, Supabase, RLS, RPCs, Drizzle, job queues",
+    filings: ["accounic", "vinnys-atelier", "amr-drug-repurposing", "vinnys-vogue", "stc-academy"],
   },
   {
     name: "Systems and tooling",
-    tools: "Rust, Tree-sitter, LSP, VS Code API",
-    filings: ["snowbros-atlas"],
+    tools: "Rust, Tree-sitter, LSP, VS Code API, TCP/HTTP transfer engines",
+    filings: ["snowbros-atlas", "swiftdrop"],
   },
   {
     name: "Cross-platform",
-    tools: "Flutter, Tauri 2, Android, Windows",
-    filings: ["accounic", "vinnys-atelier"],
+    tools: "Flutter, Dart, Tauri 2, Android, Windows",
+    filings: ["accounic", "swiftdrop", "vinnys-atelier"],
   },
   {
     name: "Payments and money",
@@ -123,8 +129,13 @@ export const CAPABILITIES: { name: string; tools: string; filings: string[] }[] 
   },
   {
     name: "Delivery",
-    tools: "GitHub Actions, Playwright, SARIF, release pipelines",
-    filings: ["snowbros-atlas", "accounic", "vinnys-atelier"],
+    tools: "GitHub Actions, Playwright, SARIF, release pipelines, benchmarks",
+    filings: ["snowbros-atlas", "accounic", "swiftdrop", "vinnys-atelier"],
+  },
+  {
+    name: "Scientific computing",
+    tools: "Python, RDKit, scikit-learn, AutoDock Vina, Docker workers",
+    filings: ["amr-drug-repurposing"],
   },
   {
     name: "Interface and motion",

@@ -63,6 +63,32 @@ outstanding_receivable = total_credit - settled_in
 outstanding_payable    = total_debit  - settled_out
 net_balance            = outstanding_receivable - outstanding_payable`;
 
+const SWIFTDROP_PATH = `phone  -- up to 6 parallel HTTP requests over Wi-Fi -->  PC  -->  disk
+
+sender                            receiver
+  read a 1 MiB block
+  hash it (xxh64)       ---->       verify the digest
+                                    write it in place to .part
+                        <----       204, and mark the block in a bitmap
+                                    (bitmap saved every second)`;
+
+const SWIFTDROP_BENCH = `MB/s, engine to server    before    after
+1,000 × 10 KB               66.5    110.7
+10,000 × 50 KB             232.3    313.5`;
+
+const AMR_QUEUE = `-- src/batchdock/queue.py, claim() (trimmed)
+update docking.jobs j set status = 'RUNNING', worker_id = %(w)s,
+       attempt_count = j.attempt_count + 1, heartbeat_at = now(),
+       lease_expires_at = now() + make_interval(secs => %(lease)s)
+ where j.id in (
+   select q.id from docking.jobs q
+     join docking.runs r on r.run_id = q.run_id and r.status = 'RUNNING'
+    where q.status = 'QUEUED'
+      and (q.not_before is null or q.not_before <= now())
+    order by q.priority, q.id
+    limit %(n)s
+    for update of q skip locked)`;
+
 export const FILINGS: Filing[] = [
   {
     slug: "snowbros-atlas",
@@ -150,7 +176,7 @@ export const FILINGS: Filing[] = [
     facts: [
       { value: "3", label: "clients on one schema: web, Android, Windows" },
       { value: "4", label: "CI workflows: web, Flutter, SQL, demo" },
-      { value: "71", label: "tenant-isolation checks over real HTTP" },
+      { value: "82×", label: "faster dashboard at 20,000 entries, 98 s to 1.2 s" },
       { value: "0", label: "floats in the money path" },
     ],
     abstract:
@@ -203,6 +229,10 @@ export const FILINGS: Filing[] = [
       {
         title: "Isolation the client never decides",
         body: "Row-level security is forced on every table and the anon role holds no EXECUTE in public. The demo build is the same binary with one dart-define; a profiles.is_demo flag only changes what the interface offers, never what an account may read.",
+      },
+      {
+        title: "A dashboard that holds at 20,000 entries",
+        body: "A benchmark workspace of 20,230 transactions, 50 accounts and 5 currencies took the dashboard 98 seconds: the per-currency breakdown called the FIFO allocator once per entry, each call walking that person's whole ledger. Moving the call to once per person cut it from 98,235 ms to 1,201 ms, 82× faster, and the breakdown test still matches byte for byte.",
       },
       {
         title: "Releases a person approves",
@@ -403,8 +433,138 @@ export const FILINGS: Filing[] = [
     ],
   },
   {
-    slug: "ved-exe",
+    slug: "swiftdrop",
     no: 600,
+    title: "SwiftDrop",
+    short: "Photos, videos and files straight between phones and a PC over your own Wi-Fi. No cloud, no cable, no account.",
+    field: "Networking, cross-platform",
+    year: "2026",
+    role: "Sole developer. Built under SNOWBROS.",
+    status: "v1.1.0 for Windows and Android. iPhone joins by QR, no app needed.",
+    stack: ["TypeScript", "Node.js", "React", "Flutter", "Dart", "Vitest", "Playwright"],
+    links: [
+      { label: "Website", href: "https://swiftdrop.snowbros.me" },
+      { label: "Repository", href: "https://github.com/VED2107/swiftdrop" },
+    ],
+    plate: { src: "/work/swiftdrop-site.webp", alt: "The SwiftDrop website: 'Send anything. Directly.' beside a transfer console showing 32.0 MB/s from an iPhone to a PC.", w: 1440, h: 900 },
+    facts: [
+      { value: "232 → 314", label: "MB/s, 10,000 × 50 KB files, loopback" },
+      { value: "66 → 111", label: "MB/s, 1,000 × 10 KB files, loopback" },
+      { value: "1 MiB", label: "blocks, each hashed and verified on arrival" },
+      { value: "0", label: "bytes through the internet" },
+    ],
+    abstract:
+      "The PC is the endpoint. Phones send in parallel, resumable chunks over the local network, every block is verified on arrival, and an interrupted transfer resumes where it stopped instead of starting again.",
+    background:
+      "Moving a phone's videos to a PC usually means a cable, a cloud upload or a messaging app that recompresses everything. On the same Wi-Fi the bytes only need to cross the room. SwiftDrop moves them there, at the speed of the network rather than the speed of an upload.",
+    figures: [
+      {
+        kind: "image",
+        img: { src: "/work/swiftdrop-site.webp", alt: "The SwiftDrop website with a transfer console: 32.0 MB/s, iPhone to PC.", w: 1440, h: 900 },
+        caption: "The SwiftDrop website. The console is the product's own transfer readout, from phone to PC.",
+        callouts: [
+          { n: 602, x: 30, y: 27, label: "One line: what it does" },
+          { n: 604, x: 57, y: 28, label: "Live throughput readout" },
+          { n: 606, x: 25, y: 54, label: "Windows installer and Android APK" },
+        ],
+      },
+      { kind: "code", lang: "text", title: "The data path", code: SWIFTDROP_PATH, caption: "From the architecture record. Every 1 MiB block carries its xxh64 digest; the receiver checks it before the write lands." },
+      { kind: "code", lang: "text", title: "Loopback benchmark: contiguous batch frames", code: SWIFTDROP_BENCH, caption: "Two processes, as in real use. Loopback is the software ceiling, not Wi-Fi: on a real network the radio is the limit." },
+    ],
+    decisions: [
+      {
+        title: "Why not WebRTC",
+        body: "Safari's DataChannel tops out far below Wi-Fi speed, burns CPU, and can only save received data from an in-memory Blob, which dies on multi-gigabyte videos. Plain HTTP to the PC gets kernel congestion control, six parallel connections and positional writes straight to disk.",
+      },
+      {
+        title: "Measure first, then change one thing",
+        body: "A benchmark that ran sender and receiver in one Node process was measuring its own shared event loop. Splitting them into two processes, as in real use, is the rule now: every change is kept only if it wins beyond a ±5% noise band, with the JSON results committed.",
+      },
+      {
+        title: "Small files were the hard case",
+        body: "Many small files were serialized behind a naming lock and sent as multi-part bodies that arrived five times slower in Node. Atomic name reservation and one readdir per folder instead of one stat per file fixed the disk side; sending each batch as one contiguous buffer alone took 10,000 × 50 KB from 232 to 314 MB/s.",
+      },
+      {
+        title: "Resume, never restart",
+        body: "Receive state is a bitmap of verified blocks, persisted every second. A dropped connection or a restarted receiver resends only the missing blocks, and a file changed on disk after it was picked is refused rather than sent stale.",
+      },
+      {
+        title: "One engine, ported to native",
+        body: "The transfer engine was ported to a pure-Dart core that the Flutter Android and Windows apps share, kept byte-compatible with the TypeScript engine through shared test vectors for digests, bitmaps and batch frames.",
+      },
+    ],
+    claims: [
+      "A file transfer in which every 1 MiB block is verified on arrival and a damaged block is sent again.",
+      "The transfer of claim 1, wherein an interrupted transfer resumes from a bitmap of verified blocks.",
+      "The transfer of claim 1, wherein no byte leaves the local network.",
+      "The transfer of claim 1, wherein the TypeScript and Dart engines are held byte-compatible by shared test vectors.",
+    ],
+  },
+  {
+    slug: "amr-drug-repurposing",
+    no: 700,
+    title: "AMR Drug Repurposing",
+    short: "Screening 1,761 approved medicines against four drug-resistant bacteria, with every result tied to its evidence.",
+    field: "Scientific computing",
+    year: "2026",
+    role: "Engineer. Client project through SNOWBROS.",
+    status: "Research prototype, live. Predictions for the lab, not clinical evidence.",
+    stack: ["Python", "RDKit", "scikit-learn", "AutoDock Vina", "PostgreSQL", "Supabase", "Docker", "Next.js"],
+    links: [
+      { label: "Live site", href: "https://amr-drug-repurposing.vercel.app" },
+      { label: "Repository", href: "https://github.com/VED2107/amr-drug-repurposing" },
+    ],
+    plate: { src: "/work/amr-site.webp", alt: "The AMR Drug Repurposing overview: 'Old medicines, new questions.' beside the molecular dataset and the 1,761-medicine library.", w: 1440, h: 900 },
+    facts: [
+      { value: "7,044", label: "docking jobs: 1,761 medicines × 4 targets" },
+      { value: "4", label: "drug-resistant bacteria, one protein target each" },
+      { value: "1,761", label: "medicines checked against ClinicalTrials.gov" },
+      { value: "0", label: "results called a cure" },
+    ],
+    abstract:
+      "Repurposing asks whether a medicine already approved for something else could act against a drug-resistant superbug. This system ingests real bioactivity and regulatory data, ranks candidates with models, checks molecular fit by docking, and shows what clinical history already exists for each one.",
+    background:
+      "Antimicrobial resistance outpaces new antibiotic discovery. An approved medicine already has known pharmacology and human safety data, so a credible lead from the existing library shortens the road to the lab. The engineering problem is to run the screen at full scale and to never let a prediction read like a proof.",
+    figures: [
+      {
+        kind: "image",
+        img: { src: "/work/amr-site.webp", alt: "AMR Drug Repurposing overview with the 20K-structure dataset and the 1,761-medicine library.", w: 1440, h: 900 },
+        caption: "The live overview. Every count on it is read from the database and carries its source.",
+        callouts: [
+          { n: 702, x: 30, y: 21, label: "The question, in plain words" },
+          { n: 704, x: 58, y: 19, label: "Dataset with ChEMBL provenance" },
+          { n: 706, x: 80, y: 57, label: "1,761 medicines checked" },
+        ],
+      },
+      { kind: "code", lang: "text", title: "The docking queue", code: AMR_QUEUE, caption: "From src/batchdock/queue.py. Any number of workers on any number of machines, and no two ever claim the same job." },
+    ],
+    decisions: [
+      {
+        title: "A queue that can't double-book",
+        body: "Every (medicine, target, configuration) is one row in a Postgres queue. Workers claim with FOR UPDATE SKIP LOCKED, hold a lease that a heartbeat extends, and complete in one statement that only succeeds if they still hold it. A result can't be written twice, and a vanished worker's job returns to the queue.",
+      },
+      {
+        title: "Inputs prepared once, checked everywhere",
+        body: "1,761 ligand files and 4 receptor files are prepared once and stored with their SHA-256. A worker on any machine fetches what it lacks and refuses a file whose checksum differs, so every docking run starts from identical inputs.",
+      },
+      {
+        title: "Leakage is a critical failure",
+        body: "Scaffold-aware splits keep similar molecules out of both training and test. An audit found enantiomer pairs straddling the split because scaffolds carried stereochemistry; scaffolds are now stereo-free, and leakage across splits is a critical check that fails the pipeline.",
+      },
+      {
+        title: "A percentage always says what it means",
+        body: "A probability is shown only for the four modelled pathogens, and labels that imply clinical benefit raise an error in code. The interface keeps 'no evidence found', 'not yet checked' and 'no effect' apart, and a registered trial is never presented as a successful one.",
+      },
+    ],
+    claims: [
+      "A screening system in which every docking score is a recorded AutoDock Vina run with its inputs, configuration and command.",
+      "The system of claim 1, wherein a Postgres queue with leases guarantees each job is completed at most once.",
+      "The system of claim 1, wherein no prediction is presented as evidence that a medicine treats an infection.",
+    ],
+  },
+  {
+    slug: "ved-exe",
+    no: 800,
     title: "VED.EXE",
     short: "This site. You are reading one of the things it describes.",
     field: "Interface",

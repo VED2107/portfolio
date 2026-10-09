@@ -171,10 +171,10 @@ function VedSheet() {
         <line key={y} x1={500} y1={y} x2={500 + (i % 3 === 2 ? 110 : 160)} y2={y} pathLength={1} className="d-line" style={{ "--i": 6 + i * 0.3 } as React.CSSProperties} />
       ))}
       {[
-        { x1: 400, y1: 40, x2: 740, y2: 40, n: 602, label: "Header strip, sheet counter" },
-        { x1: 156, y1: 280, x2: 60, y2: 280, n: 604, label: "Gutter", left: true },
-        { x1: 430, y1: 160, x2: 740, y2: 200, n: 606, label: "Figure, plates" },
-        { x1: 620, y1: 390, x2: 740, y2: 390, n: 608, label: "Claims" },
+        { x1: 400, y1: 40, x2: 740, y2: 40, n: 802, label: "Header strip, sheet counter" },
+        { x1: 156, y1: 280, x2: 60, y2: 280, n: 804, label: "Gutter", left: true },
+        { x1: 430, y1: 160, x2: 740, y2: 200, n: 806, label: "Figure, plates" },
+        { x1: 620, y1: 390, x2: 740, y2: 390, n: 808, label: "Claims" },
       ].map((c, i) => (
         <g key={c.n} style={{ "--i": 9 + i } as React.CSSProperties}>
           <path d={`M ${c.x1} ${c.y1} L ${c.x2} ${c.y2}`} pathLength={1} className="d-line" />

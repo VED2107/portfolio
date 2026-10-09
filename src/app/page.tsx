@@ -101,9 +101,24 @@ function Filings() {
   return (
     <section id="filings" aria-labelledby="filings-title" className="sheet pb-0">
       <div className="sheet-inner">
-        <h2 id="filings-title" className="t-h2 col-span-12 max-w-[22ch] lg:col-span-8">
-          Five filings. All of them running somewhere right now.
+        <h2 id="filings-title" className="t-h2 col-span-12 max-w-[22ch] lg:col-span-6">
+          Seven filings. All of them running somewhere right now.
         </h2>
+        <ol aria-label="Index of filings" className="col-span-5 col-start-8 mt-2 hidden border-t border-[var(--ink)] lg:block">
+          {FLAGSHIPS.map((f) => (
+            <li key={f.slug} className="border-b border-[var(--rule)]">
+              <Link
+                href={`/work/${f.slug}`}
+                transitionTypes={["nav-forward"]}
+                className="group grid grid-cols-[3rem_1fr] items-baseline sm:grid-cols-[3.25rem_1fr_auto] gap-x-3 py-2.5 no-underline"
+              >
+                <span className="ref text-[0.85rem] group-hover:text-[var(--accent)]">{f.no}</span>
+                <span className="font-semibold transition-colors duration-200 group-hover:text-[var(--accent)]">{f.title}</span>
+                <span className="t-small hidden text-right sm:inline">{f.field}</span>
+              </Link>
+            </li>
+          ))}
+        </ol>
       </div>
       <div className="mt-12 lg:mt-16">
         {FLAGSHIPS.map((f, i) => (

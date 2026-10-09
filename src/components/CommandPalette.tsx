@@ -55,7 +55,7 @@ const SCOPE_TITLE: Record<Exclude<Scope, "all">, string> = {
 
 const SHEET_BLURB: Record<string, string> = {
   cover: "Who this is, and FIG. 1: every shipped project as a plate you can lift.",
-  filings: "Five products in production, each with its first figure and real numbers.",
+  filings: "Seven shipped products, each with its first figure and real numbers.",
   archive: "Studio work and experiments, with previews.",
   claims: "How I work, written as numbered claims, each backed by a filing.",
   field: "Capabilities charted against the projects that prove them.",
@@ -67,7 +67,7 @@ const SHEET_BLURB: Record<string, string> = {
 const SHELL: Record<string, string> = {
   help: "whoami  ls  cat claims  sudo hire ved  sb analyze  blueprint  clear  exit",
   whoami: "visitor. curious enough to open a shell on a portfolio, which is a good sign.",
-  ls: "snowbros-atlas/  accounic/  vinnys-atelier/  vinnys-vogue/  stc-academy/  ved-exe/\narchive/  claims.txt  resume.pdf",
+  ls: "snowbros-atlas/  accounic/  vinnys-atelier/  vinnys-vogue/  stc-academy/\nswiftdrop/  amr-drug-repurposing/  ved-exe/  archive/  claims.txt  resume.pdf",
   "cat claims": "1. Same code in, same result out.\n2. Money is an integer.\n3. The database decides; clients display.\n4. Evidence or silence.",
   "cat claims.txt": "1. Same code in, same result out.\n2. Money is an integer.\n3. The database decides; clients display.\n4. Evidence or silence.",
   "sudo hire ved": `[sudo] password for visitor: ********\nPermission granted. Opening a mail to ${SITE.email}.`,
