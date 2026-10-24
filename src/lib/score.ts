@@ -223,13 +223,19 @@ const MAKERS: Record<string, (c: AudioContext, out: AudioNode) => Voice> = { asc
 function recording(c: AudioContext, out: AudioNode, src: string): Voice {
   const el = new Audio(src);
   el.loop = true;
-  el.crossOrigin = "anonymous";
   el.preload = "auto";
-  // Not shipped (no licence yet, or not deployed): skip to the next cue instead of silence.
-  el.onerror = () => window.setTimeout(() => nextCue(), 0);
+  // Only set crossOrigin for external URLs — same-origin files don't need it,
+  // and setting it forces a CORS preflight that Next.js static serving may not satisfy.
+  if (src.startsWith("http")) el.crossOrigin = "anonymous";
+  el.onerror = () => {
+    console.warn("[score] failed to load recording:", src, el.error);
+    window.setTimeout(() => nextCue(), 0);
+  };
   const node = c.createMediaElementSource(el);
   node.connect(out);
-  void el.play().catch(() => {});
+  void el.play().catch((e) => {
+    console.warn("[score] play() rejected:", e);
+  });
   return {
     stop: () => {
       window.setTimeout(() => {
