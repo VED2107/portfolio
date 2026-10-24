@@ -67,3 +67,8 @@ pnpm-workspace.yaml
 .impeccable/mocks/
 .playwright-mcp/
 .impeccable/questions/
+
+# local-only
+.playwright-mcp/
+public/score/*.mp3
+*.mp3

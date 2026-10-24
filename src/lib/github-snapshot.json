@@ -1,0 +1,259 @@
+{
+  "taken": "2026-10-24",
+  "repos": [
+    {
+      "repo": "VED2107/snowbros",
+      "name": "snowbros",
+      "description": "SNOWBROS - independent software engineering studio. Next.js 16, React 19, TypeScript, Tailwind v4.",
+      "homepage": "https://snowbros.me",
+      "language": "TypeScript",
+      "stars": 1,
+      "pushed": "2026-10-23",
+      "languages": {
+        "TypeScript": 371924,
+        "CSS": 73764,
+        "HTML": 53462,
+        "JavaScript": 2489
+      }
+    },
+    {
+      "repo": "VED2107/nova",
+      "name": "nova",
+      "description": "NOVA — privacy-first desktop media player by SNOWBROS",
+      "homepage": "https://nova.snowbros.me",
+      "language": "TypeScript",
+      "stars": 0,
+      "pushed": "2026-10-19",
+      "languages": {
+        "TypeScript": 620915,
+        "Rust": 386540,
+        "Astro": 137902,
+        "Shell": 26701,
+        "JavaScript": 25972,
+        "CSS": 22648,
+        "Kotlin": 11144,
+        "Python": 7166,
+        "PowerShell": 2621,
+        "HTML": 2114,
+        "NSIS": 865
+      }
+    },
+    {
+      "repo": "VED2107/amr-drug-repurposing",
+      "name": "amr-drug-repurposing",
+      "description": "AI-assisted screening of approved medicines against four drug-resistant bacteria, with an evidence-inspectable web interface",
+      "homepage": "https://amr-drug-repurposing.vercel.app/",
+      "language": "Python",
+      "stars": 0,
+      "pushed": "2026-10-14",
+      "languages": {
+        "Python": 1075180,
+        "TypeScript": 461241,
+        "JavaScript": 54316,
+        "CSS": 49369,
+        "Jupyter Notebook": 45423,
+        "PLpgSQL": 21502,
+        "Shell": 2934,
+        "Dockerfile": 1795
+      }
+    },
+    {
+      "repo": "VED2107/accounic",
+      "name": "accounic",
+      "description": "Personal accounting ledger — Next.js web + Flutter (Android/Windows) on one Supabase backend. Multi-currency with entries kept in the currency they were entered in, FIFO settlement, RLS tenant isolation, and in-app update checks.",
+      "homepage": "https://github.com/VED2107/accounic/releases/latest",
+      "language": "Dart",
+      "stars": 0,
+      "pushed": "2026-10-09",
+      "languages": {
+        "Dart": 1393437,
+        "TypeScript": 930575,
+        "PLpgSQL": 850382,
+        "JavaScript": 100584,
+        "CSS": 23097,
+        "C++": 19913,
+        "CMake": 10492,
+        "Inno Setup": 6861,
+        "C": 734,
+        "Kotlin": 118
+      }
+    },
+    {
+      "repo": "VED2107/portfolio",
+      "name": "portfolio",
+      "description": "VED.EXE — Retro Gaming Developer Portfolio | Next.js 16, React 19, TypeScript, GSAP, Framer Motion",
+      "homepage": "https://ved.exe.snowbros.me",
+      "language": "TypeScript",
+      "stars": 4,
+      "pushed": "2026-10-09",
+      "languages": {
+        "TypeScript": 147788,
+        "CSS": 36105,
+        "Python": 3958,
+        "JavaScript": 559
+      }
+    },
+    {
+      "repo": "VED2107/swiftdrop",
+      "name": "swiftdrop",
+      "description": "",
+      "homepage": "https://swiftdrop.snowbros.me",
+      "language": "Dart",
+      "stars": 0,
+      "pushed": "2026-10-06",
+      "languages": {
+        "Dart": 759164,
+        "TypeScript": 653800,
+        "CSS": 103995,
+        "Kotlin": 29357,
+        "C++": 26793,
+        "JavaScript": 22750,
+        "CMake": 19839,
+        "HTML": 15633,
+        "Inno Setup": 3059,
+        "Swift": 2628,
+        "C": 1488,
+        "PowerShell": 577,
+        "Objective-C": 38
+      }
+    },
+    {
+      "repo": "VED2107/lunora-studio",
+      "name": "lunora-studio",
+      "description": "🌸 The Lunora Studio — luxury handmade bouquet e-commerce. Next.js 16, Supabase, GSAP. Flowers Fade. Memories Don't.",
+      "homepage": "https://lunorastudio.vercel.app",
+      "language": "TypeScript",
+      "stars": 3,
+      "pushed": "2026-09-16",
+      "languages": {
+        "TypeScript": 565527,
+        "PLpgSQL": 53252,
+        "CSS": 8798,
+        "Python": 7893,
+        "JavaScript": 1457
+      }
+    },
+    {
+      "repo": "VED2107/STC",
+      "name": "STC",
+      "description": "Smart Teaching Companion - An intelligent educational platform for CBSE and GSEB board students. Dual-pathway courses, faculty mentorship, small-batch learning, and competitive exam prep (JEE/NEET).",
+      "homepage": "https://stc.vercel.app",
+      "language": "TypeScript",
+      "stars": 1,
+      "pushed": "2026-08-26",
+      "languages": {
+        "TypeScript": 1168092,
+        "PLpgSQL": 65772,
+        "CSS": 11608,
+        "JavaScript": 559,
+        "HTML": 53
+      }
+    },
+    {
+      "repo": "VED2107/vinnys-vogue",
+      "name": "vinnys-vogue",
+      "description": "✨ Premium fashion e-commerce platform built with Next.js, TypeScript & PostgreSQL. Modern, secure, and performant online shopping experience.",
+      "homepage": "https://www.vinnysvogue.in",
+      "language": "TypeScript",
+      "stars": 1,
+      "pushed": "2026-06-23",
+      "languages": {
+        "TypeScript": 775803,
+        "PLpgSQL": 85365,
+        "JavaScript": 16439,
+        "CSS": 9924
+      }
+    },
+    {
+      "repo": "VED2107/filmica",
+      "name": "filmica",
+      "description": "",
+      "homepage": "",
+      "language": "Dart",
+      "stars": 0,
+      "pushed": "2026-05-16",
+      "languages": {
+        "Dart": 223614,
+        "C++": 20150,
+        "PLpgSQL": 12041,
+        "CMake": 10554,
+        "TypeScript": 5781,
+        "Python": 2711,
+        "Ruby": 1615,
+        "C": 734,
+        "Swift": 676,
+        "Kotlin": 116,
+        "Objective-C": 38
+      }
+    },
+    {
+      "repo": "VED2107/guesser",
+      "name": "guesser",
+      "description": "",
+      "homepage": "",
+      "language": "TypeScript",
+      "stars": 0,
+      "pushed": "2026-05-13",
+      "languages": {
+        "TypeScript": 113372,
+        "Python": 31194,
+        "PLpgSQL": 4639,
+        "JavaScript": 2348,
+        "CSS": 59
+      }
+    },
+    {
+      "repo": "snowbros-labs/creative-engineering",
+      "name": "creative-engineering",
+      "description": "AI skill + modular TypeScript toolkit for motion, scroll choreography, interactive 3D and premium interfaces.",
+      "homepage": "",
+      "language": "TypeScript",
+      "stars": 0,
+      "pushed": "2026-10-23",
+      "languages": {
+        "TypeScript": 554385,
+        "CSS": 117081,
+        "HTML": 79618,
+        "JavaScript": 57344
+      }
+    },
+    {
+      "repo": "snowbros-labs/atlas",
+      "name": "atlas",
+      "description": "Snowbros Atlas — deterministic static analysis for JS/TS: import graph, dead code, Next.js boundary violations, secrets. Same code in, same findings out.",
+      "homepage": "https://snowbros.me/atlas/",
+      "language": "Rust",
+      "stars": 1,
+      "pushed": "2026-09-06",
+      "languages": {
+        "Rust": 587479,
+        "HTML": 40102,
+        "TypeScript": 31406,
+        "JavaScript": 13324,
+        "CSS": 5344
+      }
+    },
+    {
+      "repo": "snowbros-labs/homebrew-tap",
+      "name": "homebrew-tap",
+      "description": "",
+      "homepage": "",
+      "language": "Ruby",
+      "stars": 0,
+      "pushed": "2026-07-14",
+      "languages": {
+        "Ruby": 2482
+      }
+    },
+    {
+      "repo": "snowbros-labs/mentor-skill",
+      "name": "mentor-skill",
+      "description": "Engineering intelligence system for Claude Code — a capability orchestrator that teaches or builds across software, backend, frontend, architecture, security, design, AI, DevOps and leadership.",
+      "homepage": "",
+      "language": "",
+      "stars": 0,
+      "pushed": "2026-07-07",
+      "languages": {}
+    }
+  ]
+}

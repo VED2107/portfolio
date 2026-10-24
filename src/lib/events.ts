@@ -1,9 +1,14 @@
 "use client";
 
-/** Tiny event bus: components talk through window events instead of global state. */
+/** A tiny event bus: components talk through window events instead of shared global state. */
 
-export function openPalette(query = "") {
-  window.dispatchEvent(new CustomEvent("ved:palette", { detail: { query } }));
+export function openCatalog(query = "") {
+  window.dispatchEvent(new CustomEvent("ved:catalog", { detail: { query } }));
+}
+
+/** Open a release in the inspection view, from anywhere (the catalogue terminal uses this). */
+export function inspect(slug: string) {
+  window.dispatchEvent(new CustomEvent("ved:inspect", { detail: { slug } }));
 }
 
 export function toast(message: string) {
@@ -27,23 +32,15 @@ export function setTheme(theme: Theme) {
   }
 }
 
-export function toggleBlueprint() {
-  const d = document.documentElement;
-  const on = d.dataset.mode !== "blueprint";
-  if (on) d.dataset.mode = "blueprint";
-  else delete d.dataset.mode;
-  try {
-    if (on) localStorage.setItem("ved-mode", "blueprint");
-    else localStorage.removeItem("ved-mode");
-  } catch {
-    /* ignore */
-  }
-  toast(on ? "Blueprint mode. The filing, as a cyanotype. Run it again to develop back." : "Back to drafting white.");
+export function currentTheme(): "light" | "dark" {
+  const d = document.documentElement.dataset.theme;
+  if (d === "light" || d === "dark") return d;
+  return matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
-export async function copyEmail(email: string) {
+export async function copyText(text: string) {
   try {
-    await navigator.clipboard.writeText(email);
+    await navigator.clipboard.writeText(text);
     return true;
   } catch {
     return false;
