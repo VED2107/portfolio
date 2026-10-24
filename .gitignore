@@ -70,5 +70,6 @@ pnpm-workspace.yaml
 
 # local-only
 .playwright-mcp/
-public/score/*.mp3
 *.mp3
+public/score/*.mp3
+!public/score/our-song.mp3

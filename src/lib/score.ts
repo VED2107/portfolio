@@ -16,7 +16,7 @@ export type Cue = { id: string; title: string; note: string; src?: string };
 
 export const CUES: Cue[] = [
   // Supplied recording. Needs a licence from the rights holders before a public deploy.
-  { id: "mystery-of-love", title: "Mystery of Love", note: "Sufjan Stevens · from Call Me By Your Name", src: "/score/mystery-of-love.mp3" },
+  { id: "our-song", title: "Our Song", note: "the one that plays when you're here", src: "/score/our-song.mp3" },
   { id: "ascent", title: "Ascent", note: "Shepard tone · rises forever, never arrives" },
   { id: "tick", title: "Tick", note: "Organ drone over a clock, 1.25 s per beat" },
   { id: "shelf", title: "Night shelf", note: "Low strings, slow tide, for browsing" },
