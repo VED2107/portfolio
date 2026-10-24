@@ -6,7 +6,8 @@ import { NOW, SITE } from "@/lib/site";
 import { NEW_RELEASES, getRelease } from "@/lib/catalog";
 import { DEPTH, MATERIAL, setupGsap } from "@/lib/motion";
 import { fine, reduced } from "@/lib/capability";
-import { inspect, openCatalog } from "@/lib/events";
+import { openCatalog } from "@/lib/events";
+import { pullOut } from "@/lib/handoff";
 import { scrollToTarget } from "@/lib/scroll";
 import { Sleeve } from "./Sleeve";
 import { Vinyl } from "./Vinyl";
@@ -77,22 +78,41 @@ export function FrontWindow() {
     if (stage && fine() && !reduced()) {
       const rx = gsap.quickTo(stage, "rotationX", { duration: 0.8, ease: "power3.out" });
       const ry = gsap.quickTo(stage, "rotationY", { duration: 0.8, ease: "power3.out" });
+      // The glass doesn't tilt with the display; only its reflection slides, the opposite way, slower.
+      const sweep = el.querySelector<HTMLElement>(".fw-glass-sweep");
+      const sx = sweep ? gsap.quickTo(sweep, "xPercent", { duration: 1.4, ease: "power3.out" }) : null;
+      // Measure once per enter/scroll, never per pointer event.
+      let b = stage.getBoundingClientRect();
+      let stale = false;
+      const measure = () => {
+        b = stage.getBoundingClientRect();
+        stale = false;
+      };
+      const dirty = () => (stale = true);
+      el.addEventListener("pointerenter", measure);
+      addEventListener("scroll", dirty, { passive: true });
+      addEventListener("resize", dirty);
       const move = (e: PointerEvent) => {
-        const b = stage.getBoundingClientRect();
+        if (stale) measure();
         const x = (e.clientX - b.left) / b.width - 0.5;
         const y = (e.clientY - b.top) / b.height - 0.5;
         rx(-y * DEPTH.tilt);
         ry(x * DEPTH.tilt);
+        sx?.(-x * 22);
         stage.style.setProperty("--gx", `${(x + 0.5) * 100}%`);
         stage.style.setProperty("--gy", `${(y + 0.5) * 100}%`);
       };
       const leave = () => {
         rx(0);
         ry(0);
+        sx?.(0);
       };
       el.addEventListener("pointermove", move);
       el.addEventListener("pointerleave", leave);
       off = () => {
+        el.removeEventListener("pointerenter", measure);
+        removeEventListener("scroll", dirty);
+        removeEventListener("resize", dirty);
         el.removeEventListener("pointermove", move);
         el.removeEventListener("pointerleave", leave);
       };
@@ -154,14 +174,20 @@ export function FrontWindow() {
 
         <div className="fw-display" aria-label="New releases in the window">
           {back.map((r, i) => (
-            <button key={r.slug} type="button" className={`fw-stand fw-back fw-back-${i}`} onClick={() => inspect(r.slug)} data-cursor="Pull" data-enter aria-label={`${r.title}, ${r.cat}. Pull it out.`}>
-              <Sleeve r={r} sticker={false} sizes="(min-width: 1024px) 18vw, 40vw" />
+            <button key={r.slug} type="button" className={`fw-stand fw-back fw-back-${i}`} onClick={(e) => pullOut(r.slug, e.currentTarget.querySelector<HTMLElement>(".sleeve"))} data-cursor="Pull" data-enter aria-label={`${r.title}, ${r.cat}. Pull it out.`}>
+              <Sleeve r={r} sticker={false} flipId={`sleeve-${r.slug}`} sizes="(min-width: 1024px) 18vw, 40vw" />
             </button>
           ))}
-          <button type="button" className="fw-stand fw-front" onClick={() => inspect(front.slug)} data-cursor="Pull" data-enter aria-label={`New release: ${front.title}, ${front.cat}. Pull it out.`}>
+          <button type="button" className="fw-stand fw-front" onClick={(e) => pullOut(front.slug, e.currentTarget.querySelector<HTMLElement>(".sleeve"))} data-cursor="Pull" data-enter aria-label={`New release: ${front.title}, ${front.cat}. Pull it out.`}>
             <Vinyl r={front} />
-            <Sleeve r={front} sizes="(min-width: 1024px) 30vw, 72vw" priority />
+            <Sleeve r={front} flipId={`sleeve-${front.slug}`} sizes="(min-width: 1024px) 30vw, 72vw" priority />
           </button>
+          {/* The sill the display stands on: the same timber as the shelves inside. */}
+          <span className="fw-ledge" aria-hidden />
+          {/* The shop window itself, between you and the stock: one broad reflection that slides as you move. */}
+          <span className="fw-glass" aria-hidden>
+            <span className="fw-glass-sweep" />
+          </span>
         </div>
       </div>
 

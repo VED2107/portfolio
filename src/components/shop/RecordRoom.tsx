@@ -4,12 +4,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { RELEASES, GENRES, type Release } from "@/lib/catalog";
 import { setupGsap } from "@/lib/motion";
-import { inspect } from "@/lib/events";
-import { handOff } from "@/lib/handoff";
+import { pullOut } from "@/lib/handoff";
 import { play } from "@/lib/sound";
 import { scrollToTarget } from "@/lib/scroll";
 import { Sleeve } from "./Sleeve";
 import { Vinyl } from "./Vinyl";
+import { RoomScene } from "./RoomScene";
+import { sceneState } from "@/lib/sceneState";
 
 /**
  * The record room: a spinning display rack in the middle of the shop. Scrolling turns the rack
@@ -49,6 +50,7 @@ export function RecordRoom({ onApi }: { onApi?: (go: (slug: string) => void) => 
     let pos = 0;
     let last = -1;
     let moved = 0;
+    let drawn = NaN;
     const st = ScrollTrigger.create({
       trigger: pin,
       start: "top top",
@@ -68,14 +70,20 @@ export function RecordRoom({ onApi }: { onApi?: (go: (slug: string) => void) => 
       const want = performance.now() - moved > 160 ? Math.round(target) : target;
       pos += (want - pos) * 0.085;
       if (Math.abs(want - pos) < 0.0005) pos = want;
+      // Settled: nothing to write this frame.
+      if (pos === drawn) return;
+      drawn = pos;
+      sceneState.records = pos / (n - 1);
       rack.style.transform = `translateZ(calc(var(--r) * -1)) rotateY(${-pos * step}deg)`;
       for (let i = 0; i < n; i++) {
         let a = ((i - pos) * step) % 360;
         if (a > 180) a -= 360;
         if (a < -180) a += 360;
-        const away = Math.min(1, Math.abs(a) / 120);
-        shades[i].style.opacity = String(Math.min(0.8, away * 1.4));
-        slots[i].style.opacity = String(Math.max(0, 1 - away) ** 1.4);
+        // Cardboard is opaque: sleeves turning away fall out of the light, they don't turn to glass.
+        // They only fade once they're round the back of the stand.
+        const deg = Math.abs(a);
+        shades[i].style.opacity = String(Math.min(0.78, (deg / 90) * 0.78));
+        slots[i].style.opacity = String(deg < 72 ? 1 : Math.max(0, 1 - (deg - 72) / 40));
       }
       const idx = Math.round(pos);
       if (idx !== last) {
@@ -96,10 +104,8 @@ export function RecordRoom({ onApi }: { onApi?: (go: (slug: string) => void) => 
 
   const pull = (r: Release, i: number, el: HTMLElement) => {
     if (i !== current) return go(i);
-    const s = el.querySelector<HTMLElement>(".sleeve");
-    if (s) handOff(r.slug, s);
-    play("sleeve");
-    inspect(r.slug);
+    const near = [-1, 1].map((d) => root.current?.querySelector<HTMLElement>(`.spin-slot[data-i="${(i + d + n) % n}"] .sleeve`)).filter((x): x is HTMLElement => !!x);
+    pullOut(r.slug, el.querySelector<HTMLElement>(".sleeve"), near);
   };
 
   const cur = RELEASES[current];
@@ -107,7 +113,8 @@ export function RecordRoom({ onApi }: { onApi?: (go: (slug: string) => void) => 
 
   return (
     <div ref={root} className="spin">
-      <div className="spin-pin">
+      <div className="spin-pin" data-room="records">
+        <RoomScene kind="records" />
         <div className="spin-scene" aria-hidden>
           <span className="spin-wall" />
           <span className="spin-racks" />

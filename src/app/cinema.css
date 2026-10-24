@@ -1,9 +1,88 @@
 /* ------------------------------------------------------------ cinema: curtains, letterboard, strip, stubs */
 
-/* The section opens out of the paper floor: the light falls away into the back room. */
+/* The section opens out of the paper floor through a passage; the film room starts dark. */
 .film {
-  background: linear-gradient(180deg, var(--floor) 0, var(--film) 18rem);
-  padding-top: 8rem;
+  background: var(--film);
+}
+
+/* The passage: the shop's paper and warm light at the top, a doorway closing in, the dark below. */
+.passage {
+  position: relative;
+  height: clamp(30rem, 92vh, 56rem);
+  overflow: hidden;
+  background:
+    radial-gradient(60% 40% at 50% 0%, rgb(255 214 150 / 0.18), transparent 70%),
+    linear-gradient(180deg, var(--floor) 0%, color-mix(in oklab, var(--floor) 70%, #4a3423) 26%, #2a1d12 62%, #16100b 84%, var(--film) 100%);
+}
+.passage-wall {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 37%;
+  background:
+    linear-gradient(180deg, transparent 0 82%, rgb(0 0 0 / 0.35)),
+    linear-gradient(90deg, #120d09, #1f160f);
+  transform: scaleX(0.8);
+}
+.passage-wall-l {
+  left: 0;
+  transform-origin: 0 50%;
+  box-shadow: inset -2px 0 0 rgb(255 214 150 / 0.14);
+}
+.passage-wall-r {
+  right: 0;
+  transform-origin: 100% 50%;
+  background:
+    linear-gradient(180deg, transparent 0 82%, rgb(0 0 0 / 0.35)),
+    linear-gradient(270deg, #120d09, #1f160f);
+  box-shadow: inset 2px 0 0 rgb(255 214 150 / 0.14);
+}
+.passage-dim {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 20%, rgb(8 6 4 / 0.55));
+  opacity: 0.6;
+  pointer-events: none;
+}
+/* An enamel sign hung from the ceiling on two wires: dark plate, cream letters, a lamp on it. */
+.passage-sign {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 34%;
+  translate: -50% 0;
+  display: grid;
+  justify-items: center;
+  gap: 0.35rem;
+  padding: 1rem 1.6rem 1.1rem;
+  background: #1b1612;
+  color: #efe2c8;
+  border: 1px solid #3b3026;
+  box-shadow: 0 0 0 4px #1b1612, 0 0 0 5px #6b5a42, 0 30px 40px -20px rgb(0 0 0 / 0.8);
+  text-align: center;
+  transform-origin: 50% -40vh;
+}
+.passage-sign .pk {
+  color: #b7a787;
+}
+.passage-sign b {
+  font-size: clamp(2rem, 1.4rem + 2.4vw, 3.4rem);
+  font-weight: 500;
+  line-height: 1;
+  color: #f3e6c8;
+}
+.passage-wire {
+  position: absolute;
+  bottom: 100%;
+  left: 18%;
+  right: 18%;
+  height: 40vh;
+  border-inline: 1px solid rgb(30 22 14 / 0.7);
+}
+@media (prefers-reduced-motion: reduce) {
+  .passage-dim {
+    opacity: 1;
+  }
 }
 .ftrack-anchor {
   position: relative;
@@ -207,15 +286,14 @@
   display: grid;
   place-items: center;
   background:
-    repeating-linear-gradient(90deg, #5a0f1c 0 40px, #7a1426 40px 80px),
-    #6e1222;
+    linear-gradient(180deg, rgb(255 255 255 / 0.06), transparent 30% 70%, rgb(0 0 0 / 0.35)),
+    #5e1020;
   border-bottom: 6px solid #c49a3c;
   box-shadow: 0 14px 30px rgb(0 0 0 / 0.6);
   clip-path: polygon(0 0, 100% 0, 100% 82%, 95% 100%, 90% 82%, 85% 100%, 80% 82%, 75% 100%, 70% 82%, 65% 100%, 60% 82%, 55% 100%, 50% 82%, 45% 100%, 40% 82%, 35% 100%, 30% 82%, 25% 100%, 20% 82%, 15% 100%, 10% 82%, 5% 100%, 0 82%);
 }
 .pelmet-word {
   font-size: 2.6rem;
-  font-style: italic;
   color: #e7c878;
   text-shadow: 0 2px 0 #4a2f0c;
 }

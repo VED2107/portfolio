@@ -13,6 +13,9 @@ import { Q } from "@/lib/capability";
 import { play } from "@/lib/sound";
 import { FilmCover } from "./FilmCover";
 import { DiscMenu } from "./DiscMenu";
+import { RoomScene } from "./RoomScene";
+import { sceneState } from "@/lib/sceneState";
+import { caseLeaves } from "@/lib/handoff";
 
 type Mode = "flat" | "track";
 
@@ -59,9 +62,11 @@ function Letterboard({
   );
 }
 
-function Spine({ f, onOpen }: { f: Film; onOpen: (f: Film) => void }) {
+type Open = (f: Film, el: HTMLElement, spine: boolean) => void;
+
+function Spine({ f, onOpen, picked }: { f: Film; onOpen: Open; picked: boolean }) {
   return (
-    <li className="fcase-slot">
+    <li className="fcase-slot" data-picked={picked || undefined}>
       <button
         type="button"
         className="fcase"
@@ -72,13 +77,14 @@ function Spine({ f, onOpen }: { f: Film; onOpen: (f: Film) => void }) {
             "--tone-ink": inkOn(f.tone),
           } as React.CSSProperties
         }
-        onClick={() => onOpen(f)}
+        onClick={(e) => onOpen(f, e.currentTarget, true)}
         data-cursor="Open"
         aria-label={`${f.title}. ${f.edition}. Open the case.`}
       >
-        <span className="fcase-band pk">HD</span>
+        <span className="fcase-band pk">BD</span>
         <span className="fcase-title">{f.title}</span>
         <span className="fcase-cat cat">{f.cat}</span>
+        <span className="case-plastic" aria-hidden />
       </button>
       <span className="stub" aria-hidden>
         <span className="pk">Admit one</span>
@@ -93,10 +99,12 @@ function Bay({
   s,
   faceOut,
   onOpen,
+  picked,
 }: {
   s: Shelf;
   faceOut?: boolean;
-  onOpen: (f: Film) => void;
+  onOpen: Open;
+  picked: string | null;
 }) {
   return (
     <section
@@ -117,11 +125,11 @@ function Bay({
       <ul className="fbay-row">
         {faceOut
           ? s.items.map((f) => (
-              <li key={f.id} className="fface-slot">
+              <li key={f.id} className="fface-slot" data-picked={picked === f.id || undefined}>
                 <button
                   type="button"
                   className="fface"
-                  onClick={() => onOpen(f)}
+                  onClick={(e) => onOpen(f, e.currentTarget, false)}
                   data-cursor="Open"
                   aria-label={`${f.title}. ${f.edition}. Open the case.`}
                 >
@@ -133,7 +141,7 @@ function Bay({
                 </span>
               </li>
             ))
-          : s.items.map((f) => <Spine key={f.id} f={f} onOpen={onOpen} />)}
+          : s.items.map((f) => <Spine key={f.id} f={f} onOpen={onOpen} picked={picked === f.id} />)}
       </ul>
       <span className="fbay-plank" aria-hidden />
     </section>
@@ -212,6 +220,8 @@ export function FilmRoom() {
           invalidateOnRefresh: true,
           onRefresh: (self) => (start = self.start),
           onUpdate: (self) => {
+            sceneState.cinema = self.progress;
+            sceneState.cinemaCurtain = curtainRun() / (curtainRun() + travel() || 1);
             const now =
               self.progress * (curtainRun() + travel()) > curtainRun() * 0.6;
             if (now !== opened) {
@@ -278,10 +288,66 @@ export function FilmRoom() {
     };
   }, [mode, built]);
 
-  const onOpen = useCallback((f: Film) => {
-    play("case");
-    setOpen(f);
-  }, []);
+  // Walking down the passage: the walls close in and the light drops, tied to the scroll.
+  useEffect(() => {
+    const el = root.current?.querySelector<HTMLElement>(".passage");
+    if (!el || matchMedia(Q.reduced).matches) return;
+    const gsap = setupGsap();
+    const ctx = gsap.context(() => {
+      const st = { trigger: el, start: "top 85%", end: "bottom bottom", scrub: 0.6 };
+      gsap.fromTo(".passage-wall", { scaleX: 0 }, { scaleX: 1, ease: "power1.in", scrollTrigger: st });
+      gsap.fromTo(".passage-dim", { opacity: 0 }, { opacity: 1, ease: "none", scrollTrigger: { ...st } });
+      gsap.fromTo(".passage-sign", { y: -24, rotate: -2 }, { y: 0, rotate: 0, ease: "none", scrollTrigger: { ...st } });
+    }, el);
+    return () => ctx.revert();
+  }, [mode]);
+
+  // Touch has no hover: the first tap takes the case off the shelf, the second opens it.
+  const [picked, setPicked] = useState<string | null>(null);
+  const onOpen = useCallback<Open>(
+    (f, el, spine) => {
+      if (matchMedia("(hover: none), (pointer: coarse)").matches && picked !== f.id) {
+        setPicked(f.id);
+        play("case");
+        return;
+      }
+      caseLeaves(el, spine);
+      setPicked(null);
+      play("case");
+      setOpen(f);
+    },
+    [picked],
+  );
+
+  // Plastic catches the light where the pointer is: one delegated listener, the case's own
+  // element gets two variables, nothing re-renders.
+  useEffect(() => {
+    const el = root.current;
+    if (!el || !matchMedia(Q.fine).matches || matchMedia(Q.reduced).matches) return;
+    let cur: HTMLElement | null = null;
+    let box: DOMRect | null = null;
+    const over = (e: PointerEvent) => {
+      const c = (e.target as HTMLElement).closest<HTMLElement>(".fcase, .fface");
+      if (c === cur) return;
+      if (cur) {
+        cur.style.removeProperty("--px");
+        cur.style.removeProperty("--py");
+      }
+      cur = c;
+      box = c?.getBoundingClientRect() ?? null;
+    };
+    const move = (e: PointerEvent) => {
+      if (!cur || !box) return;
+      cur.style.setProperty("--px", ((e.clientX - box.left) / box.width).toFixed(3));
+      cur.style.setProperty("--py", ((e.clientY - box.top) / box.height).toFixed(3));
+    };
+    el.addEventListener("pointerover", over);
+    el.addEventListener("pointermove", move, { passive: true });
+    return () => {
+      el.removeEventListener("pointerover", over);
+      el.removeEventListener("pointermove", move);
+    };
+  }, [mode]);
 
   const [studio, experiments] = FILM_SHELVES;
   const [languages, ...skills] = SHELVES;
@@ -298,10 +364,23 @@ export function FilmRoom() {
       <h2 id="film-title" className="sr-only">
         The back room: film, skills and special features
       </h2>
+      {/* The way back: the shop narrows to a doorway, the warm light stays behind, a sign points on. */}
+      <div className="passage" aria-hidden>
+        <span className="passage-wall passage-wall-l" />
+        <span className="passage-wall passage-wall-r" />
+        <span className="passage-dim" />
+        <div className="passage-sign">
+          <span className="passage-wire" />
+          <span className="pk">Staff &amp; visitors · this way</span>
+          <b className="display">The back room</b>
+          <span className="pk">Film · skills · B-sides</span>
+        </div>
+      </div>
       {/* The pin's own wrapper: GSAP wraps .ftrack-pin in a spacer, so React must never place siblings beside it. */}
       <div className="ftrack-anchor">
         <div className="ftrack-pin">
-          <div className="ftrack-view">
+          <div className="ftrack-view" data-room="cinema">
+            {mode === "track" && <RoomScene kind="cinema" />}
             <div className="ftrack-ceiling" aria-hidden />
             <div className="ftrack-carpet" aria-hidden />
             <Letterboard
@@ -316,11 +395,11 @@ export function FilmRoom() {
             </p>
 
             <div className="ftrack-wall">
-              <Bay s={studio} faceOut onOpen={onOpen} />
-              <Bay s={languages} onOpen={onOpen} />
-              <Bay s={experiments} faceOut onOpen={onOpen} />
+              <Bay s={studio} faceOut onOpen={onOpen} picked={picked} />
+              <Bay s={languages} onOpen={onOpen} picked={picked} />
+              <Bay s={experiments} faceOut onOpen={onOpen} picked={picked} />
               {skills.map((s) => (
-                <Bay key={s.id} s={s} onOpen={onOpen} />
+                <Bay key={s.id} s={s} onOpen={onOpen} picked={picked} />
               ))}
               <div className="fexit" data-label="Exit">
                 <span className="fexit-sign">Exit</span>

@@ -2,41 +2,47 @@
 
 /* ------------------------------------------------------------------
    VED — Records & Film.
-   Warm paper and near-black ink on the shop floor; oxblood and cobalt
-   as printed inks; one fluorescent sticker colour; chrome and smoked
-   plastic for the film room. Light is daylight through the window,
-   dark is the shop after hours. Both are lit on purpose.
+   Minimal, and old in the right places: warm newsprint and near-black
+   ink, one faded vermilion for price stickers and the odd mis-registered
+   print, a black enamel shop sign. Signwriting letters (Big Shoulders),
+   a newspaper grotesk (Schibsted), Plex Mono for catalogue stamps.
+   The film room is always after dark. Light is the shop open; dark is
+   the shop after hours.
    ------------------------------------------------------------------ */
 
 :root {
-  --f-display: var(--font-bodoni), "Bodoni 72", "Didot", Georgia, serif;
-  --f-sans: var(--font-archivo), ui-sans-serif, system-ui, sans-serif;
-  --f-mono: var(--font-geist-mono), ui-monospace, Consolas, monospace;
+  --f-display: var(--font-sign), "Oswald", Impact, sans-serif;
+  --f-label: var(--font-label), "Cooper Black", Georgia, serif;
+  --f-sans: var(--font-print), ui-sans-serif, system-ui, sans-serif;
+  --f-mono: var(--font-stamp), ui-monospace, Consolas, monospace;
 
-  --paper: #ece6da;
-  --floor: #ece6da;
-  --paper-2: #e2d9c9;
-  --card: #f6f2ea;
-  --ink: #17130e;
-  --ink-2: #4b4337;
-  --ink-3: #75695b;
-  --rule: #cdc1ae;
-  --oxblood: #6e1f1c;
-  --cobalt: #2638b8;
-  --fluor: #ff4a1c;
-  --fluor-ink: #1a0a04;
+  --paper: #ecebe6;
+  --floor: #ecebe6;
+  --paper-2: #e0ded7;
+  --card: #f7f6f2;
+  --ink: #171615;
+  --ink-2: #45423e;
+  --ink-3: #77736d;
+  --rule: #cfccc4;
+  --green: #171615;
+  --green-2: #2a2826;
+  --gilt: #efe9dc;
+  --oxblood: #b8432a;
+  --cobalt: #45423e;
+  --fluor: #d4532f;
+  --fluor-ink: #fff7ef;
   --wood: #7b4f2c;
   --wood-2: #5d3a1f;
-  --shadow-obj: 0 1px 1px rgb(23 19 14 / 0.08), 0 26px 40px -26px rgb(23 19 14 / 0.55);
-  --shadow-lift: 0 2px 2px rgb(23 19 14 / 0.08), 0 46px 60px -30px rgb(23 19 14 / 0.6);
+  --shadow-obj: 0 1px 1px rgb(23 22 21 / 0.08), 0 26px 40px -26px rgb(23 22 21 / 0.55);
+  --shadow-lift: 0 2px 2px rgb(23 22 21 / 0.08), 0 46px 60px -30px rgb(23 22 21 / 0.6);
 
   /* The film room is always after dark, whatever the theme. */
   --film: #0b0d11;
   --film-2: #13161c;
   --film-ink: #e8ecf2;
   --film-ink-2: #aeb6c3;
-  --film-ink-3: #7a8394;
-  --film-cobalt: #6f88ff;
+  --film-ink-3: #8a93a3;
+  --film-cobalt: #e8a24a;
 
   /* Materials. Mirrors lib/motion.ts for CSS-only states. */
   --ease-vinyl: cubic-bezier(0.16, 1, 0.3, 1);
@@ -48,13 +54,13 @@
   --d-paper: 420ms;
   --d-sleeve: 720ms;
 
-  --header-h: 3.75rem;
+  --header-h: 4rem;
   --gutter: clamp(1rem, 3.2vw, 2.75rem);
   --frame: min(100% - 2 * var(--gutter), 1560px);
 
   --t-giant: clamp(7rem, 4rem + 21vw, 24rem);
-  --t-h1: clamp(3.1rem, 1.6rem + 6.2vw, 8rem);
-  --t-h2: clamp(2.3rem, 1.5rem + 3.2vw, 4.75rem);
+  --t-h1: clamp(3.6rem, 1.8rem + 7.4vw, 9.5rem);
+  --t-h2: clamp(2.6rem, 1.6rem + 3.8vw, 5.5rem);
   --t-h3: clamp(1.35rem, 1.15rem + 0.7vw, 1.8rem);
   --t-body: 1.0625rem;
   --t-small: 0.9rem;
@@ -64,17 +70,19 @@
 }
 
 :root[data-theme="dark"] {
-  --paper: #14100c;
-  --floor: #14100c;
-  --paper-2: #1c1712;
-  --card: #241d16;
-  --ink: #efe7d9;
-  --ink-2: #c6baa7;
-  --ink-3: #93877a;
-  --rule: #3a3027;
-  --oxblood: #c4584c;
-  --cobalt: #8a9cff;
-  --fluor: #ff6a3d;
+  --paper: #141312;
+  --floor: #141312;
+  --paper-2: #1b1a18;
+  --card: #22201e;
+  --ink: #ebe8e1;
+  --ink-2: #c4c0b8;
+  --ink-3: #928d85;
+  --rule: #2e2c29;
+  --green: #0c0b0b;
+  --green-2: #1d1c1a;
+  --oxblood: #e0735a;
+  --cobalt: #c4c0b8;
+  --fluor: #e5643e;
   --wood: #4a2f1a;
   --wood-2: #331f10;
   --shadow-obj: 0 1px 1px rgb(0 0 0 / 0.4), 0 26px 40px -24px rgb(0 0 0 / 0.85);
@@ -83,17 +91,19 @@
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --paper: #14100c;
-    --floor: #14100c;
-    --paper-2: #1c1712;
-    --card: #241d16;
-    --ink: #efe7d9;
-    --ink-2: #c6baa7;
-    --ink-3: #93877a;
-    --rule: #3a3027;
-    --oxblood: #c4584c;
-    --cobalt: #8a9cff;
-    --fluor: #ff6a3d;
+    --paper: #141312;
+    --floor: #141312;
+    --paper-2: #1b1a18;
+    --card: #22201e;
+    --ink: #ebe8e1;
+    --ink-2: #c4c0b8;
+    --ink-3: #928d85;
+    --rule: #2e2c29;
+    --green: #0c0b0b;
+    --green-2: #1d1c1a;
+    --oxblood: #e0735a;
+    --cobalt: #c4c0b8;
+    --fluor: #e5643e;
     --wood: #4a2f1a;
     --wood-2: #331f10;
     --shadow-obj: 0 1px 1px rgb(0 0 0 / 0.4), 0 26px 40px -24px rgb(0 0 0 / 0.85);
@@ -131,7 +141,6 @@
     font-family: var(--f-sans);
     font-size: var(--t-body);
     line-height: 1.55;
-    font-variant-numeric: tabular-nums;
     -webkit-font-smoothing: antialiased;
     overflow-x: clip;
   }
@@ -139,9 +148,11 @@
     background: var(--fluor);
     color: var(--fluor-ink);
   }
+  /* Ink ring with a sticker-yellow halo: visible on paper, green and black alike. */
   :focus-visible {
-    outline: 2px solid var(--fluor);
+    outline: 2px solid var(--ink);
     outline-offset: 3px;
+    box-shadow: 0 0 0 5px var(--fluor);
   }
   a {
     color: inherit;
@@ -169,27 +180,31 @@
   }
 
   /* Type */
+  /* Signwriting: condensed capitals, set tight, like letters painted on a fascia. */
   .display {
     font-family: var(--f-display);
-    font-weight: 500;
+    font-weight: 800;
     font-optical-sizing: auto;
-    letter-spacing: -0.035em;
-    line-height: 0.88;
+    text-transform: uppercase;
+    letter-spacing: -0.005em;
+    line-height: 0.86;
   }
   .h1 {
     font-family: var(--f-display);
     font-size: var(--t-h1);
-    font-weight: 500;
-    line-height: 0.9;
-    letter-spacing: -0.035em;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 0.86;
+    letter-spacing: -0.005em;
     text-wrap: balance;
   }
   .h2 {
     font-family: var(--f-display);
     font-size: var(--t-h2);
-    font-weight: 500;
-    line-height: 0.95;
-    letter-spacing: -0.03em;
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 0.9;
+    letter-spacing: 0;
     text-wrap: balance;
   }
   .h3 {
@@ -459,4 +474,14 @@
   ::view-transition-new(*) {
     animation: none !important;
   }
+}
+
+/* Figures line up only where they're compared: catalogue numbers, tables, prices, counters.
+   (Schibsted's tabular set also spaces the comma and full stop, so never on running text.) */
+.cat,
+.kbd,
+table,
+time,
+[data-tabular] {
+  font-variant-numeric: tabular-nums;
 }

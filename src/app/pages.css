@@ -69,7 +69,6 @@
 }
 .notes-title {
   font-size: clamp(3.4rem, 2rem + 6vw, 8.5rem);
-  font-style: italic;
 }
 .notes-short {
   max-width: 34ch;
@@ -127,7 +126,6 @@
 }
 .notes-abstract {
   font-size: clamp(1.9rem, 1.3rem + 2.2vw, 3.4rem);
-  font-style: italic;
   line-height: 1.08;
   letter-spacing: -0.025em;
   max-width: 24ch;
@@ -244,7 +242,7 @@
   gap: 0.6rem;
 }
 .pressing-notes li {
-  font: italic 500 clamp(1.3rem, 1rem + 1vw, 1.8rem) / 1.2 var(--f-display);
+  font: 800 clamp(1.3rem, 1rem + 1vw, 1.8rem) / 1.2 var(--f-display);
   letter-spacing: -0.015em;
 }
 .next-in-crate {
@@ -269,7 +267,6 @@
 }
 .next-title {
   font-size: clamp(2.4rem, 1.6rem + 3vw, 4.8rem);
-  font-style: italic;
 }
 @media (hover: hover) and (pointer: fine) {
   .next-link:hover .next-cover {
@@ -333,4 +330,25 @@
   .oos-grid {
     grid-template-columns: 1fr 1.2fr;
   }
+}
+
+/* Imported last on purpose: the label face overrides the signage face where both apply. */
+/* The label face: Fraunces turned all the way soft and heavy, wonky on. Names and release titles. */
+.label-face,
+.fw-ved,
+.sign-ved,
+.spin-talker-title,
+.booth-title,
+.crate-card-title,
+.notes-title,
+.next-title,
+.closing-word,
+.badge-name,
+.vinyl-label-title {
+  font-family: var(--f-label);
+  font-weight: 900;
+  font-variation-settings: "SOFT" 100, "WONK" 1;
+  font-optical-sizing: auto;
+  text-transform: none;
+  letter-spacing: -0.035em;
 }

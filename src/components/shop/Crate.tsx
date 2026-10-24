@@ -5,8 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { GENRES, RELEASES, type Release } from "@/lib/catalog";
 import { setupGsap } from "@/lib/motion";
 import { Q } from "@/lib/capability";
-import { inspect } from "@/lib/events";
-import { handOff } from "@/lib/handoff";
+import { pullOut } from "@/lib/handoff";
 import { play } from "@/lib/sound";
 import { scrollToTarget } from "@/lib/scroll";
 import { Sleeve } from "./Sleeve";
@@ -61,10 +60,7 @@ export function Crate() {
   }, []);
 
   const pull = (r: Release, el: HTMLElement) => {
-    const sleeve = el.querySelector<HTMLElement>(".sleeve");
-    if (sleeve && mode !== "grid") handOff(r.slug, sleeve);
-    play("sleeve");
-    inspect(r.slug);
+    pullOut(r.slug, mode === "grid" ? null : el.querySelector<HTMLElement>(".sleeve"));
   };
 
   const genreOf = (r: Release) => GENRES.find((g) => g.id === r.genre)!;
@@ -105,7 +101,14 @@ export function Crate() {
       </header>
 
       {mode === "room" ? (
-        <RecordRoom onApi={onApi} />
+        <>
+          <div className="room-threshold" aria-hidden>
+            <span className="room-threshold-shelf" />
+            <span className="room-threshold-sign pk">Aisle A · {n} in stock</span>
+          </div>
+          <RecordRoom onApi={onApi} />
+          <div className="room-exit" aria-hidden />
+        </>
       ) : (
         <div className="crate-pin">
           <div className="frame crate-stage">
