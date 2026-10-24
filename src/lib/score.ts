@@ -16,7 +16,7 @@ export type Cue = { id: string; title: string; note: string; src?: string };
 
 export const CUES: Cue[] = [
   // Supplied recording. Needs a licence from the rights holders before a public deploy.
-  { id: "mystery-of-love", title: "Mystery of Love", note: "Sufjan Stevens · from Call Me By Your Name", src: "/score/mystery-of-love.mp3" },
+  { id: "our-song", title: "Our Song", note: "the one that plays when you're here", src: "/score/our-song.mp3" },
   { id: "ascent", title: "Ascent", note: "Shepard tone · rises forever, never arrives" },
   { id: "tick", title: "Tick", note: "Organ drone over a clock, 1.25 s per beat" },
   { id: "shelf", title: "Night shelf", note: "Low strings, slow tide, for browsing" },
@@ -219,56 +219,58 @@ function shelf(c: AudioContext, out: AudioNode): Voice {
 
 const MAKERS: Record<string, (c: AudioContext, out: AudioNode) => Voice> = { ascent, tick: tickCue, shelf };
 
-/** Cache decoded audio buffers so repeated plays don't re-fetch. */
-const bufferCache = new Map<string, AudioBuffer>();
+/* ─── File-based recording: plain HTML5 Audio, no Web Audio routing ────────── */
+let recordingEl: HTMLAudioElement | null = null;
 
-/** A supplied recording: fetched, decoded, and played through the Web Audio graph. */
-function recording(c: AudioContext, out: AudioNode, src: string): Voice {
-  let source: AudioBufferSourceNode | null = null;
-  let stopped = false;
+function recording(src: string): Voice {
+  // Reuse or create a single Audio element to avoid multiple simultaneous streams.
+  if (!recordingEl) {
+    recordingEl = new Audio();
+    recordingEl.loop = true;
+    recordingEl.preload = "auto";
+  }
+  const el = recordingEl;
+  el.src = src;
+  el.volume = 0.65;
+  el.currentTime = 0;
 
-  const play = async () => {
-    try {
-      let buffer = bufferCache.get(src);
-      if (!buffer) {
-        const res = await fetch(src);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data = await res.arrayBuffer();
-        buffer = await c.decodeAudioData(data);
-        bufferCache.set(src, buffer);
-      }
-      if (stopped) return;               // stopped while loading
-      source = c.createBufferSource();
-      source.buffer = buffer;
-      source.loop = true;
-      source.connect(out);
-      source.start(0);
-    } catch (e) {
-      console.warn("[score] recording failed:", src, e);
-      if (!stopped) window.setTimeout(() => nextCue(), 0);
-    }
-  };
-
-  void play();
+  // Play — returns a promise, but we handle errors.
+  const p = el.play();
+  if (p) {
+    p.catch((e) => {
+      console.warn("[score] play() rejected:", src, e);
+      window.setTimeout(() => nextCue(), 0);
+    });
+  }
 
   return {
     stop: () => {
-      stopped = true;
-      if (source) {
-        try { source.stop(); } catch { /* already stopped */ }
-        source.disconnect();
-      }
+      el.pause();
+      el.currentTime = 0;
     },
   };
 }
 
-function start() {
+/* ─── Synthesised cue: uses the Web Audio graph with master gain ───────────── */
+function startSynthCue(cue: Cue) {
   const { c, out } = audio();
   current?.stop();
-  const cue = CUES[cueIndex];
-  current = cue.src ? recording(c, out, cue.src) : MAKERS[cue.id](c, out);
+  current = MAKERS[cue.id](c, out);
   out.gain.cancelScheduledValues(c.currentTime);
   out.gain.setTargetAtTime(0.22, c.currentTime, 0.8);
+}
+
+function start() {
+  const cue = CUES[cueIndex];
+  if (cue.src) {
+    // File recording: stop any previous synth voice, play directly.
+    if (current) { current.stop(); current = null; }
+    current = recording(cue.src);
+  } else {
+    // Synth cue: stop any recording, then use Web Audio.
+    recordingEl?.pause();
+    startSynthCue(cue);
+  }
 }
 
 export function toggleScore() {
