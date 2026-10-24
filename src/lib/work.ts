@@ -102,9 +102,9 @@ export const FILINGS: Filing[] = [
     stack: ["Rust", "Tree-sitter", "petgraph", "LSP", "VS Code API", "SARIF"],
     links: [
       { label: "Repository", href: "https://github.com/snowbros-labs/atlas" },
-      { label: "Product page", href: "https://snowbros.me/atlas" },
+      { label: "Case study", href: "https://snowbros.me/#case-atlas" },
     ],
-    plate: { src: "/work/atlas-site.webp", alt: "The Snowbros Atlas product page: 'Same code in. Same findings out.' beside a terminal running sb analyze.", w: 1440, h: 900 },
+    plate: { src: "/work/atlas-site.webp", alt: "An Atlas HTML report: health 93 overall, 66 architecture, above findings for a server-only module reachable from a client component and a circular import chain.", w: 1440, h: 900 },
     facts: [
       { value: "23", label: "built-in rules" },
       { value: "~230 ms", label: "cold run on axios, 431 files" },
@@ -563,53 +563,99 @@ export const FILINGS: Filing[] = [
     ],
   },
   {
+    slug: "nova",
+    no: 900,
+    title: "NOVA",
+    short: "A privacy-first, open-source desktop media player. No account, no telemetry, works offline.",
+    field: "Desktop media",
+    year: "2026",
+    role: "Author. Built under SNOWBROS.",
+    status: "M0 to M2 complete on Windows. Not ready for end users yet, and the README says so.",
+    stack: ["Rust", "Tauri 2", "React 19", "TypeScript", "Tailwind CSS 4", "libmpv", "SQLite", "Expo"],
+    links: [
+      { label: "Website", href: "https://nova.snowbros.me" },
+      { label: "Repository", href: "https://github.com/VED2107/nova" },
+    ],
+    facts: [
+      { value: "1 frame", label: "where the ±1, 5, 30 and 60 s seek keys land" },
+      { value: "7", label: "architecture decisions written up as ADRs" },
+      { value: "0", label: "accounts, telemetry or network needed" },
+    ],
+    abstract:
+      "NOVA plays local video like a professional tool would, ProRes, DNxHR, HDR and 8K included, and remembers where you were even after a crash. The interface only ever shows what the playback engine confirms.",
+    background:
+      "Desktop players either look modern and fake their state, or tell the truth and look like 2005. NOVA puts native video from libmpv under a transparent React interface in a Tauri shell, with the rules of playback kept in plain Rust crates that know nothing about the engine.",
+    figures: [],
+    decisions: [
+      {
+        title: "Engine-confirmed state only",
+        body: "The UI shows what libmpv reports, never what it hopes happened. A queue only advances when the engine confirms the end of the media.",
+      },
+      {
+        title: "Native video under a web interface",
+        body: "libmpv renders through D3D11 with hardware decoding and a software fallback; the React interface sits transparently on top in a Tauri 2 window.",
+      },
+      {
+        title: "Resume that survives crashes and renames",
+        body: "Progress lives in local SQLite and is tied to the media's identity, so a moved or renamed file keeps its place across restarts and crashes, with a Start over option.",
+      },
+      {
+        title: "A contract the engine can't leak through",
+        body: "Playback is a backend-neutral API and a pure state reducer with no engine dependencies; libmpv is one backend behind it, loaded at runtime.",
+      },
+      {
+        title: "Licensing stated plainly",
+        body: "The code is MIT or Apache-2.0. The first installer bundles a libmpv build with GPL parts, so the installer ships under the GPL with its source; later releases move to an LGPL engine built from source.",
+      },
+    ],
+    claims: ["Every limitation is listed in the README before anyone asks.", "Seek keys land within one frame, measured, not estimated."],
+  },
+  {
     slug: "ved-exe",
     no: 800,
     title: "VED.EXE",
-    short: "This site. You are reading one of the things it describes.",
+    short: "This site: a record and film shop that only stocks what I made.",
     field: "Interface",
     year: "2026",
     role: "Designer and developer.",
-    status: "Live. You're on it.",
-    stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS 4", "View Transitions API", "GitHub GraphQL"],
+    status: "Live. You're standing in it.",
+    stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS 4", "GSAP", "Lenis", "View Transitions API", "Web Audio API"],
     links: [{ label: "Repository", href: "https://github.com/VED2107/portfolio" }],
     facts: [
-      { value: "0", label: "animation libraries" },
-      { value: "⌘K", label: "reaches every page" },
+      { value: "1", label: "motion system: every object moves by its material" },
+      { value: "⌘K", label: "catalogue terminal reaches every page" },
     ],
     abstract:
-      "A portfolio set as a patent filing. Each project is a sheet with figures and numbered claims, and the claims say exactly what the engineering does.",
+      "A portfolio built as an independent record and film shop. Projects are releases you pull from a crate; experiments and the studio live on the film shelf in the back room.",
     background:
-      "The previous version was a retro arcade: CRT scanlines, a boot sequence, neon. It was fun and it hid the work. This version puts the work first and lets the jokes live in the margins.",
-    figures: [
-      { kind: "drawing", drawing: "ved-sheet", caption: "Anatomy of a sheet: header strip, gutter with line numbers, figure with reference numerals, claims." },
-    ],
+      "The earlier versions were a retro arcade and then a patent filing. Both described the work. This one asks you to handle it: browse, pull, flip, read the liner notes.",
+    figures: [],
     decisions: [
       {
-        title: "Numbers you can trace",
-        body: "Every figure on the site comes from a README, a live product or a shipped UI. Where a number doesn't exist, the site says nothing rather than rounding up.",
+        title: "The same object, all the way through",
+        body: "A sleeve you pull from the crate is measured with GSAP Flip and carried into the inspection view, and its cover carries on into the liner notes with a shared view transition. Nothing disappears to be replaced by a lookalike.",
       },
       {
-        title: "Server first",
-        body: "Pages are React Server Components. Client code is limited to the command palette, the figure on the cover, the sheet counter and a copy button.",
+        title: "Motion by material",
+        body: "Records are heavy and slow to settle, paper inserts are light and quick, plastic cases snap, and navigation is nearly instant. One token file decides all of it.",
       },
       {
-        title: "Motion as material",
-        body: "Figures draw their lines once as they enter and then hold still. Project plates morph into case studies with the View Transitions API. With reduced motion, everything is simply there.",
+        title: "Content first, motion second",
+        body: "Every release and film is real HTML before any script runs. The crate dig, the shelf and the lighting change enhance a page that already reads; with reduced motion they are simply absent.",
+      },
+      {
+        title: "Touch is its own design",
+        body: "On phones the crate becomes a stack you flip with your thumb through native scroll; nothing pins, nothing traps. Hover effects only exist where a fine pointer does.",
       },
       {
         title: "Keyboard complete",
-        body: "⌘K or / opens a command palette that reaches every page, link and setting. It opens instantly because you might use it a hundred times.",
-      },
-      {
-        title: "Live build activity",
-        body: "Contribution data comes from the GitHub GraphQL API with hourly regeneration. Without a token the section degrades to what the public API can say.",
+        body: "⌘K or / opens the catalogue terminal at the counter. It reaches every release, film, aisle and setting, and it still has a shell.",
       },
     ],
     claims: [
-      "A portfolio in which every number is traceable to a repository or a live product.",
-      "The portfolio of claim 1, wherein every page can be reached from the keyboard.",
-      "The portfolio of claim 1, wherein no testimonial was invented.",
+      "Every number on the site is traceable to a repository or a live product.",
+      "Every page can be reached from the keyboard.",
+      "No testimonial was invented.",
     ],
   },
 ];
@@ -627,10 +673,10 @@ export const ARCHIVE: ArchiveItem[] = [
   {
     title: "SNOWBROS",
     field: "Studio site",
-    stack: "Next.js 16, React 19, Tailwind 4",
+    stack: "Vite, TypeScript, canvas, GSAP",
     year: "2026",
     href: "https://snowbros.me",
-    preview: { src: "/work/snowbros-home.webp", alt: "SNOWBROS studio site.", w: 1440, h: 900 },
+    preview: { src: "/work/snowbros-home.webp", alt: "The SNOWBROS studio site: the name formed from frost crystals above the headline 'Software that holds its shape.'", w: 1440, h: 900 },
   },
   {
     title: "Lunora Studio",

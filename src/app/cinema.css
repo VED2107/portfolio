@@ -1,0 +1,248 @@
+/* ------------------------------------------------------------ cinema: curtains, letterboard, strip, stubs */
+
+/* The section opens out of the paper floor: the light falls away into the back room. */
+.film {
+  background: linear-gradient(180deg, var(--floor) 0, var(--film) 18rem);
+  padding-top: 8rem;
+}
+.ftrack-anchor {
+  position: relative;
+}
+
+/* The marquee letterboard: black letters on a backlit board, bulbs round the edge. */
+.board {
+  position: relative;
+  z-index: 3;
+  width: min(100%, 46rem);
+  margin: 0 auto;
+  padding: 10px;
+  border-radius: 6px;
+  background: #1b1612;
+  box-shadow: 0 30px 60px -20px rgb(0 0 0 / 0.8), 0 0 80px rgb(255 214 150 / 0.12);
+}
+.board-bulbs {
+  position: absolute;
+  inset: 0;
+  border-radius: 6px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, #fff1c9 0 2.5px, rgb(255 205 120 / 0.55) 3.5px, transparent 7px) 0 0 / 22px 10px repeat-x,
+    radial-gradient(circle, #fff1c9 0 2.5px, rgb(255 205 120 / 0.55) 3.5px, transparent 7px) 0 100% / 22px 10px repeat-x;
+}
+.board-face {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.9rem 1rem 1rem;
+  border-radius: 3px;
+  background:
+    repeating-linear-gradient(180deg, transparent 0 calc(25% - 2px), rgb(0 0 0 / 0.12) calc(25% - 2px) 25%),
+    linear-gradient(180deg, #fffaf0, #f2ead8);
+  box-shadow: inset 0 0 30px rgb(255 230 180 / 0.9);
+  text-align: center;
+  color: #111;
+}
+.board-row {
+  margin: 0;
+}
+.board-row-small {
+  font: 800 0.72rem/1.2 var(--f-sans);
+  font-stretch: 72%;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.board-row-big {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 3px;
+  min-height: 3.6rem;
+  align-items: center;
+}
+.board-tile {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1.75rem;
+  height: 3.3rem;
+  padding: 0 0.15rem;
+  font: 900 2.7rem/1 var(--f-sans);
+  font-stretch: 62%;
+  text-transform: uppercase;
+  color: #121212;
+}
+.board-tile[data-space] {
+  min-width: 0.9rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .board-tile {
+    animation: hang 420ms var(--ease-sleeve) both;
+    animation-delay: calc(var(--i) * 34ms);
+  }
+}
+@keyframes hang {
+  from {
+    transform: translateY(-70%) rotate(-12deg);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(4%) rotate(3deg);
+    opacity: 1;
+  }
+}
+.ftrack-intro {
+  max-width: 44ch;
+  margin: 1.5rem auto 0;
+  text-align: center;
+  color: var(--film-ink-2);
+}
+
+/* The ceiling over the lobby. */
+.ftrack-ceiling {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 6vh;
+  background: linear-gradient(180deg, #050608, #0d0f14);
+  z-index: 1;
+}
+
+/* A strip of film along the foot of the wall, travelling with it. */
+.filmstrip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.9rem;
+  height: 2.4rem;
+  background:
+    radial-gradient(circle at center, #11141b 0 3px, transparent 3.5px) 0 4px / 18px 8px repeat-x,
+    radial-gradient(circle at center, #11141b 0 3px, transparent 3.5px) 0 calc(100% - 4px) / 18px 8px repeat-x,
+    repeating-linear-gradient(90deg, rgb(255 236 200 / 0.12) 0 120px, rgb(0 0 0 / 0.4) 120px 124px),
+    #2a2318;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.05);
+  pointer-events: none;
+}
+
+/* A ticket stub tears off the case you point at. */
+.stub {
+  position: absolute;
+  top: calc(100% + 1.2rem);
+  z-index: 2;
+  display: grid;
+  gap: 0.1rem;
+  min-width: 8.5rem;
+  padding: 0.45rem 0.7rem 0.5rem 0.9rem;
+  background: #f3d79a;
+  color: #2a1a08;
+  rotate: -3deg;
+  opacity: 0;
+  translate: 0 -8px;
+  pointer-events: none;
+  -webkit-mask:
+    radial-gradient(circle at 0 50%, transparent 5px, #000 5.5px) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% 50%, transparent 5px, #000 5.5px) right / 51% 100% no-repeat;
+  mask:
+    radial-gradient(circle at 0 50%, transparent 5px, #000 5.5px) left / 51% 100% no-repeat,
+    radial-gradient(circle at 100% 50%, transparent 5px, #000 5.5px) right / 51% 100% no-repeat;
+  transition: opacity var(--d-ui) var(--ease-ui), translate 260ms var(--ease-paper);
+}
+.stub .pk {
+  color: #8e2a22;
+  font-size: 0.56rem;
+}
+.stub b {
+  font: 800 0.9rem/1.1 var(--f-sans);
+  font-stretch: 80%;
+  white-space: nowrap;
+}
+.stub .cat {
+  font-size: 0.6rem;
+  white-space: nowrap;
+}
+@media (hover: hover) and (pointer: fine) {
+  .fcase-slot:hover .stub {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+.fcase:focus-visible ~ .stub {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* The curtains, the pelmet above them, and the house lights. */
+.curtains {
+  position: absolute;
+  inset: 0;
+  z-index: 6;
+  pointer-events: none;
+  overflow: hidden;
+}
+.houselights {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(70% 60% at 50% 40%, rgb(255 226 170 / 0.35), rgb(20 10 6 / 0.85));
+}
+.curtain {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 51%;
+  background:
+    linear-gradient(180deg, transparent 0 88%, rgb(0 0 0 / 0.45) 100%),
+    repeating-linear-gradient(90deg, #5a0f1c 0, #8e1a2c 3%, #b42a3c 5%, #7a1426 8%, #4a0b16 10%),
+    #6e1222;
+  box-shadow: inset 0 -14px 0 #c49a3c, inset 0 -18px 0 #7a5a1c;
+  will-change: transform;
+}
+.curtain-l {
+  left: 0;
+}
+.curtain-r {
+  right: 0;
+}
+.pelmet {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 6.5rem;
+  display: grid;
+  place-items: center;
+  background:
+    repeating-linear-gradient(90deg, #5a0f1c 0 40px, #7a1426 40px 80px),
+    #6e1222;
+  border-bottom: 6px solid #c49a3c;
+  box-shadow: 0 14px 30px rgb(0 0 0 / 0.6);
+  clip-path: polygon(0 0, 100% 0, 100% 82%, 95% 100%, 90% 82%, 85% 100%, 80% 82%, 75% 100%, 70% 82%, 65% 100%, 60% 82%, 55% 100%, 50% 82%, 45% 100%, 40% 82%, 35% 100%, 30% 82%, 25% 100%, 20% 82%, 15% 100%, 10% 82%, 5% 100%, 0 82%);
+}
+.pelmet-word {
+  font-size: 2.6rem;
+  font-style: italic;
+  color: #e7c878;
+  text-shadow: 0 2px 0 #4a2f0c;
+}
+
+/* Track layout: board top centre, wall below it. */
+.film[data-mode="track"] .board {
+  position: absolute;
+  left: 50%;
+  top: 7.5vh;
+  translate: -50% 0;
+  width: min(46rem, 60vw);
+}
+.film[data-mode="track"] .ftrack-intro {
+  display: none;
+}
+.film[data-mode="track"] .ftrack-wall {
+  top: 30vh;
+  height: 56vh;
+}
+/* Flat: a lit board as the header, shelves below. */
+.film[data-mode="flat"] .ftrack-wall {
+  margin-top: 4rem;
+}
+@media (max-width: 639px) {
+  .board-tile {
+    min-width: 1.15rem;
+    height: 2.3rem;
+    font-size: 1.8rem;
+  }
+}

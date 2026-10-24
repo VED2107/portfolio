@@ -3,10 +3,11 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ViewTransition } from "react";
-import { ArrowLeft, ArrowRight, ArrowUpRight } from "@phosphor-icons/react/dist/ssr";
 import { FILINGS, getFiling } from "@/lib/work";
-import { FigureView, CodeBlock } from "@/components/FigureView";
-import { Drawing } from "@/components/Drawings";
+import { FILMS, RELEASES, getRelease } from "@/lib/catalog";
+import { Sleeve } from "@/components/shop/Sleeve";
+import { Vinyl } from "@/components/shop/Vinyl";
+import { FilmCover } from "@/components/shop/FilmCover";
 
 export function generateStaticParams() {
   return FILINGS.map((f) => ({ slug: f.slug }));
@@ -19,217 +20,197 @@ export async function generateMetadata({ params }: PageProps<"/work/[slug]">): P
   const f = getFiling(slug);
   if (!f) return {};
   return {
-    title: `${f.title}, filing ${f.no}`,
+    title: `${f.title}, liner notes`,
     description: f.short,
-    openGraph: { title: `${f.title} · VED.EXE`, description: f.short, images: [{ url: `/api/og?slug=${f.slug}`, width: 1200, height: 630 }] },
+    openGraph: { title: `${f.title} · VED Records & Film`, description: f.short, images: [{ url: `/api/og?slug=${f.slug}`, width: 1200, height: 630 }] },
   };
 }
 
-const para = (n: number) => `[${String(n).padStart(4, "0")}]`;
-
-export default async function FilingPage({ params }: PageProps<"/work/[slug]">) {
+/**
+ * Liner notes. The sleeve you pulled out of the crate arrives here as the same object (a shared
+ * view transition), and opens into what a good gatefold has: credits, the notes, the inserts,
+ * and the track list, which here is the list of engineering decisions.
+ */
+export default async function LinerNotes({ params }: PageProps<"/work/[slug]">) {
   const { slug } = await params;
   const f = getFiling(slug);
   if (!f) notFound();
-
-  const i = FILINGS.indexOf(f);
-  const next = FILINGS[(i + 1) % FILINGS.length];
-  let p = 0;
+  const r = getRelease(slug);
+  const film = slug === "ved-exe" ? FILMS.find((x) => x.id === "making-of") : undefined;
+  const i = RELEASES.findIndex((x) => x.slug === slug);
+  const next = RELEASES[(i + 1) % RELEASES.length];
+  const live = f.links.find((l) => !l.href.includes("github.com"));
+  const source = f.links.find((l) => l.href.includes("github.com"));
+  const half = Math.ceil(f.decisions.length / 2);
+  const cat = r?.cat ?? film?.cat ?? `VED ${f.no}`;
 
   return (
-    <ViewTransition
-      enter={{ "nav-forward": "page-swap", "nav-back": "page-swap", default: "none" }}
-      exit={{ "nav-forward": "page-swap", "nav-back": "page-swap", default: "none" }}
-      default="none"
-    >
-      <main id="main">
-        {/* Cover sheet of the filing */}
-        <section aria-labelledby="filing-title" className="pt-10 lg:pt-16">
-          <div className="sheet-inner gap-y-8">
-            <div className="col-span-12">
-              <Link href="/#filings" transitionTypes={["nav-back"]} className="t-small inline-flex items-center gap-2 no-underline hover:text-[var(--ink)]">
-                <ArrowLeft size={14} aria-hidden /> All filings
-              </Link>
-            </div>
-            <div className="col-span-12 lg:col-span-8">
-              <p className="flex items-baseline gap-3">
-                <span className="ref text-[0.9rem]">{f.no}</span>
-                <span className="t-small">{f.field}</span>
-              </p>
-              <h1 id="filing-title" className="t-display mt-3 text-[clamp(2.6rem,1rem+6vw,6rem)]">
-                {f.title}
-              </h1>
-              <p className="t-lede mt-6 max-w-[40ch]">{f.short}</p>
-            </div>
-            <dl className="col-span-12 grid content-end gap-0 self-end border-t border-[var(--ink)] text-[0.95rem] lg:col-span-4">
-              {[
-                { k: "Role", v: f.role },
-                { k: "Year", v: f.year },
-                { k: "Status", v: f.status },
-                { k: "Stack", v: f.stack.join(", ") },
-              ].map((r) => (
-                <div key={r.k} className="grid grid-cols-[5rem_1fr] gap-3 border-b border-[var(--rule-soft)] py-2.5">
-                  <dt className="ink-3">{r.k}</dt>
-                  <dd>{r.v}</dd>
-                </div>
-              ))}
-              {f.links.length > 0 && (
-                <div className="flex flex-wrap gap-x-5 gap-y-2 pt-4">
-                  {f.links.map((l) => (
-                    <a key={l.href} href={l.href} target="_blank" rel="noreferrer" className="link inline-flex items-center gap-1 font-semibold">
-                      {l.label} <ArrowUpRight size={14} aria-hidden />
-                    </a>
-                  ))}
-                </div>
-              )}
-            </dl>
-          </div>
-
-          <div className="sheet-inner mt-12">
-            <div className="col-span-12">
-              {f.plate ? (
-                <div className="fig">
-                  <ViewTransition name={`plate-${f.slug}`} share="plate">
-                    <Image src={f.plate.src} alt={f.plate.alt} width={f.plate.w} height={f.plate.h} sizes="(min-width: 1440px) 1340px, 100vw" priority quality={90} className="max-h-[78vh] w-full object-cover object-top" />
-                  </ViewTransition>
-                </div>
-              ) : (
-                <div className="fig bg-[var(--paper-3)] p-6 sm:p-12">
-                  <div className="mx-auto max-w-3xl">
-                    <Drawing drawing="ved-sheet" />
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {f.facts.length > 0 && (
-            <div className="sheet-inner mt-10">
-              <dl className="col-span-12 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-[var(--rule)] pt-6 lg:grid-cols-4">
-                {f.facts.map((x) => (
-                  <div key={x.label} className="flex flex-col-reverse justify-end gap-1.5">
-                    <dt className="t-small max-w-[24ch]">{x.label}</dt>
-                    <dd className="text-[clamp(2rem,1.4rem+2vw,3.25rem)] font-extrabold leading-none tracking-[-0.03em] [font-stretch:118%]">{x.value}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          )}
-        </section>
-
-        {/* Specification */}
-        <section className="sheet mt-16" aria-label="Specification">
-          <div className="sheet-inner gap-y-14">
-            <div className="col-span-12 lg:col-span-8 lg:col-start-3">
-              <p className="t-num ink-3">(57) Abstract</p>
-              <p className="mt-4 text-[clamp(1.3rem,1.05rem+1vw,1.85rem)] leading-[1.35] tracking-[-0.012em] text-pretty">{f.abstract}</p>
-            </div>
-
-            <div className="col-span-12 grid grid-cols-subgrid gap-y-5">
-              <h2 className="t-h2 col-span-12 lg:col-span-8 lg:col-start-3">Background</h2>
-              <div className="col-span-12 lg:col-span-8 lg:col-start-3">
-                <Para n={++p}>{f.background}</Para>
-              </div>
-            </div>
-
-            <div className="col-span-12 grid grid-cols-subgrid gap-y-5">
-              <h2 className="t-h2 col-span-12 lg:col-span-8 lg:col-start-3">Drawings</h2>
-              <ol className="col-span-12 grid gap-2 lg:col-span-8 lg:col-start-3">
-                {f.figures.map((fig, k) => (
-                  <li key={k} className="grid grid-cols-[4.5rem_1fr] gap-2">
-                    <a href={`#fig-${k + 1}`} className="link justify-self-start self-start font-semibold [font-stretch:110%]">
-                      FIG. {k + 1}
-                    </a>
-                    <span className="ink-2">{fig.caption}</span>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </div>
-        </section>
-
-        {/* Figures */}
-        <section aria-label="Figures" className="grid gap-16 pb-8 lg:gap-24">
-          {f.figures.map((fig, k) => {
-            const narrow = fig.kind === "image" && fig.img.h > fig.img.w; // tall report stays readable
-            return (
-              <div key={k} id={`fig-${k + 1}`} className="sheet-inner scroll-mt-24">
-                <div className={narrow ? "col-span-12 lg:col-span-8 lg:col-start-3" : "col-span-12 lg:col-span-10 lg:col-start-2"}>
-                  <FigureView figure={fig} n={k + 1} />
-                </div>
-              </div>
-            );
-          })}
-        </section>
-
-        {/* Detailed description */}
-        <section className="sheet" aria-labelledby="dd-title">
-          <div className="sheet-inner gap-y-4">
-            <h2 id="dd-title" className="t-h2 col-span-12 lg:col-span-8 lg:col-start-3">
-              Detailed description
-            </h2>
-            <div className="col-span-12 mt-8 grid min-w-0 gap-14 lg:col-span-8 lg:col-start-3">
-              {f.decisions.map((d) => (
-                <article key={d.title} className="min-w-0">
-                  <h3 className="t-h3">{d.title}</h3>
-                  <div className="mt-3">
-                    <Para n={++p}>{d.body}</Para>
-                  </div>
-                  {d.code && (
-                    <div className="mt-5">
-                      <CodeBlock code={d.code.code} />
-                    </div>
-                  )}
-                </article>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Claims */}
-        <section className="sheet" aria-labelledby="claims-title">
-          <div className="sheet-inner">
-            <div className="col-span-12 lg:col-span-8 lg:col-start-3">
-              <h2 id="claims-title" className="t-h2">
-                What is claimed is:
-              </h2>
-              <ol className="mt-8 grid gap-6">
-                {f.claims.map((c, k) => (
-                  <li key={k} className="grid grid-cols-[2.25rem_1fr] gap-3">
-                    <span className="t-h3 ink-3 text-right">{k + 1}.</span>
-                    <p className="t-h3 font-medium [font-stretch:100%]">{c}</p>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </div>
-        </section>
-
-        {/* Next filing */}
-        <nav aria-label="Next filing" className="border-t border-[var(--ink)]">
-          <Link href={`/work/${next.slug}`} transitionTypes={["nav-forward"]} className="next-filing group block no-underline">
-            <div className="sheet-inner items-end gap-y-3 py-14 lg:py-20">
-              <p className="col-span-12 t-small lg:col-span-2">Next filing</p>
-              <p className="col-span-12 lg:col-span-9">
-                <span className="ref mr-4 text-[0.9rem]">{next.no}</span>
-                <span className="t-display text-[clamp(2.4rem,1rem+5vw,5rem)] transition-colors duration-200 group-hover:text-[var(--accent)]">{next.title}</span>
-              </p>
-              <ArrowRight size={36} className="col-span-12 transition-transform duration-200 group-hover:translate-x-1.5 lg:col-span-1 lg:justify-self-end" aria-hidden />
-            </div>
+    <ViewTransition enter={{ "nav-forward": "page", "nav-back": "page", default: "none" }} exit={{ "nav-forward": "page", "nav-back": "page", default: "none" }} default="none">
+      <main id="main" className="notes grain">
+        <div className="frame notes-top">
+          <Link href={r ? `/#rec-${r.slug}` : "/#film"} className="notes-back pk" transitionTypes={["nav-back"]}>
+            ← Back to the {r ? "crate" : "film shelf"}
           </Link>
-        </nav>
+        </div>
+
+        <header className="frame notes-head">
+          <div className="notes-object">
+            {r ? (
+              <>
+                <Vinyl r={r} className="notes-vinyl" />
+                <ViewTransition name={`cover-${r.slug}`} share="cover">
+                  <Sleeve r={r} sizes="(min-width: 1024px) 40vw, 90vw" priority />
+                </ViewTransition>
+              </>
+            ) : film ? (
+              <div className="notes-case">
+                <FilmCover f={film} sizes="(min-width: 1024px) 34vw, 80vw" />
+                <span className="case-plastic" aria-hidden />
+              </div>
+            ) : null}
+          </div>
+          <div className="notes-id">
+            <p className="cat ink-3">
+              {cat} · {r ? `${r.label} · ${r.format}` : "Featurette"} · {f.year}
+            </p>
+            <h1 className="notes-title display">{f.title}</h1>
+            <p className="lede notes-short">{f.short}</p>
+            <dl className="notes-credits">
+              {[
+                { k: "Produced", v: f.role },
+                { k: "Field", v: f.field },
+                { k: "Status", v: f.status },
+                { k: "Engineered with", v: f.stack.join(" · ") },
+              ].map((x) => (
+                <div key={x.k}>
+                  <dt className="pk ink-3">{x.k}</dt>
+                  <dd>{x.v}</dd>
+                </div>
+              ))}
+            </dl>
+            <div className="notes-links">
+              {live && (
+                <a className="press" href={live.href} target="_blank" rel="noreferrer">
+                  Play it live ↗
+                </a>
+              )}
+              {source && (
+                <a className="ink-link" href={source.href} target="_blank" rel="noreferrer">
+                  Source on GitHub ↗
+                </a>
+              )}
+            </div>
+          </div>
+        </header>
+
+        {f.facts.length > 0 && (
+          <section className="frame pressing" aria-label="Pressing data">
+            {f.facts.map((x, k) => (
+              <div key={x.label} className="pressing-cell">
+                <p className="pressing-value" style={{ "--rot": `${[-2, 1.5, -1, 2][k % 4]}deg` } as React.CSSProperties}>
+                  {x.value}
+                </p>
+                <p className="small">{x.label}</p>
+              </div>
+            ))}
+          </section>
+        )}
+
+        <section className="frame notes-body" aria-labelledby="notes-title">
+          <h2 id="notes-title" className="pk ink-3">
+            Liner notes
+          </h2>
+          <p className="notes-abstract display">{f.abstract}</p>
+          <p className="notes-text">{f.background}</p>
+        </section>
+
+        {f.figures.length > 0 && (
+          <section className="frame inserts" aria-label="Inserts">
+            {f.figures.map((fig, k) =>
+              fig.kind === "image" ? (
+                <figure key={k} className="insert" style={{ "--rot": `${k % 2 ? 0.6 : -0.8}deg` } as React.CSSProperties}>
+                  <Image src={fig.img.src} alt={fig.img.alt} width={fig.img.w} height={fig.img.h} sizes="(min-width: 1024px) 60vw, 94vw" quality={80} />
+                  <figcaption className="small">
+                    <span className="cat ink-3">Insert {k + 1}</span> {fig.caption}
+                  </figcaption>
+                </figure>
+              ) : fig.kind === "code" ? (
+                <figure key={k} className="insert insert-print">
+                  <p className="pk ink-3">{fig.title}</p>
+                  <pre>
+                    <code>{fig.code}</code>
+                  </pre>
+                  <figcaption className="small">{fig.caption}</figcaption>
+                </figure>
+              ) : null,
+            )}
+          </section>
+        )}
+
+        <section className="frame tracklist" aria-labelledby="tracks-title">
+          <h2 id="tracks-title" className="h2">
+            Track list
+          </h2>
+          <p className="small tracklist-note">The decisions that made it work, in the order they matter.</p>
+          <div className="tracklist-sides">
+            {(["A", "B"] as const).map((side) => {
+              const list = side === "A" ? f.decisions.slice(0, half) : f.decisions.slice(half);
+              if (!list.length) return null;
+              return (
+                <ol key={side} className="tracklist-side">
+                  <li className="pk tracklist-side-label" aria-hidden>
+                    Side {side}
+                  </li>
+                  {list.map((d, k) => (
+                    <li key={d.title} className="track">
+                      <h3 className="track-title">
+                        <span className="cat ink-3">
+                          {side}
+                          {k + 1}
+                        </span>{" "}
+                        {d.title}
+                      </h3>
+                      <p className="track-body">{d.body}</p>
+                      {d.code && (
+                        <pre className="track-code">
+                          <code>{d.code.code}</code>
+                        </pre>
+                      )}
+                    </li>
+                  ))}
+                </ol>
+              );
+            })}
+          </div>
+        </section>
+
+        {f.claims.length > 0 && (
+          <section className="frame pressing-notes" aria-labelledby="pn-title">
+            <h2 id="pn-title" className="pk ink-3">
+              Pressing notes
+            </h2>
+            <ul>
+              {f.claims.map((c) => (
+                <li key={c}>{c}</li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {next && next.slug !== slug && (
+          <nav className="frame next-in-crate" aria-label="Next release">
+            <Link href={`/work/${next.slug}`} className="next-link" transitionTypes={["nav-forward"]}>
+              <span className="next-cover">
+                <Sleeve r={next} sticker={false} sizes="160px" />
+              </span>
+              <span>
+                <span className="pk ink-3">Next in the crate · {next.cat}</span>
+                <span className="next-title display">{next.title}</span>
+              </span>
+            </Link>
+          </nav>
+        )}
       </main>
     </ViewTransition>
-  );
-}
-
-function Para({ n, children }: { n: number; children: React.ReactNode }) {
-  return (
-    <p className="t-body relative text-[1.08rem] leading-[1.7]">
-      <span className="t-num ink-3 absolute -left-[4.5rem] top-[0.3rem] hidden lg:inline" aria-hidden>
-        {para(n)}
-      </span>
-      {children}
-    </p>
   );
 }

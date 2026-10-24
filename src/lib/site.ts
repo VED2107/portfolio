@@ -11,21 +11,10 @@ export const SITE = {
   resume: "/Ved_Chauhan_RESUME.pdf",
 } as const;
 
-/** The home page is a filing; each section is a sheet. Order = reading order. */
-export const SHEETS = [
-  { id: "cover", label: "Cover" },
-  { id: "filings", label: "Filings" },
-  { id: "archive", label: "Other filings" },
-  { id: "claims", label: "Claims" },
-  { id: "field", label: "Field" },
-  { id: "status", label: "Status" },
-  { id: "correspondence", label: "Correspondence" },
-] as const;
-
-export type SheetId = (typeof SHEETS)[number]["id"];
-
 /** NOW. Edit this block when the work changes; `updated` is shown on the page. */
-export const NOW = {
+export type NowRow = { verb: string; what: string; detail: string; href?: string };
+
+export const NOW: { updated: string; rows: NowRow[] } = {
   updated: "2026-10-09",
   rows: [
     {
@@ -63,83 +52,4 @@ export const NOW = {
       href: "https://snowbros.me",
     },
   ],
-} as const;
-
-/** How he works, written as claims. Each one is backed by a filing. */
-export const CLAIMS: { text: string; dependsOn?: number; evidence: string[] }[] = [
-  {
-    text: "Software whose output is a pure function of its input. Same code in, same result out.",
-    evidence: ["snowbros-atlas"],
-  },
-  {
-    text: "wherein money is an integer, never a float, from the database to the receipt.",
-    dependsOn: 1,
-    evidence: ["accounic", "vinnys-atelier"],
-  },
-  {
-    text: "wherein the database decides and every client only displays what it decided.",
-    dependsOn: 1,
-    evidence: ["accounic"],
-  },
-  {
-    text: "A finding is reported only with the evidence that proves it. What cannot be proven is labelled unresolved.",
-    evidence: ["snowbros-atlas"],
-  },
-  {
-    text: "An interface that respects the keyboard as much as the pointer.",
-    evidence: ["vinnys-atelier", "ved-exe"],
-  },
-  {
-    text: "Shipping is the start: CI on every push, releases a person approves, and apps that update themselves.",
-    evidence: ["accounic", "snowbros-atlas"],
-  },
-  {
-    text: "wherein the visual design is part of the specification, not a coat of paint.",
-    dependsOn: 5,
-    evidence: ["vinnys-vogue", "ved-exe"],
-  },
-];
-
-/** Capability x filing chart. Every mark is backed by the named filing's stack. */
-export const CAPABILITIES: { name: string; tools: string; filings: string[] }[] = [
-  {
-    name: "Product engineering",
-    tools: "React, Next.js, TypeScript, Tailwind",
-    filings: ["accounic", "vinnys-atelier", "vinnys-vogue", "stc-academy", "ved-exe"],
-  },
-  {
-    name: "Data and backend",
-    tools: "PostgreSQL, Supabase, RLS, RPCs, Drizzle, job queues",
-    filings: ["accounic", "vinnys-atelier", "amr-drug-repurposing", "vinnys-vogue", "stc-academy"],
-  },
-  {
-    name: "Systems and tooling",
-    tools: "Rust, Tree-sitter, LSP, VS Code API, TCP/HTTP transfer engines",
-    filings: ["snowbros-atlas", "swiftdrop"],
-  },
-  {
-    name: "Cross-platform",
-    tools: "Flutter, Dart, Tauri 2, Android, Windows",
-    filings: ["accounic", "swiftdrop", "vinnys-atelier"],
-  },
-  {
-    name: "Payments and money",
-    tools: "Razorpay UPI, multi-currency, integer money",
-    filings: ["accounic", "vinnys-atelier"],
-  },
-  {
-    name: "Delivery",
-    tools: "GitHub Actions, Playwright, SARIF, release pipelines, benchmarks",
-    filings: ["snowbros-atlas", "accounic", "swiftdrop", "vinnys-atelier"],
-  },
-  {
-    name: "Scientific computing",
-    tools: "Python, RDKit, scikit-learn, AutoDock Vina, Docker workers",
-    filings: ["amr-drug-repurposing"],
-  },
-  {
-    name: "Interface and motion",
-    tools: "Design systems, typography, View Transitions",
-    filings: ["vinnys-atelier", "vinnys-vogue", "ved-exe"],
-  },
-];
+};

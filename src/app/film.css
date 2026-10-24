@@ -1,0 +1,293 @@
+/* ------------------------------------------------------------ the film room */
+
+.film {
+  --paper: var(--film);
+  --ink: var(--film-ink);
+  --ink-2: var(--film-ink-2);
+  --ink-3: var(--film-ink-3);
+  --rule: #262b35;
+  background: var(--film);
+  color: var(--film-ink);
+  padding-block: clamp(4rem, 9vw, 8rem) clamp(5rem, 10vw, 9rem);
+  position: relative;
+}
+.film-ink-3 {
+  color: var(--film-ink-3);
+}
+.film-head {
+  display: grid;
+  gap: 1.25rem;
+  margin-bottom: clamp(2.5rem, 6vw, 5rem);
+}
+.film-lede {
+  max-width: 40ch;
+  color: var(--film-ink-2);
+}
+@media (min-width: 1024px) {
+  .film-head {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: end;
+  }
+  .film-head > .pk {
+    grid-column: 1 / -1;
+  }
+  .film-lede {
+    justify-self: end;
+  }
+}
+
+.case-plastic {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: 4px;
+  box-shadow:
+    inset 0 0 0 1px rgb(255 255 255 / 0.22),
+    inset 6px 0 0 rgb(255 255 255 / 0.06);
+  background: linear-gradient(105deg, transparent 40%, rgb(255 255 255 / 0.14) 48%, transparent 58%);
+}
+
+.cert {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.3rem 0.5rem 0.3rem 0.4rem;
+  border: 1px solid rgb(255 255 255 / 0.3);
+  border-radius: 2px;
+  color: var(--film-ink);
+}
+.cert::before {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: var(--film-cobalt);
+}
+.cert[data-maturity="Live"]::before,
+.cert[data-maturity="In production"]::before {
+  background: #4ade80;
+}
+.cert[data-maturity="Experiment"]::before {
+  background: var(--fluor);
+}
+
+
+/* Case art. */
+.film-cover {
+  position: relative;
+  aspect-ratio: 0.78;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--tone);
+  color: #0c0e12;
+  container-type: inline-size;
+}
+.film-still {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 20%;
+  filter: saturate(0.85) contrast(1.05);
+}
+.film-cover::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 45%, rgb(5 6 9 / 0.85));
+}
+.film-card {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: start;
+  padding: 7cqw;
+  background:
+    repeating-linear-gradient(90deg, transparent 0 9cqw, rgb(0 0 0 / 0.07) 9cqw 9.4cqw),
+    var(--tone);
+}
+.film-cover-title {
+  position: absolute;
+  left: 7cqw;
+  right: 7cqw;
+  bottom: 13cqw;
+  z-index: 2;
+  color: #f4f6fa;
+  font-size: 14cqw;
+  font-style: italic;
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+.film-cover-band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  padding: 2.4cqw 5cqw;
+  background: #2a3cff;
+  color: #fff;
+  font-size: max(7px, 3.2cqw);
+}
+
+/* ------------------------------------------------------------ disc menu */
+
+.discmenu {
+  position: fixed;
+  inset: 0;
+  z-index: 85;
+  background: #07080b;
+  color: var(--film-ink);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.discmenu-inner {
+  min-height: 100%;
+  display: grid;
+  gap: 2rem;
+  align-content: center;
+  padding-block: 4rem 3rem;
+}
+.menu-stage {
+  position: relative;
+  width: min(70vw, 20rem);
+  justify-self: center;
+  translate: -14% 0;
+  perspective: 1200px;
+}
+.menu-case {
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 40px 60px -30px rgb(0 0 0 / 0.9);
+}
+.disc {
+  position: absolute;
+  z-index: 1;
+  top: 6%;
+  left: 38%;
+  width: 92%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  --a: 0deg;
+  background:
+    radial-gradient(circle, transparent 0 7%, rgb(255 255 255 / 0.5) 7.5% 8%, transparent 8.5% 15%, rgb(0 0 0 / 0.25) 15.5% 16%, transparent 16.5%),
+    conic-gradient(from var(--a), #ff6a88 0deg, #ffd56b 40deg, #7dffb5 80deg, #6fb7ff 130deg, #c48bff 180deg, #ff6a88 220deg, #ffd56b 260deg, #7dffb5 300deg, #6fb7ff 340deg, #ff6a88 360deg),
+    #c9ccd2;
+  background-blend-mode: normal, soft-light, normal;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.4), 0 20px 40px -20px rgb(0 0 0 / 0.8);
+  -webkit-mask: radial-gradient(circle, transparent 0 6.5%, #000 7%);
+  mask: radial-gradient(circle, transparent 0 6.5%, #000 7%);
+}
+.disc::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from calc(var(--a) + 90deg), transparent 0 40deg, rgb(255 255 255 / 0.55) 55deg, transparent 75deg 220deg, rgb(255 255 255 / 0.35) 235deg, transparent 255deg);
+  mix-blend-mode: overlay;
+}
+.disc-label {
+  position: absolute;
+  inset: 22%;
+  border-radius: 50%;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 0.2rem;
+  text-align: center;
+  color: #0b0d11;
+  background: radial-gradient(circle, transparent 0 22%, rgb(255 255 255 / 0.75) 23%);
+}
+.disc-title {
+  font: italic 500 1.05rem/1 var(--f-display);
+}
+.menu-panel {
+  display: grid;
+  gap: 1rem;
+  align-content: start;
+  max-width: 34rem;
+}
+.menu-logline {
+  color: var(--film-ink-2);
+  font-size: 1.05rem;
+}
+.menu-list {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.25rem;
+}
+.menu-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 48px;
+  padding: 0 0.9rem 0 1.6rem;
+  border: 0;
+  border-radius: 2px;
+  background: none;
+  color: var(--film-ink);
+  font: 700 1.35rem/1 var(--f-sans);
+  font-stretch: 112%;
+  letter-spacing: -0.015em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background-color var(--d-ui) var(--ease-ui);
+}
+.menu-item::before {
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  border: 0.32rem solid transparent;
+  border-left: 0.5rem solid var(--fluor);
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity var(--d-ui), transform var(--d-ui) var(--ease-ui);
+}
+.menu-item:focus-visible,
+.menu-item:hover {
+  background: rgb(255 255 255 / 0.07);
+  outline: none;
+}
+.menu-item:focus-visible::before,
+.menu-item:hover::before {
+  opacity: 1;
+  transform: none;
+}
+.menu-item span {
+  font: 500 0.8rem/1 var(--f-sans);
+  margin-left: auto;
+}
+.menu-group {
+  padding: 0.9rem 0 0.4rem 1.6rem;
+}
+.menu-group ol,
+.menu-group ul {
+  list-style: none;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  display: grid;
+  gap: 0.35rem;
+}
+.menu-chapter {
+  display: flex;
+  gap: 0.75rem;
+  align-items: baseline;
+  color: var(--film-ink-2);
+}
+@media (min-width: 1024px) {
+  .discmenu-inner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+  }
+  .menu-stage {
+    width: min(26vw, 50vh);
+  }
+}

@@ -1,0 +1,156 @@
+/* ------------------------------------------------------------ the card terminal on the counter */
+
+.pay {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto;
+  align-items: end;
+  justify-content: start;
+  gap: 1.25rem 2.5rem;
+  padding: 1.5rem 0.5rem 0.5rem;
+  margin: 0.5rem 0 1rem;
+}
+.pay-card {
+  position: relative;
+  z-index: 3;
+  width: 11rem;
+  aspect-ratio: 1.586;
+  padding: 0.75rem 0.85rem;
+  border: 0;
+  border-radius: 10px;
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  text-align: left;
+  color: #f6e9d4;
+  background:
+    radial-gradient(120% 90% at 0% 0%, rgb(255 255 255 / 0.18), transparent 50%),
+    linear-gradient(135deg, var(--oxblood), #3a0f0d);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.2) inset, 0 18px 24px -14px rgb(0 0 0 / 0.65);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+.pay-card:active {
+  cursor: grabbing;
+}
+.pay-card-chip {
+  width: 1.9rem;
+  height: 1.4rem;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #f0d48a, #a8813a);
+  box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.2);
+}
+.pay-card-brand {
+  align-self: start;
+  justify-self: end;
+  margin-top: -1.3rem;
+  color: #e7c878;
+}
+.pay-card-no {
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+}
+.pay-card-name {
+  font-size: 0.6rem;
+  opacity: 0.8;
+}
+
+.pay-term {
+  position: relative;
+  width: 8.5rem;
+  height: 13.5rem;
+  padding: 0.8rem 0.7rem;
+  border-radius: 16px 16px 12px 12px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 0.6rem;
+  background: linear-gradient(180deg, #34363c, #1f2024);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12), 0 24px 30px -18px rgb(0 0 0 / 0.75);
+}
+.pay-screen {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  align-content: center;
+  height: 3.6rem;
+  padding: 0 0.5rem;
+  border-radius: 4px;
+  background: #b9c7a7;
+  color: #1f2a17;
+  font: 600 0.78rem/1.25 var(--f-mono);
+  box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.35);
+}
+.pay[data-step="webhook"] .pay-screen span:last-child {
+  animation: blink 0.9s steps(2) infinite;
+}
+.pay[data-step="approved"] .pay-screen {
+  background: #9fdc8a;
+  color: #0e2a06;
+}
+@keyframes blink {
+  50% {
+    opacity: 0.3;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pay[data-step="webhook"] .pay-screen span:last-child {
+    animation: none;
+  }
+}
+.pay-keys {
+  align-self: start;
+  height: 4.4rem;
+  background: radial-gradient(circle, #5b5e66 0 7px, transparent 7.5px) 0 0 / 33.3% 33.3%;
+  opacity: 0.9;
+}
+.pay-reader {
+  justify-self: center;
+  padding: 0.2rem 0.45rem;
+  border: 1px dashed rgb(255 255 255 / 0.35);
+  border-radius: 4px;
+  color: rgb(255 255 255 / 0.6);
+  font-size: 0.55rem;
+}
+/* The receipt feeds out of the top of the terminal. */
+.pay-slip {
+  position: absolute;
+  left: 0.9rem;
+  right: 0.9rem;
+  bottom: calc(100% - 0.6rem);
+  z-index: 1;
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.6rem 0.5rem 1rem;
+  background: #fbfaf5;
+  color: #1d1a16;
+  font: 500 0.56rem/1.3 var(--f-mono);
+  text-align: center;
+  transform: translateY(100%);
+  clip-path: inset(-100% 0 0 0);
+}
+.pay-note {
+  grid-column: 1 / -1;
+  max-width: 34ch;
+}
+@media (max-width: 479px) {
+  .pay {
+    gap: 1rem 1.25rem;
+  }
+  .pay-card {
+    width: 9.5rem;
+  }
+  .pay-term {
+    width: 7.5rem;
+  }
+}
+
+.counter-objects {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 1rem 2.5rem;
+}
+.counter-objects .badge {
+  margin-bottom: 2.6rem;
+}

@@ -1,0 +1,249 @@
+/* ------------------------------------------------------------ the record room: a spinning rack */
+
+.spin {
+  position: relative;
+}
+.spin-pin {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  display: grid;
+  align-items: center;
+  background: #2a1d12;
+  color: #f3ead9;
+}
+/* The shop around the rack: plaster, wall racks of spines, a wooden floor, pendant lights. */
+.spin-scene {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.spin-wall {
+  position: absolute;
+  inset: 0 0 26%;
+  background:
+    radial-gradient(60% 70% at 50% 40%, rgb(255 222 168 / 0.32), transparent 70%),
+    linear-gradient(180deg, #4a3423, #3a281a);
+}
+/* Record spines in the wall racks: thin, many colours, two long shelves. */
+.spin-racks {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 22%;
+  height: 46%;
+  opacity: 0.55;
+  background:
+    linear-gradient(180deg, transparent 0 46%, #1c120a 46% 50%, transparent 50% 96%, #1c120a 96%),
+    repeating-linear-gradient(90deg, #6e1f1c 0 7px, #c9a46a 7px 12px, #2638b8 12px 17px, #d8d0bd 17px 25px, #127c86 25px 30px, #191512 30px 33px, #a3355f 33px 39px, #e7efee 39px 45px, #3a2414 45px 47px);
+  -webkit-mask: linear-gradient(90deg, #000 0 30%, transparent 40% 60%, #000 70%);
+  mask: linear-gradient(90deg, #000 0 30%, transparent 40% 60%, #000 70%);
+}
+.spin-floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 26%;
+  background:
+    radial-gradient(40% 60% at 50% 20%, rgb(255 210 140 / 0.25), transparent 70%),
+    repeating-linear-gradient(90deg, transparent 0 140px, rgb(0 0 0 / 0.25) 140px 142px),
+    linear-gradient(180deg, #6b4423, #3a2414);
+}
+.spin-pendant {
+  position: absolute;
+  top: 0;
+  left: calc(14% + var(--i) * 18%);
+  width: 2px;
+  height: calc(8vh + (var(--i) - 2) * (var(--i) - 2) * 1.5vh);
+  background: #1a120b;
+}
+.spin-pendant::after {
+  content: "";
+  position: absolute;
+  left: -2.2rem;
+  top: 100%;
+  width: 4.4rem;
+  height: 2.2rem;
+  border-radius: 4.4rem 4.4rem 0 0;
+  background: linear-gradient(180deg, #2a2a2a, #111);
+  box-shadow: 0 2.2rem 3rem rgb(255 214 150 / 0.35);
+}
+
+.spin-stage {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 24rem) minmax(0, 1fr) minmax(0, 13rem);
+  gap: 2rem;
+  align-items: center;
+  padding-top: var(--header-h);
+}
+
+/* The shelf talker beside the rack. */
+.spin-talker {
+  position: relative;
+  z-index: 3;
+  display: grid;
+  gap: 0.7rem;
+  justify-items: start;
+  padding: 1.6rem 1.5rem 1.4rem;
+  background: #fbf7ec;
+  color: #17130e;
+  rotate: -1.2deg;
+  box-shadow: 0 26px 34px -20px rgb(0 0 0 / 0.75);
+}
+.spin-talker .talker-clip {
+  left: 1.5rem;
+  right: auto;
+}
+.spin-talker-cat {
+  color: #8e2a22;
+}
+.spin-talker-title {
+  font-size: clamp(2.6rem, 1.8rem + 2vw, 4.2rem);
+  font-style: italic;
+}
+.spin-talker-genre {
+  color: #6e1f1c;
+}
+.spin-talker-short {
+  font-size: 1.02rem;
+  line-height: 1.45;
+}
+.spin-talker-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.3rem 0 0.5rem;
+}
+.spin-talker-facts dd,
+.spin-talker-facts dt {
+  margin: 0;
+}
+.spin-talker-hint {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: #4b4337 !important;
+}
+
+/* The rack. */
+.spin-stand {
+  --s: min(27vw, 54vh);
+  --r: calc(var(--s) * 1.21);
+  position: relative;
+  justify-self: center;
+  width: var(--s);
+  height: calc(var(--s) * 1.25);
+  perspective: 1900px;
+  perspective-origin: 50% 22%;
+  transform-style: preserve-3d;
+  pointer-events: none;
+}
+.spin-rack {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 6%;
+  height: var(--s);
+  transform-style: preserve-3d;
+  transform: translateZ(calc(var(--r) * -1));
+  will-change: transform;
+}
+.spin-slot {
+  position: absolute;
+  inset: 0;
+  transform: rotateY(var(--a)) translateZ(var(--r));
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+.spin-slot .crate-record {
+  pointer-events: auto;
+  transition: transform 480ms var(--ease-sleeve);
+}
+.spin-slot .sleeve {
+  position: relative;
+  z-index: 2;
+}
+.spin-vinyl {
+  z-index: 1;
+  left: 11%;
+  top: -14%;
+  width: 78%;
+  transition: transform 620ms var(--ease-vinyl);
+}
+@media (hover: hover) and (pointer: fine) {
+  .spin-slot .crate-record:hover {
+    transform: translateY(-14px) translateZ(30px);
+  }
+  .spin-slot .crate-record:hover .spin-vinyl {
+    transform: translateY(-12%) rotate(30deg);
+  }
+}
+.spin-post {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 14px;
+  height: 108%;
+  margin-left: -7px;
+  transform: translateZ(calc(var(--r) * -1));
+  background: linear-gradient(90deg, #6d737b, #e6e9ee 45%, #7d838c);
+  border-radius: 7px;
+}
+.spin-base {
+  position: absolute;
+  left: 50%;
+  bottom: -2%;
+  width: calc(var(--r) * 2.3);
+  height: calc(var(--r) * 0.5);
+  translate: -50% 0;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, #8a5a33 0 82%, #4a2d16 86%, transparent 100%);
+  box-shadow: 0 40px 50px -20px rgb(0 0 0 / 0.8);
+  transform: translateZ(calc(var(--r) * -1));
+}
+
+/* The index: every record on the rack, by catalogue number. */
+.spin-index {
+  position: relative;
+  z-index: 3;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 2px;
+}
+.spin-index button {
+  display: grid;
+  width: 100%;
+  min-height: 44px;
+  padding: 0.45rem 0.6rem;
+  border: 0;
+  border-radius: 2px;
+  background: rgb(30 20 12 / 0.82);
+  color: rgb(243 234 217 / 0.78);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--d-ui), color var(--d-ui);
+}
+.spin-index .cat {
+  font-size: 0.64rem;
+  opacity: 0.8;
+}
+.spin-index-title {
+  font-weight: 650;
+  font-size: 0.92rem;
+}
+.spin-index button[aria-current="true"] {
+  background: #fbf7ec;
+  color: #17130e;
+  box-shadow: inset 3px 0 0 var(--fluor);
+}
+@media (hover: hover) and (pointer: fine) {
+  .spin-index button:hover {
+    color: #f3ead9;
+    background: rgb(255 255 255 / 0.1);
+  }
+}
