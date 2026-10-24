@@ -219,29 +219,45 @@ function shelf(c: AudioContext, out: AudioNode): Voice {
 
 const MAKERS: Record<string, (c: AudioContext, out: AudioNode) => Voice> = { ascent, tick: tickCue, shelf };
 
-/** A supplied recording: streamed through the same master gain, looped, faded in and out. */
+/** Cache decoded audio buffers so repeated plays don't re-fetch. */
+const bufferCache = new Map<string, AudioBuffer>();
+
+/** A supplied recording: fetched, decoded, and played through the Web Audio graph. */
 function recording(c: AudioContext, out: AudioNode, src: string): Voice {
-  const el = new Audio(src);
-  el.loop = true;
-  el.preload = "auto";
-  // Only set crossOrigin for external URLs — same-origin files don't need it,
-  // and setting it forces a CORS preflight that Next.js static serving may not satisfy.
-  if (src.startsWith("http")) el.crossOrigin = "anonymous";
-  el.onerror = () => {
-    console.warn("[score] failed to load recording:", src, el.error);
-    window.setTimeout(() => nextCue(), 0);
+  let source: AudioBufferSourceNode | null = null;
+  let stopped = false;
+
+  const play = async () => {
+    try {
+      let buffer = bufferCache.get(src);
+      if (!buffer) {
+        const res = await fetch(src);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.arrayBuffer();
+        buffer = await c.decodeAudioData(data);
+        bufferCache.set(src, buffer);
+      }
+      if (stopped) return;               // stopped while loading
+      source = c.createBufferSource();
+      source.buffer = buffer;
+      source.loop = true;
+      source.connect(out);
+      source.start(0);
+    } catch (e) {
+      console.warn("[score] recording failed:", src, e);
+      if (!stopped) window.setTimeout(() => nextCue(), 0);
+    }
   };
-  const node = c.createMediaElementSource(el);
-  node.connect(out);
-  void el.play().catch((e) => {
-    console.warn("[score] play() rejected:", e);
-  });
+
+  void play();
+
   return {
     stop: () => {
-      window.setTimeout(() => {
-        el.pause();
-        node.disconnect();
-      }, 1200);
+      stopped = true;
+      if (source) {
+        try { source.stop(); } catch { /* already stopped */ }
+        source.disconnect();
+      }
     },
   };
 }
