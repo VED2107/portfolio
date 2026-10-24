@@ -44,7 +44,16 @@
   box-shadow:
     inset 0 0 0 1px rgb(255 255 255 / 0.22),
     inset 6px 0 0 rgb(255 255 255 / 0.06);
-  background: linear-gradient(105deg, transparent 40%, rgb(255 255 255 / 0.14) 48%, transparent 58%);
+  /* The reflection belongs to the surface: a long band along the plastic's grain that slides
+     with the pointer, plus a small hot spot where the light source actually lands. */
+  --x: calc(var(--px, 0.42) * 100%);
+  background:
+    radial-gradient(28% 22% at var(--x) calc(var(--py, 0.3) * 100%), rgb(255 255 255 / 0.12), transparent 70%),
+    linear-gradient(105deg, transparent calc(var(--x) - 14%), rgb(255 255 255 / 0.15) var(--x), transparent calc(var(--x) + 11%));
+}
+.fcase .case-plastic {
+  border-radius: 3px;
+  box-shadow: inset 1px 0 0 rgb(255 255 255 / 0.2);
 }
 
 .cert {
@@ -116,7 +125,6 @@
   z-index: 2;
   color: #f4f6fa;
   font-size: 14cqw;
-  font-style: italic;
   line-height: 0.9;
   letter-spacing: -0.04em;
 }
@@ -129,7 +137,7 @@
   display: flex;
   justify-content: space-between;
   padding: 2.4cqw 5cqw;
-  background: #2a3cff;
+  background: #26304a;
   color: #fff;
   font-size: max(7px, 3.2cqw);
 }
@@ -203,7 +211,7 @@
   background: radial-gradient(circle, transparent 0 22%, rgb(255 255 255 / 0.75) 23%);
 }
 .disc-title {
-  font: italic 500 1.05rem/1 var(--f-display);
+  font: 800 1.05rem/1 var(--f-display);
 }
 .menu-panel {
   display: grid;

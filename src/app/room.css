@@ -20,7 +20,6 @@
 }
 .fbay-title {
   font-size: clamp(2.2rem, 1.6rem + 1.6vw, 3.4rem);
-  font-style: italic;
   line-height: 0.95;
 }
 .fbay-note {
@@ -89,8 +88,8 @@
   align-self: stretch;
   padding: 0.4rem 0;
   text-align: center;
-  background: #2a3cff;
-  color: #fff;
+  background: #26304a;
+  color: #e9edf6;
   font-size: 0.62rem;
 }
 .fcase-title {
@@ -112,6 +111,38 @@
 }
 .fcase:active {
   transform: translateY(-8px) scale(0.98);
+}
+/* Pull a spine: it comes forward off the shelf and swings a little toward you; its
+   neighbours give way. Plastic is snappy (the hinge's overshoot), unlike cardboard. */
+.fcase-slot,
+.fface-slot {
+  transition: translate 380ms var(--ease-plastic);
+}
+@media (hover: hover) and (pointer: fine) {
+  .fcase:hover,
+  .fcase:focus-visible {
+    transform: perspective(700px) translateY(-14px) rotateY(-14deg);
+    box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.28), 18px 26px 30px -16px rgb(0 0 0 / 0.9);
+  }
+  .fcase-slot:hover ~ .fcase-slot {
+    translate: 7px 0;
+  }
+  .fcase-slot:has(~ .fcase-slot:hover) {
+    translate: -7px 0;
+  }
+  .fface-slot:hover ~ .fface-slot {
+    translate: 9px 0;
+  }
+  .fface-slot:has(~ .fface-slot:hover) {
+    translate: -9px 0;
+  }
+}
+/* Touch: the first tap takes the case off the shelf (same pose), the second opens it. */
+.fcase-slot[data-picked] .fcase {
+  transform: perspective(700px) translateY(-14px) rotateY(-14deg);
+}
+.fface-slot[data-picked] .fface {
+  transform: translateY(-12px) rotate(-1deg);
 }
 .fface-slot {
   display: grid;

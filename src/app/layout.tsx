@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Archivo, Bodoni_Moda, Geist_Mono } from "next/font/google";
+import { Big_Shoulders, Fraunces, IBM_Plex_Mono, Schibsted_Grotesk } from "next/font/google";
 import "./globals.css";
 import "./store.css";
 import "./crate.css";
@@ -10,7 +10,6 @@ import "./records-room.css";
 import "./catalogue.css";
 import "./counter.css";
 import "./counter-scene.css";
-import "./pay.css";
 import "./pages.css";
 import { SITE } from "@/lib/site";
 import { ShopHeader } from "@/components/shop/ShopHeader";
@@ -20,25 +19,35 @@ import { CatalogTerminal } from "@/components/shop/CatalogTerminal";
 import { Notices } from "@/components/shop/Notices";
 import { ClosingTime } from "@/components/shop/ClosingTime";
 
-const bodoni = Bodoni_Moda({
+// Signwriting: condensed shop-fascia letters for names, aisles and the marquee.
+const shoulders = Big_Shoulders({
   subsets: ["latin"],
   axes: ["opsz"],
-  style: ["normal", "italic"],
-  variable: "--font-bodoni",
+  variable: "--font-sign",
   display: "swap",
 });
 
-const archivo = Archivo({
+// The label: a soft, heavy 70s serif, the kind printed on record labels and painted on shop
+// windows. Used for the name and for release titles only.
+const fraunces = Fraunces({
   subsets: ["latin"],
-  axes: ["wdth"],
-  variable: "--font-archivo",
+  axes: ["SOFT", "WONK", "opsz"],
+  variable: "--font-label",
   display: "swap",
 });
 
-const geistMono = Geist_Mono({
+// The printed word: a newspaper grotesk for everything you read.
+const schibsted = Schibsted_Grotesk({
   subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-geist-mono",
+  variable: "--font-print",
+  display: "swap",
+});
+
+// Catalogue numbers, runout etching, timestamps.
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-stamp",
   display: "swap",
 });
 
@@ -79,8 +88,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: "cover",
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ece6da" },
-    { media: "(prefers-color-scheme: dark)", color: "#14100c" },
+    { media: "(prefers-color-scheme: light)", color: "#171615" },
+    { media: "(prefers-color-scheme: dark)", color: "#0c0b0b" },
   ],
 };
 
@@ -89,7 +98,7 @@ const boot = `(function(){try{var d=document.documentElement;d.classList.add('js
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${bodoni.variable} ${archivo.variable} ${geistMono.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${shoulders.variable} ${fraunces.variable} ${schibsted.variable} ${plexMono.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: boot }} />
       </head>

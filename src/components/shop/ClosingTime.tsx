@@ -5,6 +5,14 @@ import { SITE } from "@/lib/site";
 import { setupGsap } from "@/lib/motion";
 import { reduced } from "@/lib/capability";
 import { scrollToTarget } from "@/lib/scroll";
+import { useShopHours } from "./useShopHours";
+
+const JACKS = [
+  { label: "Mail", value: SITE.email, href: `mailto:${SITE.email}` },
+  { label: "GitHub", value: "VED2107", href: SITE.github },
+  { label: "LinkedIn", value: "ved-chauhan2107", href: SITE.linkedin },
+  { label: "Résumé", value: "PDF, one page", href: SITE.resume },
+];
 
 /**
  * Closing time. The shutter comes down over the shop's name as you reach the end, and the
@@ -12,6 +20,7 @@ import { scrollToTarget } from "@/lib/scroll";
  */
 export function ClosingTime() {
   const root = useRef<HTMLElement>(null);
+  const hours = useShopHours();
   useEffect(() => {
     const el = root.current;
     if (!el || reduced()) return;
@@ -32,41 +41,48 @@ export function ClosingTime() {
           <span className="pk shutter-sign">Closed · back tomorrow at 9</span>
         </div>
       </div>
-      <div className="frame closing-credits">
-        <dl className="small-print">
+      {/* The rear panel: inputs and outputs, silkscreened, and the maker's serial plate. */}
+      <div className="frame rear">
+        <ul className="jacks" aria-label="Contact">
+          {JACKS.map((j) => (
+            <li key={j.label}>
+              <a className="jack" href={j.href} target={j.href.startsWith("mailto") ? undefined : "_blank"} rel="noreferrer">
+                <span className="jack-socket" aria-hidden />
+                <span className="jack-label">{j.label}</span>
+                <span className="jack-value">{j.value}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        <dl className="plate">
           <div>
-            <dt className="pk">Pressed</dt>
+            <dt>Model</dt>
+            <dd>VSC-24 · Records &amp; Film</dd>
+          </div>
+          <div>
+            <dt>Pressed</dt>
             <dd>Ahmedabad, India, by Ved S. Chauhan</dd>
           </div>
           <div>
-            <dt className="pk">Matrix</dt>
-            <dd className="cat">VED-2026-04 · fourth pressing of this site</dd>
+            <dt>Hours</dt>
+            <dd>{hours.open ? "Open now · replies today" : "Closed · replies tomorrow from 9"}</dd>
           </div>
           <div>
-            <dt className="pk">Cut on</dt>
-            <dd>Next.js 16 · React 19 · GSAP · Lenis · Web Audio</dd>
+            <dt>Cut on</dt>
+            <dd>Next.js 16 · React 19 · GSAP · three.js · Web Audio</dd>
           </div>
-          <div>
-            <dt className="pk">Fine print</dt>
-            <dd>Every number is traceable to a repository or a live product. No testimonial was invented.</dd>
+          <div className="plate-wide">
+            <dt>Caution</dt>
+            <dd>Every number is traceable to a repository or a live product. Contains no invented testimonials.</dd>
           </div>
         </dl>
-        <div className="closing-row">
-          <p className="small">© 2026 Ved S. Chauhan. Built under SNOWBROS.</p>
-          <nav className="closing-links" aria-label="Elsewhere">
-            <a href={`mailto:${SITE.email}`}>{SITE.email}</a>
-            <a href={SITE.github} target="_blank" rel="noreferrer">
-              GitHub
-            </a>
-            <a href={SITE.linkedin} target="_blank" rel="noreferrer">
-              LinkedIn
-            </a>
-            <a href={SITE.resume} target="_blank" rel="noreferrer">
-              Résumé
-            </a>
-          </nav>
-          <button type="button" className="ink-link closing-top" onClick={() => scrollToTarget(0)}>
-            Back to the front ↑
+
+        <div className="rear-foot">
+          <p className="cat">© 2026 Ved S. Chauhan · Serial VED-2107 · Built under SNOWBROS</p>
+          <button type="button" className="sign-catalog rear-eject" onClick={() => scrollToTarget(0)}>
+            Eject <span aria-hidden>▲</span>
+            <span className="sr-only">back to the front of the shop</span>
           </button>
         </div>
       </div>

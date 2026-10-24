@@ -2,7 +2,6 @@ import Link from "next/link";
 import { NOW, SITE } from "@/lib/site";
 import { RELEASES, equipment } from "@/lib/catalog";
 import { Deck } from "./Deck";
-import { PayTerminal } from "./PayTerminal";
 
 /** Shelf talkers: the handwritten cards staff clip to the shelf. These are the principles. */
 const PICKS = [
@@ -67,7 +66,6 @@ export function Counter() {
                 Staff · since 2024
               </span>
             </div>
-            <PayTerminal />
           </div>
           <p className="counter-text">
             I&rsquo;m Ved S. Chauhan, a software engineer in Ahmedabad. I study

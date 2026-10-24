@@ -79,7 +79,7 @@
   color: var(--fluor-ink);
 }
 .deck-label b {
-  font: italic 600 5.2cqw/0.95 var(--f-display);
+  font: 800 5.2cqw/0.95 var(--f-display);
 }
 .deck-label span {
   margin-top: 1.2cqw;
@@ -131,7 +131,6 @@
 }
 .deck-now-what {
   font-size: clamp(2rem, 1.4rem + 1.6vw, 3rem);
-  font-style: italic;
   line-height: 0.95;
 }
 .deck-now-what a {
@@ -257,7 +256,7 @@
   box-shadow: 0 2px 2px rgb(0 0 0 / 0.2);
 }
 .talker-line {
-  font: italic 500 1.55rem/1.05 var(--f-display);
+  font: 800 1.55rem/1.05 var(--f-display);
   letter-spacing: -0.02em;
   padding-left: 1rem;
 }

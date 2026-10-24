@@ -7,6 +7,7 @@ import { MATERIAL, setupGsap } from "@/lib/motion";
 import { fine, reduced } from "@/lib/capability";
 import { play } from "@/lib/sound";
 import { lockScroll, unlockScroll } from "@/lib/scroll";
+import { takeCase } from "@/lib/handoff";
 import { FilmCover } from "./FilmCover";
 
 /**
@@ -16,6 +17,15 @@ import { FilmCover } from "./FilmCover";
 export function DiscMenu({ film: f, onClose }: { film: Film; onClose: () => void }) {
   const root = useRef<HTMLDivElement>(null);
   const opener = useRef<HTMLElement | null>(null);
+
+  // Esc ejects wherever focus happens to be.
+  useEffect(() => {
+    const esc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    addEventListener("keydown", esc);
+    return () => removeEventListener("keydown", esc);
+  }, [onClose]);
 
   useEffect(() => {
     opener.current = document.activeElement as HTMLElement;
@@ -31,12 +41,32 @@ export function DiscMenu({ film: f, onClose }: { film: Film; onClose: () => void
     const el = root.current;
     if (!el) return;
     el.querySelector<HTMLElement>(".menu-first")?.focus({ preventScroll: true });
+    const src = takeCase();
     if (reduced()) return;
     const gsap = setupGsap();
+    const caseEl = el.querySelector<HTMLElement>(".menu-case")!;
+    const from = (target: HTMLElement): gsap.TweenVars => {
+      if (!src) return { y: 30, rotateY: -14, duration: MATERIAL.plastic.duration + 0.2, ease: MATERIAL.sleeve.ease };
+      const t = target.getBoundingClientRect();
+      const a = src.rect;
+      return {
+        x: a.left + a.width / 2 - (t.left + t.width / 2),
+        y: a.top + a.height / 2 - (t.top + t.height / 2),
+        scaleX: a.width / t.width,
+        scaleY: a.height / t.height,
+        rotateY: src.spine ? 78 : 0,
+        transformPerspective: 1400,
+        duration: MATERIAL.plastic.duration + 0.32,
+        ease: MATERIAL.plastic.ease,
+      };
+    };
     const tl = gsap
       .timeline()
-      .fromTo(el, { autoAlpha: 0 }, { autoAlpha: 1, duration: 0.3, ease: "power1.out" })
-      .from(el.querySelector(".menu-case"), { y: 30, rotateY: -14, duration: MATERIAL.plastic.duration + 0.2, ease: MATERIAL.sleeve.ease }, 0)
+      // Opacity only: hiding the dialog with visibility would drop the focus we just put in it.
+      .fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" })
+      // The case comes off the shelf from exactly where it stood: a spine swings round to face
+      // you on the way, a face-out case just travels. Plastic: quick, with a hinge's overshoot.
+      .from(caseEl, from(caseEl), 0)
       .from(el.querySelector(".disc"), { xPercent: -52, rotate: -60, duration: MATERIAL.vinyl.duration, ease: MATERIAL.vinyl.ease }, 0.15)
       .from(el.querySelectorAll(".menu-list > *"), { x: 18, autoAlpha: 0, duration: MATERIAL.paper.duration, stagger: 0.04, ease: MATERIAL.paper.ease }, 0.2);
     return () => {

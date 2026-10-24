@@ -224,11 +224,21 @@
   pointer-events: auto;
 }
 .booth-stage {
+  --v: min(62vw, 21rem);
+  --cx: calc(var(--v) * 0.2);
+  --cy: calc(4.5rem + min(33vw, 11rem));
+  --p: calc(var(--v) * 1.12);
   position: relative;
   display: grid;
   place-items: center;
   padding: 4.5rem 1.5rem 1rem;
   pointer-events: none;
+}
+/* The booth's one lamp: a warm pool on the deck, nothing else lit. */
+.booth-lamp {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(48% 52% at 56% 46%, rgb(255 214 150 / 0.15), transparent 72%);
 }
 .booth-sleeve {
   position: relative;
@@ -237,15 +247,30 @@
   translate: -16% 0;
   pointer-events: auto;
 }
+/* Felt slipmat on an aluminium platter: where the record is put down to be heard. */
+.booth-platter {
+  position: absolute;
+  z-index: 0;
+  width: var(--p);
+  aspect-ratio: 1;
+  left: calc(50% + var(--cx) - var(--p) / 2);
+  top: calc(var(--cy) - var(--p) / 2);
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #1d1b19 0 64%, #151413 64.5% 92.5%, #8d939b 93%, #d9dde2 94.5%, #6c727a 96.5%, transparent 97%);
+  box-shadow: 0 30px 50px -24px rgb(0 0 0 / 0.9);
+}
 .booth-vinyl {
   position: absolute;
   z-index: 1;
-  width: min(62vw, 21rem);
+  width: var(--v);
   aspect-ratio: 1;
-  left: 50%;
-  top: calc(4.5rem + min(33vw, 11rem));
-  translate: -30% -50%;
+  left: calc(50% + var(--cx) - var(--v) / 2);
+  top: calc(var(--cy) - var(--v) / 2);
   pointer-events: auto;
+}
+.booth .vinyl-hole {
+  background: radial-gradient(circle at 40% 35%, #f1f3f5, #8d939b 70%);
 }
 .booth-vinyl .vinyl {
   inset: 0;
@@ -303,7 +328,6 @@
 }
 .booth-title {
   font-size: clamp(3rem, 2rem + 4vw, 6rem);
-  font-style: italic;
 }
 .booth-credits {
   display: grid;
@@ -374,14 +398,14 @@
   .booth-stage {
     padding: 2rem;
   }
+  .booth-stage {
+    --v: min(26vw, 52vh);
+    --cx: calc(var(--v) * 0.44);
+    --cy: 50%;
+  }
   .booth-sleeve {
     width: min(30vw, 60vh);
-    translate: -12% 0;
-  }
-  .booth-vinyl {
-    width: min(28vw, 56vh);
-    top: 50%;
-    translate: -14% -50%;
+    translate: -26% 0;
   }
   .booth-runout {
     position: absolute;
@@ -389,11 +413,14 @@
     left: 0;
     right: 0;
   }
+  /* The liner insert, laid on the counter beside the deck rather than bolted to the wall. */
   .booth-info {
-    height: 100vh;
+    height: calc(100vh - 1.5rem);
+    margin: 0.75rem 0.75rem 0.75rem 0;
     overflow-y: auto;
     overscroll-behavior: contain;
     padding: 1.25rem clamp(1.5rem, 3vw, 3rem) 3rem;
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.4) inset, -24px 0 60px -30px rgb(0 0 0 / 0.8);
   }
   .booth-bar {
     margin-inline: calc(-1 * clamp(1.5rem, 3vw, 3rem));

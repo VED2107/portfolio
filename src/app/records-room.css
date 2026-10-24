@@ -32,12 +32,14 @@
   right: 0;
   top: 22%;
   height: 46%;
-  opacity: 0.55;
+  opacity: 0.5;
+  /* Spines at reading distance: uneven widths, inks dulled by the tungsten, shelf boards in front. */
   background:
-    linear-gradient(180deg, transparent 0 46%, #1c120a 46% 50%, transparent 50% 96%, #1c120a 96%),
-    repeating-linear-gradient(90deg, #6e1f1c 0 7px, #c9a46a 7px 12px, #2638b8 12px 17px, #d8d0bd 17px 25px, #127c86 25px 30px, #191512 30px 33px, #a3355f 33px 39px, #e7efee 39px 45px, #3a2414 45px 47px);
-  -webkit-mask: linear-gradient(90deg, #000 0 30%, transparent 40% 60%, #000 70%);
-  mask: linear-gradient(90deg, #000 0 30%, transparent 40% 60%, #000 70%);
+    linear-gradient(180deg, #24170d 0 1.5%, transparent 3% 45.5%, #24170d 45.5% 50.5%, transparent 51% 95.5%, #24170d 95.5%),
+    linear-gradient(180deg, rgb(0 0 0 / 0.35), transparent 22% 70%, rgb(0 0 0 / 0.3)),
+    repeating-linear-gradient(90deg, #5a2a22 0 6px, #241c16 6px 7px, #8a7556 7px 11px, #2e3550 11px 18px, #241c16 18px 19px, #b9ad95 19px 23px, #3f5a58 23px 27px, #6d3a44 27px 35px, #241c16 35px 36px, #cfc6b4 36px 39px, #4a3020 39px 46px, #7a5b3a 46px 50px);
+  -webkit-mask: linear-gradient(90deg, #000 0 28%, transparent 40% 60%, #000 72%);
+  mask: linear-gradient(90deg, #000 0 28%, transparent 40% 60%, #000 72%);
 }
 .spin-floor {
   position: absolute;
@@ -101,7 +103,6 @@
 }
 .spin-talker-title {
   font-size: clamp(2.6rem, 1.8rem + 2vw, 4.2rem);
-  font-style: italic;
 }
 .spin-talker-genre {
   color: #6e1f1c;
@@ -173,12 +174,54 @@
   transition: transform 620ms var(--ease-vinyl);
 }
 @media (hover: hover) and (pointer: fine) {
-  .spin-slot .crate-record:hover {
-    transform: translateY(-14px) translateZ(30px);
+  /* The pull starts before the click: the sleeve rises a finger's width, the record behind shows. */
+  .spin-slot .crate-record:hover,
+  .spin-slot .crate-record:focus-visible {
+    transform: translateY(-10px) translateZ(16px);
   }
   .spin-slot .crate-record:hover .spin-vinyl {
-    transform: translateY(-12%) rotate(30deg);
+    transform: translateY(-9%) rotate(24deg);
   }
+  .spin-slot .crate-record:hover .sleeve {
+    box-shadow: 0 2px 2px rgb(0 0 0 / 0.2), 0 40px 48px -26px rgb(0 0 0 / 0.85);
+  }
+}
+.spin-slot .sleeve {
+  transition: box-shadow 480ms var(--ease-sleeve);
+}
+
+/* Walking in: the paper floor of the shop warms into the record room, and a shelf edge passes overhead. */
+.room-threshold {
+  position: relative;
+  height: clamp(9rem, 22vh, 14rem);
+  background:
+    radial-gradient(70% 120% at 50% 100%, rgb(255 214 150 / 0.22), transparent 70%),
+    linear-gradient(180deg, var(--paper) 0%, color-mix(in oklab, var(--paper) 55%, #6b4a30) 40%, #2a1d12 82%, #1b130d 100%);
+}
+.room-threshold-shelf {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 38%;
+  height: 0.95rem;
+  background: linear-gradient(180deg, #b0814f 0 1.5px, #7b4f2c 2px 55%, #5d3a1f);
+  box-shadow: 0 18px 24px -14px rgb(23 19 14 / 0.55);
+}
+.room-threshold-sign {
+  position: absolute;
+  left: var(--gutter);
+  top: calc(38% + 0.95rem);
+  padding: 0.35rem 0.6rem 0.4rem;
+  background: #fbf7ec;
+  color: #17130e;
+  rotate: -1.5deg;
+  transform-origin: 0 0;
+  box-shadow: 0 10px 14px -10px rgb(0 0 0 / 0.5);
+}
+/* Walking out: the floorboards give way to the shop's paper again. */
+.room-exit {
+  height: clamp(5rem, 14vh, 9rem);
+  background: linear-gradient(180deg, #3a2414, color-mix(in oklab, #3a2414 40%, var(--paper)) 55%, var(--paper));
 }
 .spin-post {
   position: absolute;
@@ -246,4 +289,44 @@
     color: #f3ead9;
     background: rgb(255 255 255 / 0.1);
   }
+}
+
+/* ------------------------------------------------------------ the 3D rooms (three.js) */
+.room-gl {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+.room-gl-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 900ms var(--ease-paper);
+}
+.room-gl[data-ready="1"] .room-gl-canvas {
+  opacity: 1;
+}
+/* Once the real room is lit, the painted one steps aside. */
+[data-gl] > .spin-scene,
+[data-gl] > .ftrack-ceiling,
+[data-gl] > .ftrack-carpet {
+  opacity: 0;
+  transition: opacity 900ms var(--ease-paper);
+}
+[data-room="records"][data-gl] .spin-base {
+  background: radial-gradient(closest-side, rgb(30 18 8 / 0.7) 0 60%, transparent 100%);
+  box-shadow: none;
+}
+.film[data-mode="track"] [data-gl] {
+  background: #07080c;
+}
+.film[data-mode="track"] [data-gl] .ftrack-wall {
+  background: none;
+}
+/* With the lobby built for real, each bay is a dark display unit standing against the lit wall. */
+.film[data-mode="track"] [data-gl] .fbay {
+  background: linear-gradient(180deg, rgb(16 19 30 / 0.62), rgb(10 12 20 / 0.86));
+  box-shadow: inset 0 1px 0 rgb(255 236 200 / 0.12), 0 40px 60px -30px rgb(0 0 0 / 0.95);
 }
