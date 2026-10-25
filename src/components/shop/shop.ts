@@ -204,6 +204,7 @@ export class Shop {
   private tilted = false;
   private saved = new THREE.Vector3();
   private rise = { v: 0 };
+  private brass?: THREE.MeshStandardMaterial;
   /** 0 = shop open, every light on; 1 = after hours, only the pendant and the neon. Tweened. */
   private night = { v: 0 };
   private key!: THREE.DirectionalLight;
@@ -271,6 +272,33 @@ export class Shop {
     this.resize();
     this.listen();
     this.lightsOn();
+    // Sent here from another page by the header's lamp: point at the switch once the lights are up.
+    try {
+      if (sessionStorage.getItem("ved-lamp-hint")) {
+        sessionStorage.removeItem("ved-lamp-hint");
+        gsap.delayedCall(this.reduced ? 0.2 : 2.6, () => this.hintLamp());
+      }
+    } catch {
+      /* no storage, no hint */
+    }
+  }
+
+  /**
+   * Show where the lights are: walk back to the floor, give the pendant a push, and make the
+   * cord's brass bead glow and bob until it has been noticed.
+   */
+  hintLamp() {
+    if (this.station !== "floor") {
+      this.goto("floor");
+      this.events.onStation("floor");
+    }
+    toast("The lights are on the lamp: pull its cord.");
+    const bead = this.cord.children[1];
+    gsap.delayedCall(this.reduced ? 0 : 0.7, () => {
+      this.push(0.35, 0.12);
+      if (this.brass) gsap.fromTo(this.brass, { emissiveIntensity: 0 }, { emissiveIntensity: 3, duration: 0.45, ease: "sine.inOut", yoyo: true, repeat: 7 });
+      if (!this.reduced) gsap.fromTo(bead.scale, { x: 1, y: 1, z: 1 }, { x: 1.9, y: 1.9, z: 1.9, duration: 0.45, ease: "sine.inOut", yoyo: true, repeat: 7 });
+    });
   }
 
   /** Opening time: the room fades up from dark, the neon tube stutters into life, the camera settles. */
@@ -440,7 +468,7 @@ export class Shop {
     this.lampRig.add(shade, bulb, cord, beam);
 
     // A pull cord with a brass bead hanging off the shade's rim: the light switch.
-    const brass = new THREE.MeshStandardMaterial({ color: "#d9a441", metalness: 1, roughness: 0.3 });
+    const brass = (this.brass = new THREE.MeshStandardMaterial({ color: "#d9a441", metalness: 1, roughness: 0.3, emissive: "#ffb35c", emissiveIntensity: 0 }));
     const string = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.7), new THREE.MeshBasicMaterial({ color: "#efe2c6" }));
     string.position.y = -0.35;
     const bead = new THREE.Mesh(new THREE.SphereGeometry(0.06, 20, 14), brass);
@@ -1363,6 +1391,8 @@ export class Shop {
     ro.observe(c);
     const theme = () => this.applyTheme();
     window.addEventListener("ved:theme", theme);
+    const hint = () => this.hintLamp();
+    window.addEventListener("ved:lamp-hint", hint);
     const mq = matchMedia("(prefers-color-scheme: dark)");
     mq.addEventListener("change", theme);
     this.disposers.push(() => {
@@ -1372,6 +1402,7 @@ export class Shop {
       c.removeEventListener("pointerleave", leave);
       ro.disconnect();
       window.removeEventListener("ved:theme", theme);
+      window.removeEventListener("ved:lamp-hint", hint);
       mq.removeEventListener("change", theme);
     });
   }

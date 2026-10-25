@@ -4,6 +4,7 @@ import type { CSSProperties } from "react";
 import { ShopHours } from "./ShopHours";
 import { ClosingTime } from "./ClosingTime";
 import { Marquee } from "./Words";
+import { RunoutGroove } from "./RunoutGroove";
 
 const SIDE_A = [
   { label: "The shop floor", href: "/" },
@@ -45,6 +46,13 @@ export function SiteFooter() {
             <b>VED</b>
             <span>Side B</span>
           </div>
+        </div>
+      </div>
+      {/* Closing time: the roller shutter comes down as the footer arrives. */}
+      <div className="footer-shutter" aria-hidden>
+        <div className="shutter">
+          <span className="shutter-tag">Back soon</span>
+          <span className="shutter-bar" />
         </div>
       </div>
       <div className="frame footer-inner">
@@ -104,6 +112,7 @@ export function SiteFooter() {
             </p>
           </div>
           <div className="footer-code">
+            <RunoutGroove />
             <span className="barcode" aria-hidden>
               {bars.map((w, k) => (
                 <i key={k} style={{ width: w * 2, marginRight: k % 2 ? 2 : 1 }} />
@@ -122,6 +131,14 @@ export function SiteFooter() {
           </p>
         </div>
       </div>
+      {/* The shop's name across the pavement, in outline; letters light where the pointer passes. */}
+      <p className="footer-giant" aria-hidden>
+        {[..."VEDRECORDS"].map((ch, k) => (
+          <span key={k} className="giant-l" style={{ "--g": k } as CSSProperties}>
+            {ch}
+          </span>
+        ))}
+      </p>
     </footer>
   );
 }

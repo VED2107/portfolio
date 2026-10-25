@@ -4852,54 +4852,6 @@ button {
   }
 }
 
-/* The aisles: hover and a little record slides up behind the name; the aisle you are in keeps it. */
-.site-nav a {
-  position: relative;
-  isolation: isolate;
-  overflow: clip;
-  background: none;
-}
-
-.site-nav a[aria-current="true"] {
-  background: none;
-  color: var(--mustard);
-}
-
-.nav-label {
-  position: relative;
-  z-index: 1;
-}
-
-.nav-disc {
-  position: absolute;
-  left: 50%;
-  top: 100%;
-  z-index: 0;
-  width: 46px;
-  height: 46px;
-  margin-left: -23px;
-  border-radius: 50%;
-  background:
-    radial-gradient(circle, var(--oxblood) 0 7px, #111 7.5px 9px, transparent 9.5px),
-    repeating-radial-gradient(circle, #1a1a1a 0 1.5px, #262626 1.5px 3px);
-  transform: translateY(0) rotate(0);
-  transition: transform 520ms var(--ease-land, ease);
-  opacity: 0.9;
-}
-
-.site-nav a[aria-current="true"] .nav-disc {
-  transform: translateY(-14px) rotate(120deg);
-}
-
-@media (hover: hover) and (pointer: fine) {
-  .site-nav a:hover {
-    background: none;
-  }
-  .site-nav a:hover .nav-disc {
-    transform: translateY(-22px) rotate(200deg);
-  }
-}
-
 /* ================================================================== footer: closing time */
 
 .footer-right {
@@ -5035,4 +4987,464 @@ html.lenis {
 
 .lenis.lenis-smooth iframe {
   pointer-events: none;
+}
+
+/* ================================================================== header: refined shop front
+   One material language across the bar: an espresso fascia with a brass trim, and every
+   control set into it as dark backlit glass, like the panel of an old radiogram. */
+.site-header {
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.05), transparent 30%),
+    repeating-linear-gradient(90deg, rgb(0 0 0 / 0.08) 0 2px, transparent 2px 7px),
+    var(--espresso);
+  box-shadow: inset 0 -2px 0 rgb(227 167 47 / 0.55);
+}
+
+.site-header-inner {
+  gap: clamp(16px, 2.2vw, 32px);
+}
+
+.site-header .search-btn {
+  height: 44px;
+  padding: 0 7px 0 14px;
+  border-radius: 10px;
+  background: #120d09;
+  color: rgb(243 234 216 / 0.85);
+  box-shadow:
+    inset 0 0 0 1.5px rgb(243 234 216 / 0.14),
+    inset 0 8px 16px -8px rgb(0 0 0 / 0.9);
+  font-family: var(--display-font);
+  font-stretch: 75%;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transition:
+    color 200ms ease,
+    box-shadow 200ms ease;
+}
+
+.site-header .search-btn .kbd {
+  border-radius: 6px;
+  background: rgb(243 234 216 / 0.1);
+  font-family: var(--mono);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .site-header .search-btn:hover {
+    background: #120d09;
+    color: #ffd38a;
+    box-shadow:
+      inset 0 0 0 1.5px rgb(255 170 70 / 0.45),
+      inset 0 8px 16px -8px rgb(0 0 0 / 0.9),
+      0 0 18px -6px rgb(255 170 70 / 0.6);
+  }
+}
+
+/* ================================================================== header: the aisles
+   Plain aisle names, set in the condensed display face. One lit strip, mustard with a warm
+   glow, glides under the aisle being read; nothing else on the bar moves. */
+.site-nav.aisles {
+  position: relative;
+  gap: 0;
+  margin-left: auto;
+}
+
+.site-nav.aisles a.aisle {
+  position: relative;
+  padding: 10px 10px 12px;
+  border-radius: 0;
+  background: none;
+  font-family: var(--display-font);
+  font-stretch: 75%;
+  font-weight: 800;
+  font-size: 1.06rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: rgb(243 234 216 / 0.72);
+  text-decoration: none;
+  transition: color 300ms ease;
+}
+
+.site-nav.aisles a.aisle::after {
+  content: none;
+}
+
+.site-nav.aisles a.aisle[aria-current="true"] {
+  color: var(--mustard);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .site-nav.aisles a.aisle:hover {
+    background: none;
+    color: var(--cream);
+  }
+}
+
+.aisle:focus-visible {
+  outline: 2px solid var(--mustard);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* 100px wide at rest; the script scales it to the aisle's width and slides it across. */
+.aisle-mark {
+  position: absolute;
+  left: 0;
+  bottom: 2px;
+  width: 100px;
+  height: 3px;
+  border-radius: 3px;
+  background: var(--mustard);
+  box-shadow: 0 0 12px 1px rgb(227 167 47 / 0.55);
+  transform-origin: left center;
+  opacity: 0;
+  transition: opacity 400ms ease;
+  pointer-events: none;
+  will-change: transform;
+}
+
+.aisle-mark[data-on] {
+  opacity: 1;
+}
+
+/* ================================================================== footer: shutter, groove, giant */
+
+/* The roller shutter: corrugated slats that roll down behind the footer as it scrolls in.
+   Scroll-driven where the browser can; simply down where it cannot. */
+.footer-shutter {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: clip;
+  pointer-events: none;
+}
+
+.shutter {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgb(0 0 0 / 0.35), transparent 8%, transparent 92%, rgb(0 0 0 / 0.35)),
+    repeating-linear-gradient(180deg, #2a221b 0 10px, #1f1914 10px 13px, #3a3029 13px 14px, #241d17 14px 22px);
+  opacity: 0.7;
+}
+
+.shutter-bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 14px;
+  background: linear-gradient(#5b4a3c, #2b221a);
+  box-shadow: 0 6px 14px rgb(0 0 0 / 0.5);
+}
+
+.shutter-tag {
+  position: absolute;
+  right: 6%;
+  bottom: 22%;
+  font-family: var(--sign-font);
+  font-size: clamp(5rem, 16vw, 15rem);
+  line-height: 1;
+  color: var(--oxblood);
+  opacity: 0.16;
+  transform: rotate(-8deg);
+  white-space: nowrap;
+}
+
+@supports (animation-timeline: view()) {
+  .shutter {
+    animation: shutter-down linear both;
+    animation-timeline: view();
+    animation-range: entry 0% cover 45%;
+  }
+  @keyframes shutter-down {
+    from {
+      transform: translateY(-100%);
+    }
+    to {
+      transform: translateY(0);
+    }
+  }
+}
+
+.site-footer > .marquee,
+.footer-inner,
+.footer-giant {
+  position: relative;
+  z-index: 1;
+}
+
+/* The run-out groove record. Grab it to spin it. */
+.footer-code {
+  display: grid;
+  justify-items: start;
+  gap: 16px;
+}
+
+.runout {
+  position: relative;
+  width: clamp(150px, 15vw, 200px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  cursor: grab;
+  touch-action: none;
+  filter: drop-shadow(0 14px 22px rgb(0 0 0 / 0.55));
+  transition: transform 300ms var(--ease-land, ease);
+}
+
+.runout[data-held] {
+  cursor: grabbing;
+  transform: scale(0.97);
+}
+
+.runout svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+.runout-text {
+  font-family: var(--mono);
+  font-size: 7.4px;
+  letter-spacing: 1.2px;
+  fill: rgb(243 234 216 / 0.55);
+}
+
+.runout-label-big {
+  font-family: var(--sign-font);
+  font-size: 20px;
+  fill: var(--mustard);
+}
+
+.runout-label-small {
+  font-family: var(--mono);
+  font-size: 6.5px;
+  letter-spacing: 1px;
+  fill: var(--cream);
+}
+
+/* A fixed highlight across the turning record: the light stays put while the vinyl moves. */
+.runout-sheen {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: conic-gradient(from 210deg, transparent 0 8%, rgb(255 255 255 / 0.12) 12%, transparent 18% 58%, rgb(255 255 255 / 0.08) 62%, transparent 68%);
+  pointer-events: none;
+}
+
+/* The giant outline wordmark across the bottom. Letters fill and lift under the pointer. */
+.footer-giant {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0 var(--gutter) calc(clamp(20px, 3vw, 40px) + env(safe-area-inset-bottom, 0px));
+  font-family: var(--display-font);
+  font-stretch: 62%;
+  font-weight: 900;
+  font-size: clamp(4rem, 17.5vw, 19rem);
+  line-height: 0.78;
+  letter-spacing: -0.01em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgb(243 234 216 / 0.28);
+  user-select: none;
+  overflow: clip;
+}
+
+.giant-l {
+  display: inline-block;
+  transform: translateY(6%);
+  transition:
+    transform 700ms var(--ease-land, ease),
+    color 500ms ease,
+    -webkit-text-stroke-color 500ms ease;
+}
+
+.giant-l:nth-child(4) {
+  margin-left: 0.18em;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .giant-l:hover {
+    color: var(--mustard);
+    -webkit-text-stroke-color: var(--mustard);
+    transform: translateY(0);
+    transition-duration: 220ms;
+  }
+}
+
+/* When the footer arrives, the letters rise out of the pavement one by one. */
+.js .footer-giant .giant-l {
+  transform: translateY(70%);
+}
+
+.js .site-footer:has(.footer-sign.in) .giant-l {
+  transform: translateY(6%);
+  transition-delay: calc(var(--g, 0) * 45ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shutter {
+    animation: none;
+  }
+  .giant-l,
+  .js .footer-giant .giant-l {
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ================================================================== header: the counter tools
+   Search is a card-catalogue drawer set into the bar: a walnut front, a brass label holder with
+   the card behind it, and a brass cup pull. Hover and the drawer slides out toward you.
+   Beside it the little pendant is only a hint: it points to the real switch in the shop. */
+.header-tools {
+  gap: 14px;
+}
+
+.site-header .search-btn {
+  position: relative;
+  height: 46px;
+  padding: 0 12px 0 10px;
+  gap: 10px;
+  border: 0;
+  border-radius: 6px;
+  color: var(--espresso);
+  background:
+    repeating-linear-gradient(176deg, rgb(0 0 0 / 0.12) 0 1px, transparent 1px 6px),
+    linear-gradient(180deg, #7a4f2c, #5b3920 60%, #4a2e19);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.18),
+    inset 0 -2px 0 rgb(0 0 0 / 0.35),
+    0 0 0 1.5px #2a1a0e,
+    0 4px 0 #2a1a0e,
+    0 8px 14px -6px rgb(0 0 0 / 0.7);
+  font-family: var(--mono);
+  font-weight: 600;
+  font-stretch: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transform: translateY(0);
+  transition:
+    transform 380ms var(--ease-land, ease),
+    box-shadow 380ms var(--ease-land, ease);
+}
+
+/* The brass label holder, with the index card slid in behind it. */
+.site-header .search-btn .search-label {
+  position: relative;
+  padding: 5px 10px 4px;
+  border-radius: 3px;
+  background: linear-gradient(#f6eedd, #e8dcc4);
+  color: var(--espresso);
+  font-size: 0.72rem;
+  line-height: 1;
+  box-shadow:
+    0 0 0 2px #c99a3a,
+    0 0 0 3px #7a5a1c,
+    inset 0 1px 2px rgb(0 0 0 / 0.18);
+}
+
+.site-header .search-btn .menu-label {
+  font-size: 0.72rem;
+  color: var(--cream);
+}
+
+.site-header .search-btn > svg {
+  color: #f0c56a;
+  filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.5));
+}
+
+.site-header .search-btn .kbd {
+  min-width: 26px;
+  height: 26px;
+  border-radius: 4px;
+  background: linear-gradient(#3a2414, #24160b);
+  color: #f0c56a;
+  font-family: var(--mono);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / 0.6);
+}
+
+/* The cup pull, hanging under the label. */
+.site-header .search-btn::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 4px;
+  width: 22px;
+  height: 6px;
+  margin-left: -11px;
+  border-radius: 0 0 11px 11px;
+  background: linear-gradient(#e7bf62, #9c7424);
+  box-shadow: 0 1px 1px rgb(0 0 0 / 0.5);
+  opacity: 0.9;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .site-header .search-btn:hover {
+    background:
+      repeating-linear-gradient(176deg, rgb(0 0 0 / 0.12) 0 1px, transparent 1px 6px),
+      linear-gradient(180deg, #84573a, #63412a 60%, #4f321c);
+    transform: translateY(3px) scale(1.03);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.22),
+      inset 0 -2px 0 rgb(0 0 0 / 0.35),
+      0 0 0 1.5px #2a1a0e,
+      0 1px 0 #2a1a0e,
+      0 18px 24px -10px rgb(0 0 0 / 0.75);
+  }
+}
+
+.site-header .search-btn:active {
+  transform: translateY(4px) scale(0.99);
+}
+
+.site-header .search-btn:focus-visible {
+  outline: 2px solid var(--mustard);
+  outline-offset: 3px;
+}
+
+/* The pendant hint is a plain button with no chrome of its own. */
+button.hlamp {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+}
+
+button.hlamp .hlamp-bead {
+  cursor: inherit;
+  display: block;
+}
+
+button.hlamp:focus-visible {
+  outline: 2px solid var(--mustard);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  button.hlamp:hover .hlamp-shade {
+    transform: rotate(-6deg);
+  }
+  button.hlamp:hover .hlamp-tag {
+    background: var(--mustard);
+  }
+}
+
+.hlamp-shade {
+  transform-origin: 50% 0;
+  transition: transform 600ms var(--ease-land, ease);
+}
+
+.hlamp-tag {
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+@media (max-width: 860px) {
+  .hlamp-tag {
+    display: none;
+  }
 }
