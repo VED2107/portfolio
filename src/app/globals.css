@@ -4070,3 +4070,969 @@ body {
     max-height: 52%;
   }
 }
+
+/* ================================================================== ambience: light, motion, grain */
+
+/* ------------------------------------------------------------------ kinetic headings
+   Every section heading rises into view a word at a time, each word lifting out of its own mask,
+   like lines of type pulled off a press. The text is real text; only the boxes move. */
+.kin .w {
+  display: inline-block;
+  overflow: clip;
+  overflow-clip-margin: 0.14em;
+  vertical-align: top;
+  padding-bottom: 0.06em;
+  margin-bottom: -0.06em;
+}
+
+.kin .w > span {
+  display: inline-block;
+}
+
+.js .kin.rv {
+  opacity: 1;
+  transform: none;
+}
+
+.js .kin .w > span {
+  transform: translateY(108%) rotate(5deg);
+  transform-origin: 0 100%;
+  transition: transform 1050ms cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: calc(var(--w, 0) * 75ms + var(--i, 0) * 70ms);
+}
+
+.js .kin.in .w > span {
+  transform: none;
+}
+
+/* ------------------------------------------------------------------ the hero sign
+   Each letter is a tube of its own: after the room's lights come up they stutter on, left to right. */
+.sign-word {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.sign-l {
+  display: inline-block;
+  transition: transform 500ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.js .sign-l {
+  animation: sign-on 1300ms linear both;
+  animation-delay: calc(700ms + var(--l, 0) * 55ms);
+}
+
+@keyframes sign-on {
+  0% { opacity: 0.08; }
+  12% { opacity: 1; }
+  18% { opacity: 0.2; }
+  26% { opacity: 1; }
+  44% { opacity: 0.55; }
+  48%, 100% { opacity: 1; }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sign-l:hover {
+    transform: translateY(-0.09em) rotate(-5deg) scale(1.05);
+    transition-duration: 180ms;
+  }
+}
+
+/* ------------------------------------------------------------------ marquees
+   Banners between the aisles. They run on their own, faster and skewed while you scroll. */
+.marquee {
+  position: relative;
+  overflow: clip;
+  padding-block: clamp(14px, 1.8vw, 22px);
+  background: var(--mustard);
+  color: var(--espresso);
+  border-block: 3px solid var(--espresso);
+  contain: paint;
+}
+
+.marquee-teal {
+  background: var(--teal);
+  color: var(--cream);
+}
+
+.marquee-oxblood {
+  background: var(--oxblood);
+  color: var(--cream);
+}
+
+.marquee-skew {
+  will-change: transform;
+}
+
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 38s linear infinite;
+}
+
+.marquee-run {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.marquee-item {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(18px, 2.4vw, 36px);
+  padding-right: clamp(18px, 2.4vw, 36px);
+  font-family: var(--sign-font);
+  font-size: clamp(1.6rem, 3.6vw, 3.2rem);
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.marquee-dot {
+  font-size: 0.4em;
+  color: var(--oxblood);
+}
+
+.marquee-oxblood .marquee-dot,
+.marquee-teal .marquee-dot {
+  color: var(--mustard);
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------ the cursor lamp
+   A pool of warm light that follows the pointer. It lifts the page in the day and is the only
+   light in the room after hours. Moved by transform, never by left/top. */
+.cursor-lamp {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  width: 560px;
+  height: 560px;
+  margin: -280px 0 0 -280px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(closest-side, rgb(255 196 120 / 0.14), rgb(255 170 90 / 0.05) 45%, transparent 72%);
+  will-change: transform;
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+
+.cursor-lamp[data-on] {
+  opacity: 1;
+}
+
+:root[data-theme="dark"] .cursor-lamp {
+  background: radial-gradient(closest-side, rgb(255 190 110 / 0.1), rgb(255 160 80 / 0.035) 45%, transparent 72%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .cursor-lamp {
+    background: radial-gradient(closest-side, rgb(255 190 110 / 0.1), rgb(255 160 80 / 0.035) 45%, transparent 72%);
+  }
+}
+
+@media (hover: none), (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .cursor-lamp {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------ the tonearm
+   A small deck in the right margin. The arm tracks across the record as you read down the page;
+   the record turns faster while you scroll. Click it to lift back to the top. */
+.tonearm {
+  position: fixed;
+  right: 18px;
+  bottom: 22px;
+  z-index: 45;
+  display: grid;
+  place-items: center;
+  width: 80px;
+  height: 80px;
+  padding: 0;
+  border: 0;
+  border-radius: 18px;
+  background: var(--bg-2);
+  box-shadow:
+    inset 0 0 0 1.5px var(--espresso),
+    4px 4px 0 var(--espresso);
+  cursor: pointer;
+  transition:
+    transform 200ms var(--ease-out),
+    box-shadow 200ms var(--ease-out);
+}
+
+.tonearm[data-away] {
+  opacity: 0;
+  transform: translateY(24px) scale(0.9);
+  pointer-events: none;
+}
+
+.tonearm {
+  transition:
+    opacity 500ms var(--ease-land, ease),
+    transform 600ms var(--ease-land, ease),
+    box-shadow 200ms ease;
+}
+
+.tonearm:hover {
+  transform: translate(-2px, -2px);
+  box-shadow:
+    inset 0 0 0 1.5px var(--espresso),
+    6px 6px 0 var(--espresso);
+}
+
+.tonearm:active {
+  transform: translate(2px, 2px);
+  box-shadow:
+    inset 0 0 0 1.5px var(--espresso),
+    2px 2px 0 var(--espresso);
+}
+
+.tonearm svg {
+  overflow: visible;
+}
+
+.tonearm-disc {
+  transform-origin: 34px 44px;
+}
+
+.tonearm-arm {
+  transform-origin: 70px 12px;
+}
+
+@media (max-width: 860px) {
+  .tonearm {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------ grain
+   Sleeve stock, not a screen: a fixed film of paper grain over everything, stepped so it lives. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -8%;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.11 0 0 0 0 0.09 0 0 0 0 0.07 0 0 0 1.2 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain 900ms steps(6) infinite;
+}
+
+:root[data-theme="dark"] body::before {
+  opacity: 0.05;
+  filter: invert(1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) body::before {
+    opacity: 0.05;
+    filter: invert(1);
+  }
+}
+
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  17% { transform: translate(-5%, 3%); }
+  33% { transform: translate(4%, -6%); }
+  50% { transform: translate(-3%, 6%); }
+  67% { transform: translate(6%, 2%); }
+  83% { transform: translate(-6%, -3%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none;
+  }
+}
+
+@media print {
+  body::before,
+  .cursor-lamp,
+  .tonearm {
+    display: none;
+  }
+}
+
+/* ------------------------------------------------------------------ explore hints */
+.hint-touch {
+  display: none;
+}
+
+@media (hover: none) and (pointer: coarse) {
+  .hint-fine {
+    display: none;
+  }
+  .hint-touch {
+    display: inline;
+  }
+}
+
+/* ------------------------------------------------------------------ view transitions
+   Pages change like records: the old side drops back and dims, the new one slides up out of
+   its sleeve. A record's sleeve and title fly from the shelf into the liner notes. The header,
+   the pill and the tonearm stay put. A theme switch is a light switch: the new lights open as
+   a circle from wherever the switch was thrown, the lamp cord included. */
+.site-header {
+  view-transition-name: site-header;
+}
+
+.now-playing {
+  view-transition-name: now-playing;
+}
+
+.tonearm {
+  view-transition-name: tonearm;
+}
+
+:root:not([data-vt])::view-transition-old(root) {
+  animation: page-out 380ms cubic-bezier(0.4, 0, 1, 1) both;
+}
+
+:root:not([data-vt])::view-transition-new(root) {
+  animation: page-in 720ms cubic-bezier(0.16, 1, 0.3, 1) 80ms both;
+}
+
+@keyframes page-out {
+  to {
+    opacity: 0;
+    transform: scale(0.97) translateY(-12px);
+    filter: blur(4px) brightness(0.8);
+  }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(48px);
+    clip-path: inset(18% 0 0 0 round 24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    clip-path: inset(0 0 0 0 round 0);
+  }
+}
+
+::view-transition-group(.morph) {
+  animation-duration: 720ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+::view-transition-image-pair(.morph) {
+  animation-name: via-blur;
+}
+
+@keyframes via-blur {
+  35% {
+    filter: blur(3px);
+  }
+}
+
+/* The light switch. Nothing else animates; only the circle grows. */
+:root[data-vt="theme"] .site-header,
+:root[data-vt="theme"] .now-playing,
+:root[data-vt="theme"] .tonearm {
+  view-transition-name: none;
+}
+
+:root[data-vt="theme"]::view-transition-old(root),
+:root[data-vt="theme"]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+:root[data-vt="theme"]::view-transition-new(root) {
+  animation: lights 1000ms cubic-bezier(0.65, 0, 0.25, 1) both;
+}
+
+@keyframes lights {
+  from {
+    clip-path: circle(0 at var(--vt-x, 100%) var(--vt-y, 0));
+  }
+  to {
+    clip-path: circle(150vmax at var(--vt-x, 100%) var(--vt-y, 0));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* ------------------------------------------------------------------ touch: things feel pressed
+   A phone has no hover, so every control answers the thumb instead: a quick press-in. */
+@media (hover: none) and (pointer: coarse) {
+  .btn,
+  .icon-btn,
+  .search-btn,
+  .station-bar button,
+  .disco-item,
+  .crate-sleeve,
+  .record-sleeve,
+  .plaque,
+  summary {
+    transition: transform 160ms var(--ease-out);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active,
+  .icon-btn:active,
+  .search-btn:active,
+  .station-bar button:active,
+  .disco-item:active,
+  .crate-sleeve:active,
+  .record-sleeve:active,
+  .plaque:active,
+  summary:active {
+    transform: scale(0.96);
+  }
+}
+
+/* ================================================================== smooth everywhere
+   One family of curves for the whole shop: a long, soft landing (expo-ish out) for things
+   arriving, a quicker accelerate for things leaving. Only transform, opacity and filter move. */
+:root {
+  --ease-land: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-leave: cubic-bezier(0.5, 0, 0.75, 0);
+}
+
+/* Toasts drop from under the header, out of the way of the station bar and the pill. */
+.toast {
+  top: calc(100px + env(safe-area-inset-top, 0px));
+  bottom: auto;
+  transition:
+    opacity 320ms var(--ease-land),
+    transform 520ms var(--ease-land),
+    filter 320ms ease;
+}
+
+.toast[data-hidden] {
+  transform: translateY(-14px) scale(0.96);
+  filter: blur(4px);
+  transition-timing-function: var(--ease-leave);
+  transition-duration: 220ms;
+}
+
+/* Entrances land softer and travel a little further. */
+.js .rv {
+  transform: translateY(32px);
+  transition:
+    opacity 900ms var(--ease-land),
+    transform 1100ms var(--ease-land);
+  transition-delay: calc(var(--i, 0) * 80ms);
+}
+
+/* Station panels: the card lands, then its contents settle in one after another. */
+.explore-panel {
+  animation: panel-land 640ms var(--ease-land) both;
+}
+
+.explore-panel > * {
+  animation: panel-child 700ms var(--ease-land) both;
+}
+
+.explore-panel > :nth-child(1) { animation-delay: 80ms; }
+.explore-panel > :nth-child(2) { animation-delay: 120ms; }
+.explore-panel > :nth-child(3) { animation-delay: 160ms; }
+.explore-panel > :nth-child(4) { animation-delay: 200ms; }
+.explore-panel > :nth-child(5) { animation-delay: 240ms; }
+.explore-panel > :nth-child(n + 6) { animation-delay: 280ms; }
+
+@keyframes panel-land {
+  from {
+    opacity: 0;
+    transform: translateX(28px) scale(0.98);
+    filter: blur(8px);
+  }
+}
+
+@keyframes panel-child {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@media (max-width: 760px) {
+  @keyframes panel-land {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+      filter: blur(8px);
+    }
+  }
+}
+
+/* The intro steps back as you walk to a station and comes forward when you return. */
+.explore-intro {
+  transition:
+    opacity 600ms var(--ease-land),
+    transform 800ms var(--ease-land),
+    filter 600ms var(--ease-land);
+}
+
+.explore[data-station]:not([data-station="floor"]) .explore-intro {
+  filter: blur(6px);
+}
+
+/* Accordions: the opened track's notes ease down into place instead of snapping in. */
+details[open] > :not(summary) {
+  animation: notes-in 520ms var(--ease-land) both;
+}
+
+@keyframes notes-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+}
+
+summary {
+  transition: color 200ms ease;
+}
+
+/* The command palette rises out of a soft focus; the room behind it dims. */
+.palette[open] {
+  animation: palette-in 420ms var(--ease-land) both;
+}
+
+.palette[open]::backdrop {
+  animation: backdrop-in 420ms ease both;
+  backdrop-filter: blur(6px);
+}
+
+@keyframes palette-in {
+  from {
+    opacity: 0;
+    transform: translateY(-16px) scale(0.97);
+    filter: blur(6px);
+  }
+}
+
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Links and buttons share the same quick, soft response. */
+a,
+button {
+  transition-timing-function: var(--ease-land);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .explore-panel,
+  .explore-panel > *,
+  details[open] > :not(summary),
+  .palette[open],
+  .palette[open]::backdrop {
+    animation: none;
+  }
+  .toast,
+  .toast[data-hidden] {
+    filter: none;
+    transform: none;
+  }
+}
+
+/* ================================================================== header: the lamp and the aisles */
+
+/* The pendant hangs from the top of the sign bar; its cord drops past the awning into the shop. */
+.hlamp {
+  --pull: 0px;
+  position: relative;
+  align-self: flex-start;
+  width: 64px;
+  height: 80px;
+  margin-left: 4px;
+  color: rgb(243 234 216 / 0.55);
+}
+
+.hlamp::before {
+  content: "";
+  position: absolute;
+  left: 31px;
+  top: 0;
+  width: 2px;
+  height: 20px;
+  background: currentColor;
+}
+
+.hlamp-shade {
+  position: absolute;
+  left: 0;
+  top: 18px;
+  display: block;
+  width: 64px;
+  height: 40px;
+}
+
+.hlamp-shade svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 2px 0 rgb(0 0 0 / 0.35));
+}
+
+.hlamp-bulb {
+  fill: #ffe2a8;
+  transition: fill 400ms ease;
+}
+
+.hlamp[data-dark] .hlamp-bulb {
+  fill: #6b5a44;
+}
+
+/* The light the lamp throws down over the awning. It fades when the lights go down. */
+.hlamp-glow {
+  position: absolute;
+  left: 50%;
+  top: 30px;
+  width: 150px;
+  height: 150px;
+  margin-left: -75px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 214 150 / 0.55), rgb(255 190 110 / 0.18) 50%, transparent 75%);
+  pointer-events: none;
+  transition: opacity 500ms ease;
+  animation: hlamp-hum 4s ease-in-out infinite;
+}
+
+.hlamp[data-dark] .hlamp-glow {
+  opacity: 0.12;
+}
+
+@keyframes hlamp-hum {
+  50% {
+    transform: scale(0.94);
+  }
+}
+
+.hlamp-cord {
+  position: absolute;
+  left: 45px;
+  top: 50px;
+  width: 2px;
+  height: 56px;
+  transform-origin: top;
+}
+
+.hlamp-string {
+  position: absolute;
+  inset: 0 0 auto;
+  height: calc(56px + var(--pull));
+  background: var(--cream);
+  box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.4);
+}
+
+.hlamp-bead {
+  position: absolute;
+  left: 32px;
+  top: calc(92px + var(--pull));
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: grab;
+  touch-action: none;
+  z-index: 2;
+}
+
+.hlamp-bead:active {
+  cursor: grabbing;
+}
+
+.hlamp-ball {
+  position: absolute;
+  left: 7px;
+  top: 7px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #fff1c7, #e3a72f 45%, #8a5a12);
+  box-shadow:
+    0 2px 4px rgb(0 0 0 / 0.45),
+    0 0 0 1.5px var(--espresso);
+  transition: transform 260ms var(--ease-land, ease);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .hlamp-bead:hover .hlamp-ball {
+    transform: scale(1.18);
+  }
+}
+
+.hlamp-bead:focus-visible {
+  outline: 2px solid var(--mustard);
+  outline-offset: 2px;
+  border-radius: 50%;
+}
+
+/* The paper tag tied to the cord on a first visit. */
+.hlamp-tag {
+  position: absolute;
+  right: 26px;
+  top: 6px;
+  padding: 3px 8px 4px;
+  border-radius: 3px;
+  background: var(--cream);
+  color: var(--espresso);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 2px 2px 0 var(--espresso);
+  transform-origin: right center;
+  animation: tag-swing 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.hlamp-tag::after {
+  content: "";
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  width: 10px;
+  height: 1px;
+  background: var(--cream);
+}
+
+@keyframes tag-swing {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(3deg); }
+}
+
+.hlamp-bead:has(.hlamp-tag) .hlamp-ball {
+  animation: bead-call 2.6s ease-in-out infinite;
+}
+
+@keyframes bead-call {
+  0%, 100% { box-shadow: 0 2px 4px rgb(0 0 0 / 0.45), 0 0 0 1.5px var(--espresso), 0 0 0 0 rgb(227 167 47 / 0.6); }
+  50% { box-shadow: 0 2px 4px rgb(0 0 0 / 0.45), 0 0 0 1.5px var(--espresso), 0 0 0 8px rgb(227 167 47 / 0); }
+}
+
+/* Rolled up, the cord is shorter: it still dangles just past the bar. */
+.site-header[data-rolled] .hlamp-string {
+  height: calc(40px + var(--pull));
+}
+
+.site-header[data-rolled] .hlamp-bead {
+  top: calc(76px + var(--pull));
+}
+
+.site-header[data-rolled] .hlamp-string,
+.site-header[data-rolled] .hlamp-bead {
+  transition: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hlamp-glow,
+  .hlamp-tag,
+  .hlamp-bead:has(.hlamp-tag) .hlamp-ball {
+    animation: none;
+  }
+}
+
+/* The aisles: hover and a little record slides up behind the name; the aisle you are in keeps it. */
+.site-nav a {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background: none;
+}
+
+.site-nav a[aria-current="true"] {
+  background: none;
+  color: var(--mustard);
+}
+
+.nav-label {
+  position: relative;
+  z-index: 1;
+}
+
+.nav-disc {
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  z-index: 0;
+  width: 46px;
+  height: 46px;
+  margin-left: -23px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, var(--oxblood) 0 7px, #111 7.5px 9px, transparent 9.5px),
+    repeating-radial-gradient(circle, #1a1a1a 0 1.5px, #262626 1.5px 3px);
+  transform: translateY(0) rotate(0);
+  transition: transform 520ms var(--ease-land, ease);
+  opacity: 0.9;
+}
+
+.site-nav a[aria-current="true"] .nav-disc {
+  transform: translateY(-14px) rotate(120deg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .site-nav a:hover {
+    background: none;
+  }
+  .site-nav a:hover .nav-disc {
+    transform: translateY(-22px) rotate(200deg);
+  }
+}
+
+/* ================================================================== footer: closing time */
+
+.footer-right {
+  display: grid;
+  gap: 18px;
+  justify-items: end;
+}
+
+.closing {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.closing-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 46px;
+  padding: 0 18px 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--cream);
+  color: var(--espresso);
+  font-family: var(--display-font);
+  font-stretch: 75%;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  box-shadow: 3px 3px 0 var(--oxblood);
+  cursor: pointer;
+  transition:
+    transform 220ms var(--ease-land, ease),
+    box-shadow 220ms var(--ease-land, ease);
+}
+
+.closing-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.closing-switch {
+  background: var(--mustard);
+  padding-left: 16px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .closing-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 5px 5px 0 var(--oxblood);
+  }
+}
+
+.closing-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--oxblood);
+}
+
+.closing-disc {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, var(--mustard) 0 5px, #111 5.5px 6.5px, transparent 7px),
+    repeating-radial-gradient(circle, #151515 0 1.2px, #2a2a2a 1.2px 2.4px);
+}
+
+.closing-disc[data-spin] {
+  animation: vinyl-spin 1.8s linear infinite;
+}
+
+/* The closing sign lights tube by tube when the footer arrives, not on page load. */
+.js .footer-sign .sign-l {
+  animation: none;
+  opacity: 0.12;
+}
+
+.js .footer-sign.in .sign-l {
+  animation: sign-on 1300ms linear both;
+  animation-delay: calc(250ms + var(--l, 0) * 60ms);
+}
+
+.footer-sign {
+  text-shadow:
+    4px 4px 0 var(--oxblood),
+    8px 8px 0 rgb(0 0 0 / 0.35),
+    0 0 40px rgb(227 167 47 / 0.35);
+}
+
+.site-footer > .marquee {
+  z-index: 1;
+  border-top: 0;
+}
+
+@media (max-width: 760px) {
+  .footer-right,
+  .closing {
+    justify-items: start;
+    justify-content: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .footer-sign .sign-l {
+    opacity: 1;
+  }
+  .js .footer-sign.in .sign-l,
+  .closing-disc[data-spin] {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------------------------ Lenis
+   With weighted scrolling on, the browser must not smooth the scroll a second time. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+html.lenis {
+  scroll-behavior: auto;
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}

@@ -3,11 +3,20 @@
  * an awards wall, a notice board and the counter. Every object is a way into the portfolio; the
  * camera walks to whatever you pick. Vanilla three.js on GSAP's ticker, one rAF for the page.
  * The page always scrolls: the scene never listens to the wheel.
+ *
+ * Lighting is the mood: a pendant lamp throws a dusty cone of light over the crates, the neon
+ * and the bulb bloom (HDR, so only things hotter than white glow), the lights come on as the
+ * page opens, and the room leans a little toward the pointer, or the phone's tilt.
  */
 import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { RoundedBoxGeometry } from "three/examples/jsm/geometries/RoundedBoxGeometry.js";
+import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
+import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
+import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass.js";
+import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 import gsap from "gsap";
+import { currentTheme, toast, toggleTheme } from "@/lib/events";
 import { DISC, bandAt, bands, fontsReady, grooves, label, sleeve, fontFamily, type Band } from "../store/press";
 
 export type Station = "floor" | "crates" | "booth" | "wall" | "board" | "counter";
@@ -72,6 +81,70 @@ const METALS = {
   silver: { color: "#b9bec6", rough: 0.26 },
 } as const;
 
+const LAMP = new THREE.Vector3(-0.5, 6.1, -0.5); // where the lamp cord meets the ceiling
+const BEAM_H = 4.4;
+const WALL_DAY = [new THREE.Color("#e3a72f"), new THREE.Color("#1f6f6a")];
+const WALL_NIGHT = [new THREE.Color("#b07f22"), new THREE.Color("#164f4b")];
+const BEAM_R = 2.3;
+
+/** A volumetric-looking cone: brightest at the bulb and along the view-facing middle, gone at the edges. */
+const BEAM_VERT = /* glsl */ `
+varying float vH;
+varying vec3 vN;
+varying vec3 vV;
+void main() {
+  vH = uv.y;
+  vec4 mv = modelViewMatrix * vec4(position, 1.0);
+  vN = normalize(normalMatrix * normal);
+  vV = normalize(-mv.xyz);
+  gl_Position = projectionMatrix * mv;
+}`;
+const BEAM_FRAG = /* glsl */ `
+uniform vec3 uColor;
+uniform float uStrength;
+varying float vH;
+varying vec3 vN;
+varying vec3 vV;
+void main() {
+  // Guarded: a NaN here would spread through the whole bloom chain.
+  float e = clamp(abs(dot(vN, vV)) / max(length(vN) * length(vV), 1e-4), 0.0, 1.0);
+  float h = clamp(vH, 0.0, 1.0);
+  float a = clamp(e * (0.35 + 0.65 * h) * h * uStrength, 0.0, 1.0);
+  gl_FragColor = vec4(uColor * a, a);
+}`;
+
+/** Dust drifting up through the room; motes inside the lamp's cone catch the light. */
+const DUST_VERT = /* glsl */ `
+uniform float uTime;
+uniform float uSize;
+uniform vec3 uLamp;
+attribute float aSeed;
+varying float vA;
+void main() {
+  vec3 p = position;
+  float t = uTime * (0.03 + aSeed * 0.05);
+  p.y = 0.2 + mod(position.y + t, 5.0);
+  p.x += sin(uTime * 0.21 + aSeed * 40.0) * 0.22;
+  p.z += cos(uTime * 0.17 + aSeed * 23.0) * 0.22;
+  float below = uLamp.y - p.y;
+  float r = ${BEAM_R.toFixed(2)} * clamp(below / ${BEAM_H.toFixed(2)}, 0.0, 1.0);
+  float d = length(p.xz - uLamp.xz);
+  float lit = (1.0 - smoothstep(r * 0.35, r + 0.05, d)) * step(0.0, below);
+  float fade = smoothstep(0.2, 0.9, p.y) * (1.0 - smoothstep(4.4, 5.1, p.y));
+  vA = (0.05 + lit * 0.95) * fade;
+  vec4 mv = modelViewMatrix * vec4(p, 1.0);
+  gl_PointSize = uSize * (0.45 + aSeed) / -mv.z;
+  gl_Position = projectionMatrix * mv;
+}`;
+const DUST_FRAG = /* glsl */ `
+uniform vec3 uColor;
+varying float vA;
+void main() {
+  float d = length(gl_PointCoord - 0.5);
+  float a = (1.0 - smoothstep(0.0, 0.5, d)) * vA;
+  gl_FragColor = vec4(uColor * a * 1.8, a);
+}`;
+
 function canvas(w: number, h = w) {
   const c = document.createElement("canvas");
   c.width = w;
@@ -113,6 +186,33 @@ export class Shop {
   private plinthMat!: THREE.MeshStandardMaterial;
   private wallMats: THREE.MeshStandardMaterial[] = [];
   private lamp!: THREE.PointLight;
+  private composer: EffectComposer;
+  private bloom: UnrealBloomPass;
+  private lampRig = new THREE.Group();
+  private beam?: THREE.ShaderMaterial;
+  private pool?: THREE.MeshBasicMaterial;
+  private dust?: THREE.ShaderMaterial;
+  private bulb?: THREE.MeshBasicMaterial;
+  private screen?: THREE.MeshBasicMaterial;
+  private neonGlow?: THREE.PointLight;
+  /** 0 = shop shut, 1 = every light on. The page opens with the lights coming up. */
+  private power = { v: 1, neon: 1 };
+  private intro?: gsap.core.Timeline;
+  private par = new THREE.Vector2();
+  /** Phone tilt, -1..1 on each axis, when the device reports it. Stands in for the pointer. */
+  private tilt = new THREE.Vector2();
+  private tilted = false;
+  private saved = new THREE.Vector3();
+  private rise = { v: 0 };
+  /** 0 = shop open, every light on; 1 = after hours, only the pendant and the neon. Tweened. */
+  private night = { v: 0 };
+  private key!: THREE.DirectionalLight;
+  private hemi!: THREE.HemisphereLight;
+  private themed = false;
+  private cord = new THREE.Group();
+  /** The pendant as a pendulum: angles (x, z) and their velocities. Push the shade and it swings. */
+  private swing = { ax: 0, az: 0, vx: 0, vz: 0 };
+  private clickCtx?: AudioContext;
   private tick = (_t: number, dt: number) => this.frame(dt / 1000);
 
   constructor(
@@ -129,6 +229,29 @@ export class Shop {
     this.renderer.toneMappingExposure = 1.0;
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.VSMShadowMap;
+
+    // Linear HDR in, bloom on what is hotter than white, then tone mapping and sRGB on the way out.
+    // Phones get no MSAA on the target and a cheaper bloom; the look survives, the battery too.
+    const target = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: coarse ? 0 : 4 });
+    this.composer = new EffectComposer(this.renderer, target);
+    this.composer.addPass(new RenderPass(this.scene, this.camera));
+    this.bloom = new UnrealBloomPass(new THREE.Vector2(256, 256), 0.6, coarse ? 0.45 : 0.6, 1);
+    // Glow adds light but never coverage: alpha is left alone, so the canvas stays see-through
+    // and the bloom lands on the page as pure additive light.
+    Object.assign(this.bloom.blendMaterial, {
+      blending: THREE.CustomBlending,
+      blendEquation: THREE.AddEquation,
+      blendSrc: THREE.OneFactor,
+      blendDst: THREE.OneFactor,
+      blendSrcAlpha: THREE.ZeroFactor,
+      blendDstAlpha: THREE.OneFactor,
+    });
+    this.composer.addPass(this.bloom);
+    this.composer.addPass(new OutputPass());
+    this.disposers.push(() => {
+      this.bloom.dispose();
+      this.composer.dispose();
+    });
 
     this.pmrem = new THREE.PMREMGenerator(this.renderer);
     const env = this.pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
@@ -147,6 +270,37 @@ export class Shop {
     this.applyTheme();
     this.resize();
     this.listen();
+    this.lightsOn();
+  }
+
+  /** Opening time: the room fades up from dark, the neon tube stutters into life, the camera settles. */
+  private lightsOn() {
+    if (this.reduced) return;
+    this.power.v = 0;
+    this.power.neon = 0;
+    const tl = gsap.timeline({ delay: 0.2 });
+    tl.to(this.power, { v: 1, duration: 1.8, ease: "power2.inOut" }, 0);
+    tl.to(
+      this.power,
+      {
+        keyframes: [
+          { neon: 0.9, duration: 0.05 },
+          { neon: 0, duration: 0.09 },
+          { neon: 0.7, duration: 0.04 },
+          { neon: 0.1, duration: 0.16 },
+          { neon: 1, duration: 0.07 },
+          { neon: 0.55, duration: 0.05 },
+          { neon: 1, duration: 0.1 },
+        ],
+      },
+      0.75,
+    );
+    this.intro = tl;
+    const end = this.fitted(VIEWS.floor);
+    const start = this.look.clone().add(end.clone().sub(this.look).multiplyScalar(1.22));
+    start.y += 1.2;
+    this.camera.position.copy(start);
+    this.camTween = gsap.timeline().to(this.camera.position, { x: end.x, y: end.y, z: end.z, duration: 2.6, ease: "power3.out", delay: 0.1 });
   }
 
   /* ================================================================ materials */
@@ -197,7 +351,7 @@ export class Shop {
   /* ================================================================ the room */
 
   private buildRoom() {
-    const key = new THREE.DirectionalLight("#fff3df", 2.2);
+    const key = (this.key = new THREE.DirectionalLight("#fff3df", 2.2));
     key.position.set(6, 11, 7);
     key.castShadow = true;
     key.shadow.mapSize.set(2048, 2048);
@@ -206,10 +360,13 @@ export class Shop {
     key.shadow.blurSamples = 16;
     key.shadow.bias = -0.0005;
     this.scene.add(key);
-    this.scene.add(new THREE.HemisphereLight("#fff5e6", "#6b4a2e", 0.65));
+    this.hemi = new THREE.HemisphereLight("#fff5e6", "#6b4a2e", 0.65);
+    this.scene.add(this.hemi);
     this.lamp = new THREE.PointLight("#ffb35c", 14, 12, 1.6);
-    this.lamp.position.set(-0.5, 4.4, -0.5);
-    this.scene.add(this.lamp);
+    this.lamp.position.set(0, 4.4 - LAMP.y, 0);
+    this.lampRig.position.copy(LAMP);
+    this.lampRig.add(this.lamp);
+    this.scene.add(this.lampRig);
 
     // Checkerboard lino, cream and oxblood, the floor of every shop that sold records in 1974.
     const [fc, f] = canvas(512);
@@ -260,11 +417,91 @@ export class Shop {
     // A ceiling lamp, a cone shade over the crates.
     const shade = new THREE.Mesh(new THREE.ConeGeometry(0.55, 0.5, 32, 1, true), new THREE.MeshStandardMaterial({ color: "#9b2316", roughness: 0.5, side: THREE.DoubleSide }));
     shade.position.set(-0.5, 4.7, -0.5);
-    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 12), new THREE.MeshBasicMaterial({ color: "#ffe2a8" }));
-    bulb.position.set(-0.5, 4.48, -0.5);
+    this.bulb = new THREE.MeshBasicMaterial({ color: "#ffe2a8" });
+    const bulb = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 12), this.bulb);
     const cord = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 0.01, 1.2), new THREE.MeshBasicMaterial({ color: "#1d1712" }));
-    cord.position.set(-0.5, 5.5, -0.5);
-    this.scene.add(shade, bulb, cord);
+    shade.position.set(0, 4.7 - LAMP.y, 0);
+    bulb.position.set(0, 4.48 - LAMP.y, 0);
+    cord.position.set(0, 5.5 - LAMP.y, 0);
+
+    // The cone of light under the shade, and the warm pool it leaves on the crates and the lino.
+    this.beam = new THREE.ShaderMaterial({
+      vertexShader: BEAM_VERT,
+      fragmentShader: BEAM_FRAG,
+      uniforms: { uColor: { value: new THREE.Color("#ffc27a") }, uStrength: { value: 0.2 } },
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+      side: THREE.DoubleSide,
+    });
+    const beam = new THREE.Mesh(new THREE.ConeGeometry(BEAM_R, BEAM_H, 48, 1, true), this.beam);
+    beam.position.y = 4.48 - LAMP.y - BEAM_H / 2;
+    beam.renderOrder = 2;
+    this.lampRig.add(shade, bulb, cord, beam);
+
+    // A pull cord with a brass bead hanging off the shade's rim: the light switch.
+    const brass = new THREE.MeshStandardMaterial({ color: "#d9a441", metalness: 1, roughness: 0.3 });
+    const string = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.008, 0.7), new THREE.MeshBasicMaterial({ color: "#efe2c6" }));
+    string.position.y = -0.35;
+    const bead = new THREE.Mesh(new THREE.SphereGeometry(0.06, 20, 14), brass);
+    bead.position.y = -0.72;
+    bead.castShadow = true;
+    // A generous invisible handle, so the bead is easy to catch with a finger.
+    const grip = new THREE.Mesh(new THREE.SphereGeometry(0.22, 8, 6), new THREE.MeshBasicMaterial({ visible: false }));
+    grip.position.y = -0.7;
+    this.cord.add(string, bead, grip);
+    this.cord.position.set(0.36, 4.5 - LAMP.y, 0.12);
+    this.lampRig.add(this.cord);
+    this.interactive(this.cord, { station: "floor", caption: "Pull the cord: the shop's lights" });
+    this.cord.traverse((c) => (c.userData.kind = "cord"));
+    this.interactive(shade, { station: "floor", caption: "Give the lamp a push" });
+    shade.traverse((c) => (c.userData.kind = "lamp"));
+
+    const [pc, pg] = canvas(256);
+    const grad = pg.createRadialGradient(128, 128, 0, 128, 128, 128);
+    grad.addColorStop(0, "rgba(255,200,130,1)");
+    grad.addColorStop(0.45, "rgba(255,170,90,0.45)");
+    grad.addColorStop(1, "rgba(255,150,70,0)");
+    pg.fillStyle = grad;
+    pg.fillRect(0, 0, 256, 256);
+    this.pool = new THREE.MeshBasicMaterial({ map: this.canvasTex(pc), transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.25 });
+    const pool = new THREE.Mesh(new THREE.CircleGeometry(BEAM_R * 1.15, 48), this.pool);
+    pool.rotation.x = -Math.PI / 2;
+    pool.position.set(LAMP.x, 0.015, LAMP.z);
+    pool.renderOrder = 1;
+    this.scene.add(pool);
+
+    const N = matchMedia("(pointer: coarse)").matches ? 200 : 460;
+    const pos = new Float32Array(N * 3);
+    const seed = new Float32Array(N);
+    for (let i = 0; i < N; i++) {
+      // Half the motes gather near the lamp so the cone always has some in it.
+      const near = i % 2 === 0;
+      pos[i * 3] = near ? LAMP.x + (Math.random() - 0.5) * 3.4 : (Math.random() - 0.5) * 11;
+      pos[i * 3 + 1] = Math.random() * 5;
+      pos[i * 3 + 2] = near ? LAMP.z + (Math.random() - 0.5) * 3.4 : (Math.random() - 0.5) * 8.4;
+      seed[i] = Math.random();
+    }
+    const dg = new THREE.BufferGeometry();
+    dg.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+    dg.setAttribute("aSeed", new THREE.BufferAttribute(seed, 1));
+    this.dust = new THREE.ShaderMaterial({
+      vertexShader: DUST_VERT,
+      fragmentShader: DUST_FRAG,
+      uniforms: {
+        uTime: { value: 0 },
+        uSize: { value: 26 * this.renderer.getPixelRatio() },
+        uLamp: { value: new THREE.Vector3(LAMP.x, 4.48, LAMP.z) },
+        uColor: { value: new THREE.Color("#ffe0b0") },
+      },
+      transparent: true,
+      depthWrite: false,
+      blending: THREE.AdditiveBlending,
+    });
+    const dust = new THREE.Points(dg, this.dust);
+    dust.frustumCulled = false;
+    dust.renderOrder = 3;
+    this.scene.add(dust);
   }
 
   /* ================================================================ counter + till */
@@ -296,7 +533,8 @@ export class Shop {
     s.font = `800 64px ${fontFamily("display")}`;
     s.fillText("REQUEST A", 30, 110);
     s.fillText("RECORD →", 30, 190);
-    const screen = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 0.31), new THREE.MeshBasicMaterial({ map: this.canvasTex(sc) }));
+    this.screen = new THREE.MeshBasicMaterial({ map: this.canvasTex(sc) });
+    const screen = new THREE.Mesh(new THREE.PlaneGeometry(0.62, 0.31), this.screen);
     const screenBox = new THREE.Mesh(new RoundedBoxGeometry(0.72, 0.4, 0.08, 3, 0.02), new THREE.MeshStandardMaterial({ color: "#1d1712" }));
     screenBox.position.set(0, 0.68, -0.2);
     screenBox.rotation.x = -0.2;
@@ -554,6 +792,7 @@ export class Shop {
     const glow = new THREE.PointLight("#ff8a3d", 5, 5, 2);
     glow.position.set(3.3, 3.7, -3.8);
     this.scene.add(glow);
+    this.neonGlow = glow;
   }
 
   private neon?: THREE.Mesh;
@@ -758,9 +997,15 @@ export class Shop {
     const v = VIEWS[s];
     const pos = this.fitted(v);
     this.camTween?.kill();
-    const d = this.reduced ? 0 : 1.15;
-    const tl = gsap.timeline({ defaults: { duration: d, ease: "power3.inOut" } });
+    // A long walk takes longer, and the camera lifts over the crates on the way, like a dolly on a crane.
+    const dist = this.camera.position.distanceTo(pos);
+    const d = this.reduced ? 0 : THREE.MathUtils.clamp(0.9 + dist * 0.06, 1.1, 1.7);
+    const tl = gsap.timeline({ defaults: { duration: d, ease: "power2.inOut" } });
     tl.to(this.camera.position, { x: pos.x, y: pos.y, z: pos.z }, 0);
+    if (d) {
+      tl.to(this.rise, { v: Math.min(1.1, dist * 0.07), duration: d / 2, ease: "sine.out" }, 0);
+      tl.to(this.rise, { v: 0, duration: d / 2, ease: "sine.in" }, d / 2);
+    }
     tl.to(this.look, { x: v.look[0], y: v.look[1], z: v.look[2] }, 0);
     tl.to(this.shift, { ...this.shiftFor(s), onUpdate: () => this.applyShift() }, 0);
     this.camTween = tl;
@@ -790,6 +1035,73 @@ export class Shop {
     return look.clone().add(pos.sub(look).multiplyScalar(k));
   }
 
+  /* ================================================================ the lamp */
+
+  /**
+   * The cord is the switch for the whole shop, not just this lamp: it flips the site's theme.
+   * The dark (or the light) spreads across the page from the bead you pulled.
+   */
+  toggleLamp() {
+    const goingDark = currentTheme() !== "dark";
+    const bead = this.cord.children[1].getWorldPosition(new THREE.Vector3()).project(this.camera);
+    const r = this.canvasEl.getBoundingClientRect();
+    const x = r.left + ((bead.x + 1) / 2) * r.width;
+    const y = r.top + ((1 - bead.y) / 2) * r.height;
+    this.clack(!goingDark);
+    toggleTheme({ x, y });
+    toast(goingDark ? "Lights down. After hours: the lamp and the neon stay on." : "Lights up. The shop is open.");
+  }
+
+  /** A pull-switch click, synthesised: a short filtered noise tick, higher for on than off. */
+  private clack(on: boolean) {
+    try {
+      const ctx = (this.clickCtx ??= new AudioContext());
+      const len = Math.floor(ctx.sampleRate * 0.03);
+      const buf = ctx.createBuffer(1, len, ctx.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 6);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      const bp = ctx.createBiquadFilter();
+      bp.type = "bandpass";
+      bp.frequency.value = on ? 3200 : 2200;
+      bp.Q.value = 4;
+      const g = ctx.createGain();
+      g.gain.value = 0.5;
+      src.connect(bp).connect(g).connect(ctx.destination);
+      src.start();
+    } catch {
+      /* no audio, no click; the light still changes */
+    }
+  }
+
+  /** Stretch the cord while it is pulled (0..1); let go and it springs back. */
+  private pullCord(k: number, release = false) {
+    if (release) {
+      gsap.to(this.cord.scale, { y: 1, duration: this.reduced ? 0 : 0.9, ease: "elastic.out(1.1, 0.35)", overwrite: true });
+      return;
+    }
+    gsap.set(this.cord.scale, { y: 1 + k * 0.4 });
+  }
+
+  /** Step along the shop, one station at a time (the phone's swipe). */
+  private walk(dir: 1 | -1) {
+    const order: Station[] = ["floor", "crates", "booth", "wall", "board", "counter"];
+    const next = order[(order.indexOf(this.station) + dir + order.length) % order.length];
+    this.goto(next);
+    if (next === "booth") {
+      if (this.onPlatter < 0) void this.play(0);
+      this.events.onStation("booth", Math.max(0, this.onPlatter));
+    } else this.events.onStation(next);
+  }
+
+  /** Shove the shade: pointer travel becomes angular velocity. */
+  private push(dx: number, dy: number) {
+    if (this.reduced) return;
+    this.swing.vz = THREE.MathUtils.clamp(this.swing.vz - dx * 2.4, -2.2, 2.2);
+    this.swing.vx = THREE.MathUtils.clamp(this.swing.vx + dy * 2.4, -2.2, 2.2);
+  }
+
   /* ================================================================ frame + input */
 
   private frame(dt: number) {
@@ -804,15 +1116,68 @@ export class Shop {
       this.yaw = 0;
     }
     this.camera.lookAt(this.look);
+    const t = performance.now() / 1000;
+    const lvl = this.reduced ? 0 : (this.level?.() ?? 0);
+    const pw = this.power.v;
+    const n = this.night.v;
+    const mix = (a: number, b: number) => a + (b - a) * n;
     if (!this.reduced) {
-      const t = performance.now() / 1000;
-      // A neon tube that hums: the faintest flicker, never a strobe.
-      if (this.neon) (this.neon.material as THREE.MeshBasicMaterial).opacity = 0.93 + Math.sin(t * 7.3) * 0.03 + Math.sin(t * 1.7) * 0.03;
-      const lvl = this.level?.() ?? 0;
       this.speakers.forEach((s) => s.scale.setScalar(1 + lvl * 0.12));
+      // The pendant hangs on a damped pendulum (push it and it swings), plus a draught's worth of sway.
+      const w = this.swing;
+      const h = Math.min(dt, 0.05);
+      w.vx += (-6 * w.ax - 0.9 * w.vx) * h;
+      w.vz += (-6 * w.az - 0.9 * w.vz) * h;
+      w.ax += w.vx * h;
+      w.az += w.vz * h;
+      this.lampRig.rotation.z = w.az + Math.sin(t * 0.55) * 0.022;
+      this.lampRig.rotation.x = w.ax + Math.sin(t * 0.41 + 1.3) * 0.016;
+      if (this.dust) this.dust.uniforms.uTime.value = t;
     }
+    // A neon tube that hums: the faintest flicker, never a strobe. Brighter on the beat.
+    const hum = this.reduced ? 1 : 0.94 + Math.sin(t * 7.3) * 0.03 + Math.sin(t * 1.7) * 0.03;
+    const neon = this.power.neon * hum;
+    if (this.neon) {
+      const m = this.neon.material as THREE.MeshBasicMaterial;
+      m.opacity = neon;
+      m.color.setScalar(mix(2.8, 3.6) + lvl * 1.6);
+    }
+    if (this.neonGlow) this.neonGlow.intensity = mix(5, 10) * neon;
+    this.renderer.toneMappingExposure = mix(1.0, 0.72) * (0.08 + 0.92 * pw);
+    // The shop's ceiling lights: full in the day, nearly out after hours.
+    this.key.intensity = mix(2.2, 0.16) * pw;
+    this.hemi.intensity = mix(0.65, 0.12) * pw;
+    this.scene.environmentIntensity = mix(0.55, 0.14);
+    this.lamp.intensity = mix(14, 26) * pw * (1 + lvl * 0.25);
+    this.bulb?.color.set("#ffe2a8").multiplyScalar(1 + pw * mix(3, 5.5) + lvl * 2);
+    this.screen?.color.setScalar(1 + pw * mix(0.4, 1));
+    if (this.beam) this.beam.uniforms.uStrength.value = mix(0.18, 0.36) * pw * (1 + lvl * 0.5);
+    if (this.pool) this.pool.opacity = mix(0.06, 0.14) * pw;
+    this.bloom.strength = mix(0.45, 0.8) + lvl * 0.4;
+    this.bloom.threshold = mix(1.9, 1.3);
+    this.wallMats[0].color.lerpColors(WALL_DAY[0], WALL_NIGHT[0], n);
+    this.wallMats[1].color.lerpColors(WALL_DAY[1], WALL_NIGHT[1], n);
+
     this.hitTest();
-    this.renderer.render(this.scene, this.camera);
+
+    // Lean toward the pointer (or the way the phone tips), and breathe a little when nothing moves.
+    const inside = this.pointer.x <= 1;
+    const aim = this.tilted ? this.tilt : inside ? this.pointer : null;
+    const tx = (aim ? aim.x * 0.32 : 0) + (this.reduced ? 0 : Math.sin(t * 0.23) * 0.08);
+    const ty = (aim ? aim.y * 0.18 : 0) + (this.reduced ? 0 : Math.sin(t * 0.31 + 2) * 0.05);
+    const k = this.reduced ? 1 : 1 - Math.exp(-Math.min(dt, 0.1) * 2.6);
+    this.par.x += (tx - this.par.x) * k;
+    this.par.y += (ty - this.par.y) * k;
+    this.saved.copy(this.camera.position);
+    this.camera.position.y += this.rise.v;
+    if (!this.reduced) {
+      this.camera.translateX(this.par.x);
+      this.camera.translateY(this.par.y);
+      this.camera.lookAt(this.look);
+    }
+    this.composer.render(dt);
+    this.camera.position.copy(this.saved);
+    this.camera.lookAt(this.look);
   }
 
   /** Optional audio level (0..1) so the speaker cones move with Our Song. */
@@ -881,6 +1246,16 @@ export class Shop {
       return;
     }
     const owner = (obj.userData.owner as THREE.Object3D) ?? obj;
+    if (obj.userData.kind === "cord") {
+      this.pullCord(0.6);
+      this.pullCord(0, true);
+      this.toggleLamp();
+      return;
+    }
+    if (obj.userData.kind === "lamp") {
+      this.push(0.25 * (Math.random() > 0.5 ? 1 : -1), 0.1);
+      return;
+    }
     const station = owner.userData.station as Station;
     const record = owner.userData.record as number | undefined;
     if (station === "crates" && record !== undefined) {
@@ -900,7 +1275,7 @@ export class Shop {
   }
 
   private listen() {
-    let down: { x: number; y: number; id: number } | null = null;
+    let down: { x: number; y: number; id: number; kind?: "cord" | "lamp"; sx: number; sy: number } | null = null;
     let dragged = false;
     const move = (e: PointerEvent) => {
       const r = this.canvasEl.getBoundingClientRect();
@@ -909,25 +1284,76 @@ export class Shop {
       this.pointer.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
       if (down && e.pointerId === down.id) {
         const dx = e.clientX - down.x;
-        if (Math.abs(dx) > 4) dragged = true;
-        if (dragged) {
+        const dy = e.clientY - down.y;
+        if (Math.abs(dx) > 4 || Math.abs(dy) > 4) dragged = true;
+        if (dragged && down.kind === "cord") {
+          this.pullCord(THREE.MathUtils.clamp((e.clientY - down.sy) / 90, 0, 1));
+        } else if (dragged && down.kind === "lamp") {
+          this.push(dx / r.width, dy / r.height);
+          down.x = e.clientX;
+          down.y = e.clientY;
+        } else if (dragged && Math.abs(dx) > 0) {
           this.yaw += -(dx / r.width) * 1.2;
           down.x = e.clientX;
         }
       }
     };
     const pdown = (e: PointerEvent) => {
-      down = { x: e.clientX, y: e.clientY, id: e.pointerId };
+      const r = this.canvasEl.getBoundingClientRect();
+      this.pointer.set(((e.clientX - r.left) / r.width) * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1);
+      const kind = this.pick().obj?.userData.kind as "cord" | "lamp" | undefined;
+      down = { x: e.clientX, y: e.clientY, id: e.pointerId, kind, sx: e.clientX, sy: e.clientY };
       dragged = false;
+      // Holding the cord or the shade: the page must not scroll out from under the finger.
+      if (kind) this.canvasEl.setPointerCapture(e.pointerId);
     };
-    const up = () => {
+    const up = (e: PointerEvent) => {
+      // On a phone a clear sideways swipe walks to the next station, like flipping a story.
+      const sx = down ? e.clientX - down.sx : 0;
+      const sy = down ? e.clientY - down.sy : 0;
+      if (down && dragged && !down.kind && e.pointerType === "touch" && Math.abs(sx) > 70 && Math.abs(sx) > Math.abs(sy) * 1.5) {
+        this.walk(sx < 0 ? 1 : -1);
+        down = null;
+        return;
+      }
       if (down && !dragged) this.click();
+      else if (down?.kind === "cord") {
+        const pulled = (e.clientY - down.sy) / 90;
+        this.pullCord(0, true);
+        if (pulled > 0.35) this.toggleLamp();
+      }
       down = null;
     };
     const leave = () => {
       this.pointer.set(2, 2);
       down = null;
     };
+    const orient = (e: DeviceOrientationEvent) => {
+      if (e.beta == null || e.gamma == null) return;
+      this.tilted = true;
+      this.tilt.set(THREE.MathUtils.clamp(e.gamma / 25, -1, 1), THREE.MathUtils.clamp((45 - e.beta) / 25, -1, 1));
+    };
+    const coarse = matchMedia("(pointer: coarse)").matches;
+    let asked = false;
+    const askTilt = () => {
+      if (asked) return;
+      asked = true;
+      const D = DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<string> };
+      if (typeof D.requestPermission === "function") {
+        D.requestPermission()
+          .then((r) => r === "granted" && window.addEventListener("deviceorientation", orient))
+          .catch(() => {});
+      }
+    };
+    if (coarse && !this.reduced && "DeviceOrientationEvent" in window) {
+      const D = DeviceOrientationEvent as unknown as { requestPermission?: () => Promise<string> };
+      if (typeof D.requestPermission !== "function") window.addEventListener("deviceorientation", orient);
+      else this.canvasEl.addEventListener("pointerdown", askTilt);
+    }
+    this.disposers.push(() => {
+      window.removeEventListener("deviceorientation", orient);
+      this.canvasEl.removeEventListener("pointerdown", askTilt);
+    });
     const c = this.canvasEl;
     c.addEventListener("pointermove", move);
     c.addEventListener("pointerdown", pdown);
@@ -955,6 +1381,8 @@ export class Shop {
     const h = this.canvasEl.clientHeight;
     if (!w || !h) return;
     this.renderer.setSize(w, h, false);
+    this.composer.setPixelRatio(this.renderer.getPixelRatio());
+    this.composer.setSize(w, h);
     this.camera.aspect = w / h;
     this.camera.fov = w / h < 1 ? 48 : 34;
     if (!this.camTween?.isActive()) Object.assign(this.shift, this.shiftFor(this.station));
@@ -967,10 +1395,12 @@ export class Shop {
   private applyTheme() {
     const t = document.documentElement.dataset.theme;
     const dark = t === "dark" || (t !== "light" && matchMedia("(prefers-color-scheme: dark)").matches);
-    this.renderer.toneMappingExposure = dark ? 0.62 : 1.0;
-    this.lamp.intensity = dark ? 30 : 14;
-    this.wallMats[0].color.set(dark ? "#b07f22" : "#e3a72f");
-    this.wallMats[1].color.set(dark ? "#164f4b" : "#1f6f6a");
+    // After hours only the lamp, the bulb and the neon are hot enough to bloom. The first call
+    // sets the room as it is; later switches fade, in step with the page's own wipe.
+    const d = this.themed && !this.reduced ? 0.9 : 0;
+    this.themed = true;
+    gsap.to(this.night, { v: dark ? 1 : 0, duration: d, ease: "power2.inOut", overwrite: true });
+    this.beam?.uniforms.uColor.value.set(dark ? "#ffb060" : "#ffc27a");
   }
 
   setRunning(on: boolean) {
@@ -983,6 +1413,8 @@ export class Shop {
   dispose() {
     this.setRunning(false);
     this.camTween?.kill();
+    this.intro?.kill();
+    void this.clickCtx?.close();
     this.swap?.kill();
     this.armTween?.kill();
     this.disposers.forEach((d) => d());

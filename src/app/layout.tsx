@@ -6,6 +6,7 @@ import { ALSO, FEATURED, getFiling } from "@/lib/work";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { CommandPalette, type PaletteItem } from "@/components/CommandPalette";
+import { Ambience } from "@/components/Ambience";
 import { Reveal } from "@/components/Reveal";
 import { Toast } from "@/components/Toast";
 import { NowPlaying } from "@/components/NowPlaying";
@@ -123,6 +124,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <NowPlaying />
         <Toast />
         <Reveal />
+        <Ambience />
       </body>
     </html>
   );
