@@ -507,8 +507,8 @@ export const FILINGS: Filing[] = [
     short: "Screening 1,761 approved medicines against four drug-resistant bacteria, with every result tied to its evidence.",
     field: "Scientific computing",
     year: "2026",
-    role: "Engineer. Client project through SNOWBROS.",
-    status: "Research prototype, live. Predictions for the lab, not clinical evidence.",
+    role: "Led the software with Yash Prajapati. Client project through SNOWBROS.",
+    status: "Research prototype, live. Predictions for the lab, not clinical evidence. Recognised with a Letter of Appreciation from Ganpat University's pharmacy college.",
     stack: ["Python", "RDKit", "scikit-learn", "AutoDock Vina", "PostgreSQL", "Supabase", "Docker", "Next.js"],
     links: [
       { label: "Live site", href: "https://amr-drug-repurposing.vercel.app" },
@@ -566,26 +566,38 @@ export const FILINGS: Filing[] = [
     slug: "nova",
     no: 900,
     title: "NOVA",
-    short: "A privacy-first, open-source desktop media player. No account, no telemetry, works offline.",
+    short: "A calm, honest media player for Windows, now on Android. No account, no telemetry, works offline.",
     field: "Desktop media",
     year: "2026",
     role: "Author. Built under SNOWBROS.",
-    status: "M0 to M2 complete on Windows. Not ready for end users yet, and the README says so.",
+    status: "v0.3.0 for Windows x64, tested on Windows 11. Android 8+ as a pre-release that updates itself.",
     stack: ["Rust", "Tauri 2", "React 19", "TypeScript", "Tailwind CSS 4", "libmpv", "SQLite", "Expo"],
     links: [
       { label: "Website", href: "https://nova.snowbros.me" },
       { label: "Repository", href: "https://github.com/VED2107/nova" },
     ],
+    plate: { src: "/work/nova-player.webp", alt: "NOVA playing Tears of Steel with subtitles: H.264, 1280×534, hardware decoding, with the timeline and control deck below.", w: 960, h: 600 },
     facts: [
-      { value: "1 frame", label: "where the ±1, 5, 30 and 60 s seek keys land" },
-      { value: "7", label: "architecture decisions written up as ADRs" },
+      { value: "55/55", label: "compatibility samples play, in software and hardware decoding" },
+      { value: "100 ms", label: "exact seeking, measured in the test harness" },
       { value: "0", label: "accounts, telemetry or network needed" },
     ],
     abstract:
       "NOVA plays local video like a professional tool would, ProRes, DNxHR, HDR and 8K included, and remembers where you were even after a crash. The interface only ever shows what the playback engine confirms.",
     background:
       "Desktop players either look modern and fake their state, or tell the truth and look like 2005. NOVA puts native video from libmpv under a transparent React interface in a Tauri shell, with the rules of playback kept in plain Rust crates that know nothing about the engine.",
-    figures: [],
+    figures: [
+      {
+        kind: "image",
+        img: { src: "/work/nova-player.webp", alt: "NOVA's player showing Tears of Steel with subtitles and the control deck.", w: 960, h: 600 },
+        caption: "The player. The title bar reports what libmpv decoded: H.264, 1280×534, hardware decoding. Tears of Steel © Blender Foundation, CC BY 3.0.",
+      },
+      {
+        kind: "image",
+        img: { src: "/work/nova-home.webp", alt: "NOVA's Home in Daylight: Continue with Tears of Steel and a Resume button, Recently added, and Your shelf.", w: 960, h: 600 },
+        caption: "Home in the Daylight theme. Continue picks up where you stopped, even after a crash or a renamed file.",
+      },
+    ],
     decisions: [
       {
         title: "Engine-confirmed state only",
@@ -608,48 +620,48 @@ export const FILINGS: Filing[] = [
         body: "The code is MIT or Apache-2.0. The first installer bundles a libmpv build with GPL parts, so the installer ships under the GPL with its source; later releases move to an LGPL engine built from source.",
       },
     ],
-    claims: ["Every limitation is listed in the README before anyone asks.", "Seek keys land within one frame, measured, not estimated."],
+    claims: [
+      "Every limitation is listed before anyone asks: Windows x64 tested on one Windows 11 machine, Android still a pre-release.",
+      "Exact seeking within 100 ms, measured on 55 synthetic samples, once in software and once with hardware decoding.",
+      "Updates only ever install signed releases.",
+    ],
   },
   {
     slug: "ved-exe",
     no: 800,
     title: "VED.EXE",
-    short: "This site: a record and film shop that only stocks what I made.",
+    short: "This site. A plain, fast portfolio where every number traces back to a repository or a live product.",
     field: "Interface",
     year: "2026",
     role: "Designer and developer.",
-    status: "Live. You're standing in it.",
-    stack: ["Next.js 16", "React 19", "TypeScript", "Tailwind CSS 4", "GSAP", "Lenis", "View Transitions API", "Web Audio API"],
+    status: "Live. You're reading it.",
+    stack: ["Next.js 16", "React 19", "TypeScript", "View Transitions API", "GitHub GraphQL API"],
     links: [{ label: "Repository", href: "https://github.com/VED2107/portfolio" }],
     facts: [
-      { value: "1", label: "motion system: every object moves by its material" },
-      { value: "⌘K", label: "catalogue terminal reaches every page" },
+      { value: "1", label: "typeface, two weights doing the work" },
+      { value: "⌘K", label: "reaches every page, project and link" },
     ],
     abstract:
-      "A portfolio built as an independent record and film shop. Projects are releases you pull from a crate; experiments and the studio live on the film shelf in the back room.",
+      "The work is the interface. Each project leads with a real screenshot and the one number that proves it, then a case study for anyone who wants the engineering.",
     background:
-      "The earlier versions were a retro arcade and then a patent filing. Both described the work. This one asks you to handle it: browse, pull, flip, read the liner notes.",
+      "Earlier versions were a retro arcade, a patent filing and a record shop. Each was fun to build and each put a costume between a visitor and the work. This one takes the costume off.",
     figures: [],
     decisions: [
       {
-        title: "The same object, all the way through",
-        body: "A sleeve you pull from the crate is measured with GSAP Flip and carried into the inspection view, and its cover carries on into the liner notes with a shared view transition. Nothing disappears to be replaced by a lookalike.",
-      },
-      {
-        title: "Motion by material",
-        body: "Records are heavy and slow to settle, paper inserts are light and quick, plastic cases snap, and navigation is nearly instant. One token file decides all of it.",
+        title: "Show the working thing first",
+        body: "Every project opens on its own screenshot, from the product itself, never a mockup. The number beside it comes from the project's README or its live site.",
       },
       {
         title: "Content first, motion second",
-        body: "Every release and film is real HTML before any script runs. The crate dig, the shelf and the lighting change enhance a page that already reads; with reduced motion they are simply absent.",
+        body: "Every page is complete HTML before any script runs. Entrances are opacity and a short rise, staggered, and with reduced motion they are simply absent.",
       },
       {
-        title: "Touch is its own design",
-        body: "On phones the crate becomes a stack you flip with your thumb through native scroll; nothing pins, nothing traps. Hover effects only exist where a fine pointer does.",
+        title: "Live, with a fallback",
+        body: "GitHub activity is fetched on the server and revalidated hourly. If the API is slow or down, the section falls back to a committed snapshot instead of an empty box.",
       },
       {
         title: "Keyboard complete",
-        body: "⌘K or / opens the catalogue terminal at the counter. It reaches every release, film, aisle and setting, and it still has a shell.",
+        body: "⌘K or / opens a command menu that reaches every section, project, link and the theme. It opens instantly, because something used this often should not animate.",
       },
     ],
     claims: [
@@ -694,6 +706,13 @@ export const ARCHIVE: ArchiveItem[] = [
     href: "https://github.com/snowbros-labs/mentor-skill",
   },
   {
+    title: "Creative Engineering",
+    field: "AI skill and TypeScript motion toolkit",
+    stack: "TypeScript, scroll choreography, interactive 3D",
+    year: "2026",
+    href: "https://github.com/snowbros-labs/creative-engineering",
+  },
+  {
     title: "Cipher Clash",
     field: "Realtime multiplayer game",
     stack: "Expo, Supabase Realtime, Zustand, Turborepo",
@@ -719,4 +738,71 @@ export function filingTitle(slug: string) {
 
 export function filingNo(slug: string) {
   return getFiling(slug)?.no ?? 0;
+}
+
+/**
+ * The home page's selected work, in order, each led by the one number that proves it.
+ * The number is one of the filing's own facts; nothing here is new.
+ */
+export const FEATURED: { slug: string; proof: number }[] = [
+  { slug: "vinnys-atelier", proof: 1 },
+  { slug: "accounic", proof: 2 },
+  { slug: "amr-drug-repurposing", proof: 0 },
+  { slug: "snowbros-atlas", proof: 1 },
+  { slug: "swiftdrop", proof: 0 },
+  { slug: "nova", proof: 0 },
+];
+
+/** Smaller client builds shown as a pair under the featured work. */
+export const ALSO = ["vinnys-vogue", "stc-academy"];
+
+/** The case-study reading order: featured first, then the rest. */
+export const ORDER = [...FEATURED.map((f) => f.slug), ...ALSO, "ved-exe"];
+
+/** How many projects each technology shipped on, counted from their stacks. */
+export function equipment() {
+  const count = new Map<string, number>();
+  const norm = (s: string) => s.replace(/\s+\d[\d.]*$/, "").replace(/^Tailwind( CSS)?$/, "Tailwind CSS").trim();
+  for (const f of FILINGS) for (const s of f.stack) count.set(norm(s), (count.get(norm(s)) ?? 0) + 1);
+  return [...count.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+}
+
+/* ------------------------------------------------------------------ pressing */
+
+/**
+ * How each project is pressed: sleeve colour, the ink printed on it, the centre label, and the
+ * line etched in the run-out groove. Packaging only; no new facts.
+ */
+export type Pressing = { cat: string; sleeve: string; ink: string; label: string; labelInk: string; runout: string };
+
+export const PRESSING: Record<string, Pressing> = {
+  "vinnys-atelier": { cat: "VED 300", sleeve: "#c9a46a", ink: "#1c140b", label: "#f6efe2", labelInk: "#1c140b", runout: "only the webhook says paid" },
+  accounic: { cat: "VED 200", sleeve: "#dfe6d6", ink: "#0f3d2a", label: "#16865c", labelInk: "#f2fbf6", runout: "zero floats in the money path" },
+  "amr-drug-repurposing": { cat: "VED 700", sleeve: "#e7efee", ink: "#0b3f45", label: "#127c86", labelInk: "#effafb", runout: "a prediction, not a cure" },
+  "snowbros-atlas": { cat: "VED 100", sleeve: "#1f6f6a", ink: "#f3ead8", label: "#e3a72f", labelInk: "#1d1712", runout: "same code in, same findings out" },
+  swiftdrop: { cat: "VED 600", sleeve: "#d8392b", ink: "#fff4ec", label: "#16130f", labelInk: "#ffb4a8", runout: "resume, never restart" },
+  nova: { cat: "VED 900", sleeve: "#0f1115", ink: "#e9ecf2", label: "#e9ecf2", labelInk: "#0f1115", runout: "only what the engine confirms" },
+  "vinnys-vogue": { cat: "VED 400", sleeve: "#5b1328", ink: "#f6e6dd", label: "#a3355f", labelInk: "#fff0f5", runout: "one lehenga left, two buyers" },
+  "stc-academy": { cat: "VED 500", sleeve: "#14213d", ink: "#efe6cf", label: "#efe6cf", labelInk: "#14213d", runout: "two boards, one catalogue" },
+  "ved-exe": { cat: "VED 800", sleeve: "#1d1712", ink: "#f3ead8", label: "#9b2316", labelInk: "#f3ead8", runout: "the work is the interface" },
+};
+
+/** Side A takes the first half of the decisions, side B the rest, like a real LP. */
+export function trackNo(i: number, total: number) {
+  const half = Math.ceil(total / 2);
+  return i < half ? `A${i + 1}` : `B${i - half + 1}`;
+}
+
+/** Liner credits: each tool, how many records it played on, and which ones. */
+export function credits(limit = 16) {
+  const norm = (s: string) => s.replace(/\s+\d[\d.]*$/, "").replace(/^Tailwind( CSS)?$/, "Tailwind CSS").trim();
+  const map = new Map<string, string[]>();
+  for (const f of FILINGS) {
+    if (f.slug === "ved-exe") continue;
+    for (const s of new Set(f.stack.map(norm))) map.set(s, [...(map.get(s) ?? []), f.title]);
+  }
+  return [...map.entries()]
+    .map(([name, records]) => ({ name, count: records.length, records }))
+    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
+    .slice(0, limit);
 }

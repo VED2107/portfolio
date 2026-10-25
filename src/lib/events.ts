@@ -2,13 +2,8 @@
 
 /** A tiny event bus: components talk through window events instead of shared global state. */
 
-export function openCatalog(query = "") {
-  window.dispatchEvent(new CustomEvent("ved:catalog", { detail: { query } }));
-}
-
-/** Open a release in the inspection view, from anywhere (the catalogue terminal uses this). */
-export function inspect(slug: string) {
-  window.dispatchEvent(new CustomEvent("ved:inspect", { detail: { slug } }));
+export function openPalette(query = "") {
+  window.dispatchEvent(new CustomEvent("ved:palette", { detail: { query } }));
 }
 
 export function toast(message: string) {
@@ -30,12 +25,17 @@ export function setTheme(theme: Theme) {
   } catch {
     /* storage can be unavailable; the attribute still applies for this visit */
   }
+  window.dispatchEvent(new CustomEvent("ved:theme"));
 }
 
 export function currentTheme(): "light" | "dark" {
   const d = document.documentElement.dataset.theme;
   if (d === "light" || d === "dark") return d;
   return matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+}
+
+export function toggleTheme() {
+  setTheme(currentTheme() === "dark" ? "light" : "dark");
 }
 
 export async function copyText(text: string) {

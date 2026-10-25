@@ -32,7 +32,7 @@ Visitors arrive from GitHub, LinkedIn, the SNOWBROS site, or a resume link. Desk
 - Screenshots in public/screenshots/ (Atelier till/reports/inventory, Vinnys Vogue, STC Academy, Lunora, SNOWBROS mockup, Cipher Clash, Filmica).
 - Atlas README numbers: axios 431 files ~230 ms cold / ~76 ms warm; 500-file repo ~270 ms cold, ~34 ms after one-file change; 23 rules; zero Python-specific false positives on FastAPI.
 - Accounic README: v1.16.1, four CI workflows, integer minor units, database computes every balance, FIFO settlement, forced RLS.
-- Roles: IEEE GUNI Student Branch Secretary, GDG On Campus Ganpat University Visual Lead, B.Tech Computer Engineering at Ganpat University (2024-2028).
+- Roles: IEEE GUNI Student Branch member (not an officer; never list GDG), B.Tech Computer Engineering at Ganpat University (2024-2028).
 - Absent, never fabricate: client testimonials, user counts, revenue, employer history, invented metrics.
 
 ## Product Principles

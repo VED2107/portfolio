@@ -1,33 +1,33 @@
 import { ImageResponse } from "next/og";
-import { getRelease } from "@/lib/catalog";
+import { getFiling } from "@/lib/work";
 
 export const runtime = "edge";
 
-// Share card: a record sleeve on the shop's paper, catalogue number and sticker included.
+// Share card: the name or the project, one line about it, and the proof number.
 export async function GET(req: Request) {
   const slug = new URL(req.url).searchParams.get("slug");
-  const r = slug ? getRelease(slug) : undefined;
-  const title = r ? r.title : "Ved";
-  const line = r ? r.short : "Software engineer. Developer tools and the products people run their day on. Founder of SNOWBROS.";
-  const cat = r ? `${r.cat} · ${r.format} · ${r.year}` : "VED Records & Film · Ahmedabad";
-  const sleeve = r?.sleeve ?? "#17130e";
-  const ink = r?.ink ?? "#ece6da";
+  const f = slug ? getFiling(slug) : undefined;
+  const title = f ? f.title : "Ved Chauhan";
+  const line = f ? f.short : "Software engineer and founder of SNOWBROS. Software people depend on every day, shipped and running.";
+  const fact = f?.facts[0];
 
   return new ImageResponse(
     (
-      <div style={{ width: "100%", height: "100%", display: "flex", background: "#ece6da", color: "#17130e", padding: 56, fontFamily: "serif" }}>
-        <div style={{ display: "flex", width: 518, height: 518, background: sleeve, color: ink, padding: 36, flexDirection: "column", justifyContent: "space-between", boxShadow: "0 30px 50px -30px rgba(0,0,0,.6)" }}>
-          <span style={{ fontSize: 18, fontFamily: "monospace" }}>{r?.cat ?? "VED 000"}</span>
-          <span style={{ fontSize: title.length > 10 ? 64 : 110, lineHeight: 0.9, letterSpacing: -3, fontStyle: "italic" }}>{title}</span>
+      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", background: "#efe6d4", color: "#1d1712", padding: 72, fontFamily: "sans-serif" }}>
+        <div style={{ display: "flex", fontSize: 28, fontWeight: 700, color: "#5f5244" }}>{f ? "Ved Chauhan · Case study" : "ved.exe.snowbros.me"}</div>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+          <div style={{ fontSize: title.length > 14 ? 104 : 150, fontWeight: 800, letterSpacing: -6, lineHeight: 0.9 }}>{title}</div>
+          <div style={{ fontSize: 36, lineHeight: 1.3, marginTop: 36, maxWidth: 940 }}>{line}</div>
         </div>
-        <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", marginLeft: 56, flex: 1, paddingTop: 12, paddingBottom: 12 }}>
-          <span style={{ fontSize: 22, fontFamily: "monospace", color: "#75695b" }}>{cat}</span>
-          <span style={{ fontSize: 40, lineHeight: 1.2 }}>{line}</span>
-          <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-            <span style={{ fontSize: 54, fontStyle: "italic", letterSpacing: -2 }}>Ved</span>
-            <span style={{ fontSize: 18, fontFamily: "sans-serif", letterSpacing: 2 }}>RECORDS &amp; FILM</span>
-            <span style={{ marginLeft: "auto", background: "#ff4a1c", color: "#1a0a04", padding: "8px 14px", fontSize: 18, fontFamily: "sans-serif", fontWeight: 800 }}>ved.exe.snowbros.me</span>
-          </div>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 20 }}>
+          {fact ? (
+            <>
+              <span style={{ fontSize: 64, fontWeight: 800, color: "#9b2316", letterSpacing: -2 }}>{fact.value}</span>
+              <span style={{ fontSize: 26, color: "#5f5244" }}>{fact.label}</span>
+            </>
+          ) : (
+            <span style={{ fontSize: 30, fontWeight: 700, color: "#9b2316" }}>Open to software engineering roles</span>
+          )}
         </div>
       </div>
     ),
