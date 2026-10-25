@@ -102,6 +102,11 @@ export function Ambience() {
       cleanups.push(() => document.removeEventListener("pointerdown", tap));
     }
 
+    // Anything can ask for the top of the page (the header lamp does), with Lenis's easing if it is on.
+    const top = () => (lenis.current ? lenis.current.scrollTo(0, { duration: 1.4 }) : window.scrollTo({ top: 0, behavior: reduced ? "auto" : "smooth" }));
+    window.addEventListener("ved:top", top);
+    cleanups.push(() => window.removeEventListener("ved:top", top));
+
     // The tonearm gauge and the marquees: read the scroll once a frame, write transforms only,
     // and only when something changed. Page height is measured on resize, never per frame.
     let max = 1;

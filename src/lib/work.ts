@@ -745,12 +745,12 @@ export function filingNo(slug: string) {
  * The number is one of the filing's own facts; nothing here is new.
  */
 export const FEATURED: { slug: string; proof: number }[] = [
+  { slug: "amr-drug-repurposing", proof: 0 },
+  { slug: "nova", proof: 0 },
   { slug: "vinnys-atelier", proof: 1 },
   { slug: "accounic", proof: 2 },
-  { slug: "amr-drug-repurposing", proof: 0 },
   { slug: "snowbros-atlas", proof: 1 },
   { slug: "swiftdrop", proof: 0 },
-  { slug: "nova", proof: 0 },
 ];
 
 /** Smaller client builds shown as a pair under the featured work. */
