@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowUpRight, CheckCircle } from "@phosphor-icons/react/dist/ssr";
+import { ViewTransition } from "react";
+import { Words } from "@/components/Words";
 import { FILINGS, ORDER, PRESSING, getFiling } from "@/lib/work";
 
 /** The filings were written as patent claims; read them as plain sentences here. */
@@ -55,7 +57,13 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
         <div className="case-top">
         <header className="case-head">
           {p && <p className="cat rv">{p.cat} · Liner notes</p>}
-          <h1 className="case-title rv">{f.title}</h1>
+          <h1 className="case-title rv kin">
+            <ViewTransition name={`title-${f.slug}`} share="morph">
+              <span className="case-title-text">
+                <Words text={f.title} />
+              </span>
+            </ViewTransition>
+          </h1>
           <p className="lede rv" style={{ "--i": 1, maxWidth: "46ch" } as React.CSSProperties}>
             {f.short}
           </p>
@@ -72,6 +80,7 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
         </header>
         {p && (
           <div className="case-cover" aria-hidden>
+            <ViewTransition name={`sleeve-${f.slug}`} share="morph">
             <div className="sleeve-flat" style={{ background: p.sleeve, color: p.ink }}>
               {f.plate ? (
                 <Image src={f.plate.src} alt="" width={f.plate.w} height={f.plate.h} sizes="(min-width: 860px) 32vw, 80vw" />
@@ -80,6 +89,7 @@ export default async function CaseStudy({ params }: PageProps<"/work/[slug]">) {
               )}
               <span className="sleeve-flat-title">{f.title}</span>
             </div>
+            </ViewTransition>
             <div className="vinyl">
               <div className="vinyl-label" style={{ background: p.label, color: p.labelInk }}>
                 <b>{f.title}</b>

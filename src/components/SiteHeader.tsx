@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { MagnifyingGlass, Moon, Sun } from "@phosphor-icons/react";
-import { currentTheme, openPalette, toggleTheme } from "@/lib/events";
+import { MagnifyingGlass } from "@phosphor-icons/react";
+import { openPalette } from "@/lib/events";
+import { HeaderLamp } from "./HeaderLamp";
 
 const NAV = [
   { href: "/#work", label: "Records" },
@@ -16,17 +18,15 @@ const NAV = [
 /**
  * The shop front: a sign board ringed with marquee bulbs, the aisles, the search and the
  * lights, and a striped awning hanging over the street. Scroll down and the awning rolls up.
+ * The lights are a pull cord, not a toggle: the same switch as the lamp in the shop.
+ * On the home page the aisle you are standing in is marked, like a lit section sign.
  */
 export function SiteHeader() {
-  const [theme, setThemeState] = useState<"light" | "dark" | null>(null);
   const [rolled, setRolled] = useState(false);
+  const [aisle, setAisle] = useState<string | null>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
-    const sync = () => setThemeState(currentTheme());
-    sync();
-    const mq = matchMedia("(prefers-color-scheme: dark)");
-    mq.addEventListener("change", sync);
-    window.addEventListener("ved:theme", sync);
     let frame = 0;
     const onScroll = () => {
       cancelAnimationFrame(frame);
@@ -35,12 +35,30 @@ export function SiteHeader() {
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
-      mq.removeEventListener("change", sync);
-      window.removeEventListener("ved:theme", sync);
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(frame);
     };
   }, []);
+
+  // Which aisle is under the reader: the section crossing a line a third of the way down.
+  useEffect(() => {
+    const ids = NAV.map((n) => n.href.split("#")[1]);
+    const els = ids.map((id) => document.getElementById(id)).filter((e): e is HTMLElement => !!e);
+    if (pathname !== "/" || !els.length) return;
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) setAisle(e.target.id);
+      },
+      { rootMargin: "-33% 0px -66% 0px" },
+    );
+    els.forEach((el) => io.observe(el));
+    const top = () => window.scrollY < innerHeight * 0.5 && setAisle(null);
+    window.addEventListener("scroll", top, { passive: true });
+    return () => {
+      io.disconnect();
+      window.removeEventListener("scroll", top);
+    };
+  }, [pathname]);
 
   return (
     <header className="site-header" data-rolled={rolled || undefined}>
@@ -57,8 +75,9 @@ export function SiteHeader() {
         </Link>
         <nav className="site-nav" aria-label="Aisles">
           {NAV.map((n) => (
-            <Link key={n.href} href={n.href}>
-              {n.label}
+            <Link key={n.href} href={n.href} aria-current={pathname === "/" && aisle === n.href.split("#")[1] ? "true" : undefined}>
+              <span className="nav-disc" aria-hidden />
+              <span className="nav-label">{n.label}</span>
             </Link>
           ))}
         </nav>
@@ -71,9 +90,7 @@ export function SiteHeader() {
               /
             </span>
           </button>
-          <button type="button" className="icon-btn" onClick={toggleTheme} aria-label={theme === "dark" ? "Turn the lights up" : "Turn the lights down"}>
-            {theme === "dark" ? <Sun aria-hidden weight="bold" /> : <Moon aria-hidden weight="bold" />}
-          </button>
+          <HeaderLamp />
         </div>
       </div>
       <div className="awning" aria-hidden />

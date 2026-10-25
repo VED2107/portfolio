@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { SITE } from "@/lib/site";
+import type { CSSProperties } from "react";
 import { ShopHours } from "./ShopHours";
+import { ClosingTime } from "./ClosingTime";
+import { Marquee } from "./Words";
 
 const SIDE_A = [
   { label: "The shop floor", href: "/" },
@@ -35,6 +38,7 @@ export function SiteFooter() {
   const bars = barcode("VED 2026 000");
   return (
     <footer className="site-footer">
+      <Marquee tone="mustard" items={["Thanks for coming in", "Come back soon", "Doors open around the clock", "Mind the records", "Ved Records, Ahmedabad"]} />
       <div className="footer-sleeve-edge" aria-hidden>
         <div className="vinyl footer-vinyl">
           <div className="vinyl-label" style={{ background: "#e3a72f", color: "#1d1712" }}>
@@ -45,8 +49,22 @@ export function SiteFooter() {
       </div>
       <div className="frame footer-inner">
         <div className="footer-top">
-          <p className="footer-sign">Ved Records</p>
-          <ShopHours />
+          {/* The closing sign: its tubes stutter on as the footer comes into view. */}
+          <p className="footer-sign rv" aria-label="Ved Records">
+            {[..."Ved Records"].map((ch, k) =>
+              ch === " " ? (
+                " "
+              ) : (
+                <span key={k} className="sign-l" style={{ "--l": k } as CSSProperties} aria-hidden>
+                  {ch}
+                </span>
+              ),
+            )}
+          </p>
+          <div className="footer-right">
+            <ShopHours />
+            <ClosingTime />
+          </div>
         </div>
 
         <div className="footer-cols">

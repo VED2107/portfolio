@@ -6,6 +6,8 @@ import { ALSO, ARCHIVE, FEATURED, PRESSING, credits, getFiling, trackNo, type Fi
 import { fetchActivity, type Activity } from "@/lib/github";
 import SNAPSHOT from "@/lib/github-snapshot.json";
 import { Explorer, type ExplorerRecord } from "@/components/shop/Explorer";
+import { ViewTransition } from "react";
+import { Marquee, Words } from "@/components/Words";
 import { MixingDesk, ScratchDeck, Spectrum, Tilt } from "@/components/Interactive";
 
 // The GitHub data is live; revalidate hourly, like the fetch inside fetchActivity.
@@ -135,10 +137,12 @@ export default async function Home() {
       />
 
       {/* ------------------------------------------------------------ the records */}
+      <Marquee items={["New releases", "Pressed from commits", "33⅓ RPM", "Side A", "Shipped, not mocked", "Ahmedabad"]} />
+
       <section id="work" className="records" aria-labelledby="records-title">
         <div className="frame section-head records-head">
-          <h2 id="records-title" className="h2 rv">
-            The records
+          <h2 id="records-title" className="h2 rv kin">
+            <Words text="The records" />
           </h2>
           <p className="muted rv" style={s(1)}>
             Six products, shipped and in use. Each one is pressed with its engineering decisions as the tracks. Open a track to read it.
@@ -159,11 +163,13 @@ export default async function Home() {
               <div className="frame record-inner">
                 <div className="record-art rv">
                   <Tilt className="record-stage">
-                    <Link href={`/work/${f.slug}`} className="record-sleeve" tabIndex={-1} aria-hidden>
-                      {f.plate && <Image src={f.plate.src} alt="" width={f.plate.w} height={f.plate.h} sizes="(min-width: 960px) 34vw, 80vw" quality={75} />}
-                      <span className="record-sleeve-title">{f.title}</span>
-                      <span className="cat">{p.cat}</span>
-                    </Link>
+                    <ViewTransition name={`sleeve-${f.slug}`} share="morph">
+                      <Link href={`/work/${f.slug}`} className="record-sleeve" tabIndex={-1} aria-hidden>
+                        {f.plate && <Image src={f.plate.src} alt="" width={f.plate.w} height={f.plate.h} sizes="(min-width: 960px) 34vw, 80vw" quality={75} />}
+                        <span className="record-sleeve-title">{f.title}</span>
+                        <span className="cat">{p.cat}</span>
+                      </Link>
+                    </ViewTransition>
                     <div className="vinyl record-vinyl" aria-hidden>
                       <div className="vinyl-label">
                         <b>{f.title}</b>
@@ -177,7 +183,9 @@ export default async function Home() {
                     {p.cat} · {f.field} · {f.year}
                   </p>
                   <h3 id={`r-${f.slug}`} className="record-title rv" style={s(1)}>
-                    <Link href={`/work/${f.slug}`}>{f.title}</Link>
+                    <ViewTransition name={`title-${f.slug}`} share="morph">
+                      <Link href={`/work/${f.slug}`}>{f.title}</Link>
+                    </ViewTransition>
                   </h3>
                   <p className="rv" style={s(2)}>
                     {f.short}
@@ -221,8 +229,8 @@ export default async function Home() {
       <section id="discography" className="disco" aria-labelledby="disco-title">
         <div className="frame">
           <div className="section-head">
-            <h2 id="disco-title" className="h2 rv">
-              Discography
+            <h2 id="disco-title" className="h2 rv kin">
+              <Words text="Discography" />
             </h2>
             <p className="rv" style={s(1)}>
               Every release since the studio opened, in the order it came out. Scroll along the groove.
@@ -262,8 +270,8 @@ export default async function Home() {
       {/* ------------------------------------------------------------ the crate */}
       <section id="catalogue" className="frame section" aria-labelledby="more-title">
         <div className="section-head">
-          <h2 id="more-title" className="h2 rv">
-            The back catalogue
+          <h2 id="more-title" className="h2 rv kin">
+            <Words text="The back catalogue" />
           </h2>
           <p className="muted rv" style={s(1)}>
             Two storefronts built for clients, then the singles: the studio site, a florist, an AI skill, a motion toolkit, a game, a camera app.
@@ -294,11 +302,13 @@ export default async function Home() {
       </section>
 
       {/* ------------------------------------------------------------ about */}
+      <Marquee tone="teal" items={["Behind the counter", "Founder, SNOWBROS", "IEEE student member", "B.Tech CSE", "Open to roles"]} />
+
       <section id="about" className="about" aria-labelledby="about-title">
         <div className="frame about-grid">
           <div className="about-copy">
-            <h2 id="about-title" className="h2 rv">
-              Behind the counter
+            <h2 id="about-title" className="h2 rv kin">
+              <Words text="Behind the counter" />
             </h2>
             <p className="statement rv" style={s(1)}>
               I started SNOWBROS to get production experience on my own terms: real clients, real data, real consequences when something breaks.
@@ -379,8 +389,8 @@ export default async function Home() {
       {/* ------------------------------------------------------------ recognition */}
       <section id="recognition" className="frame section" aria-labelledby="rec-title">
         <div className="section-head">
-          <h2 id="rec-title" className="h2 rv">
-            Awards wall
+          <h2 id="rec-title" className="h2 rv kin">
+            <Words text="Awards wall" />
           </h2>
           <p className="muted rv" style={s(1)}>
             Research, a college&rsquo;s thanks for software it used, and what I finished learning this year. Lean in; the discs catch the light.
@@ -420,8 +430,8 @@ export default async function Home() {
       <section id="stack" className="console" aria-labelledby="stack-title">
         <div className="frame">
           <div className="section-head">
-            <h2 id="stack-title" className="h2 rv">
-              The mixing desk
+            <h2 id="stack-title" className="h2 rv kin">
+              <Words text="The mixing desk" />
             </h2>
             <p className="rv" style={s(1)}>
               Every tool I ship with is a channel. Its fader sits at how many records it played on. Play Our Song and the meters run.
@@ -444,8 +454,8 @@ export default async function Home() {
       {/* ------------------------------------------------------------ pressed from commits */}
       <section className="frame section split" aria-labelledby="gh-title">
         <div>
-          <h2 id="gh-title" className="h2 rv">
-            Pressed from commits
+          <h2 id="gh-title" className="h2 rv kin">
+            <Words text="Pressed from commits" />
           </h2>
           <p className="muted rv" style={{ ...s(1), marginTop: 20, maxWidth: "36ch" }}>
             The same year that&rsquo;s pressed into the house record&rsquo;s grooves. With the song on, every week moves with one band of it.
@@ -488,8 +498,8 @@ export default async function Home() {
       {/* ------------------------------------------------------------ singles: on now */}
       <section className="frame section" aria-labelledby="now-title">
         <div className="section-head">
-          <h2 id="now-title" className="h2 rv">
-            On the turntable now
+          <h2 id="now-title" className="h2 rv kin">
+            <Words text="On the turntable now" />
           </h2>
           <p className="muted rv" style={s(1)}>
             What I&rsquo;m building, shipping and learning, updated {fmtDay.format(new Date(NOW.updated))}.
@@ -523,11 +533,13 @@ export default async function Home() {
       </section>
 
       {/* ------------------------------------------------------------ contact */}
+      <Marquee tone="oxblood" items={["Request a record", "Internships", "Full-stack roles", "Freelance through SNOWBROS", "Say hello"]} />
+
       <section id="contact" className="contact" aria-labelledby="contact-title">
         <div className="frame contact-grid">
           <div>
-            <h2 id="contact-title" className="h2 rv">
-              Request a record
+            <h2 id="contact-title" className="h2 rv kin">
+              <Words text="Request a record" />
             </h2>
             <a className="contact-mail rv" style={s(1)} href={`mailto:${SITE.email}`}>
               {SITE.email}

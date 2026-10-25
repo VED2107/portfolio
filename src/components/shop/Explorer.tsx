@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { Fragment, useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowUpRight, Copy, Pause, Play } from "@phosphor-icons/react";
 import type { RecordSpec, Shop, Station } from "./shop";
 import { isPlaying, levels, play as playSong, toggle as toggleSong } from "@/lib/audio";
@@ -158,8 +158,20 @@ export function Explorer(props: ExplorerProps) {
       <div className="frame explore-ui">
         {/* the welcome mat */}
         <div className="explore-intro">
-          <h1 id="hero-title" className="hero-sign">
-            Ved Chauhan
+          <h1 id="hero-title" className="hero-sign" aria-label="Ved Chauhan">
+            {/* Each letter is its own tube: they stutter on one by one, like a sign warming up. */}
+            {["Ved", "Chauhan"].map((word, wi) => (
+              <Fragment key={word}>
+                <span className="sign-word" aria-hidden>
+                  {[...word].map((ch, k) => (
+                    <span key={k} className="sign-l" style={{ "--l": wi * 3 + k } as React.CSSProperties}>
+                      {ch}
+                    </span>
+                  ))}
+                </span>
+                {wi === 0 ? " " : null}
+              </Fragment>
+            ))}
           </h1>
           <p className="lede">
             Software engineer. This is my record shop: every project I&rsquo;ve shipped is pressed to vinyl. Pull one from the crates, drop the needle, read
@@ -188,7 +200,12 @@ export function Explorer(props: ExplorerProps) {
               Résumé (PDF)
             </a>
           </div>
-          {gl && <p className="small muted explore-hint">Click anything in the shop. Drag to look around.</p>}
+          {gl && (
+            <p className="small muted explore-hint">
+              <span className="hint-fine">Click anything in the shop. Drag to look around. Pull the lamp cord for the lights.</span>
+              <span className="hint-touch">Tap anything. Swipe to walk the shop, tilt to look. Pull the lamp cord for the lights.</span>
+            </p>
+          )}
         </div>
 
         {/* the station panel */}

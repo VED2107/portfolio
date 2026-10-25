@@ -12,20 +12,42 @@ export function toast(message: string) {
 
 export type Theme = "light" | "dark" | "system";
 
-export function setTheme(theme: Theme) {
+/** Where a theme switch was thrown from, in viewport pixels. The new lights spread out from here. */
+export type Origin = { x: number; y: number };
+
+type WithTransitions = Document & { startViewTransition?: (cb: () => void) => { finished: Promise<void> } };
+
+export function setTheme(theme: Theme, origin?: Origin) {
   const d = document.documentElement;
-  try {
-    if (theme === "system") {
-      delete d.dataset.theme;
-      localStorage.removeItem("ved-theme");
-    } else {
-      d.dataset.theme = theme;
-      localStorage.setItem("ved-theme", theme);
+  const apply = () => {
+    try {
+      if (theme === "system") {
+        delete d.dataset.theme;
+        localStorage.removeItem("ved-theme");
+      } else {
+        d.dataset.theme = theme;
+        localStorage.setItem("ved-theme", theme);
+      }
+    } catch {
+      /* storage can be unavailable; the attribute still applies for this visit */
+      if (theme !== "system") d.dataset.theme = theme;
     }
-  } catch {
-    /* storage can be unavailable; the attribute still applies for this visit */
+    window.dispatchEvent(new CustomEvent("ved:theme"));
+  };
+
+  // A light switch, not a fade: the new theme opens as a circle from the switch that was pulled.
+  const doc = document as WithTransitions;
+  if (!doc.startViewTransition || matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    apply();
+    return;
   }
-  window.dispatchEvent(new CustomEvent("ved:theme"));
+  d.style.setProperty("--vt-x", `${origin?.x ?? innerWidth - 48}px`);
+  d.style.setProperty("--vt-y", `${origin?.y ?? 40}px`);
+  d.dataset.vt = "theme";
+  doc
+    .startViewTransition(apply)
+    .finished.catch(() => {})
+    .finally(() => delete d.dataset.vt);
 }
 
 export function currentTheme(): "light" | "dark" {
@@ -34,8 +56,8 @@ export function currentTheme(): "light" | "dark" {
   return matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
-export function toggleTheme() {
-  setTheme(currentTheme() === "dark" ? "light" : "dark");
+export function toggleTheme(origin?: Origin) {
+  setTheme(currentTheme() === "dark" ? "light" : "dark", origin);
 }
 
 export async function copyText(text: string) {
