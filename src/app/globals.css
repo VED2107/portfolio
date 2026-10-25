@@ -2731,11 +2731,6 @@ button {
 .site-header-inner {
   height: 80px;
   gap: 28px;
-  transition: height 300ms var(--ease-out);
-}
-
-.site-header[data-rolled] .site-header-inner {
-  height: 64px;
 }
 
 .sign {
@@ -2791,11 +2786,16 @@ button {
   text-shadow:
     2px 2px 0 var(--espresso),
     0 0 18px rgb(227 167 47 / 0.35);
-  transition: font-size 300ms var(--ease-out);
 }
 
-.site-header[data-rolled] .sign-name {
-  font-size: 1.7rem;
+/* Rolled up: the sign board steps back a little. Transform only, so scrolling never re-lays out. */
+.sign-board {
+  transition: transform 300ms var(--ease-out);
+  transform-origin: left center;
+}
+
+.site-header[data-rolled] .sign-board {
+  transform: scale(0.86);
 }
 
 .sign-sub {
