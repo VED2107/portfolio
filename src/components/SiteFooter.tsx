@@ -39,7 +39,7 @@ export function SiteFooter() {
   const bars = barcode("VED 2026 000");
   return (
     <footer className="site-footer">
-      <Marquee tone="mustard" items={["Thanks for coming in", "Come back soon", "Doors open around the clock", "Mind the records", "Ved Records, Ahmedabad"]} />
+      <Marquee tone="mustard" items={["Thanks for coming in", "Come back soon", "Doors open around the clock", "Mind the records", "Ved Records, Patan"]} />
       <div className="footer-sleeve-edge" aria-hidden>
         <div className="vinyl footer-vinyl">
           <div className="vinyl-label" style={{ background: "#e3a72f", color: "#1d1712" }}>
