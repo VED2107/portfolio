@@ -9,7 +9,7 @@ export const SITE = {
   linkedin: "https://www.linkedin.com/in/ved-chauhan2107/",
   studioUrl: "https://snowbros.me",
   resume: "/Ved_Chauhan_RESUME.pdf",
-  location: "Ahmedabad, Gujarat, India",
+  location: "Patan, Gujarat, India",
 } as const;
 
 /** NOW. Edit this block when the work changes; `updated` is shown on the page. */

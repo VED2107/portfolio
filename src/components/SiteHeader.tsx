@@ -40,7 +40,7 @@ export function SiteHeader() {
           </span>
           <span className="sign-sub">
             <span>Records &amp; Software</span>
-            <span>Ahmedabad · est. 2024</span>
+            <span>Patan · est. 2024</span>
           </span>
         </Link>
         <AisleNav />

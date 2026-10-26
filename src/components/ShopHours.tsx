@@ -5,7 +5,7 @@ import { useSyncExternalStore } from "react";
 const fmt = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kolkata" });
 
 /**
- * The neon in the footer window: Ahmedabad's local time, and whether I'm likely awake to answer.
+ * The neon in the footer window: Patan's local time, and whether I'm likely awake to answer.
  * Rendered after mount so the server's clock never disagrees with the visitor's.
  */
 // A clock as an external store: ticks every 30 s, reads as "unknown" on the server.
@@ -29,7 +29,7 @@ export function ShopHours() {
     <p className="hours" data-open={open || undefined}>
       <span className="hours-neon">{open ? "Open" : "Closed"}</span>
       <span className="hours-text">
-        {time} in Ahmedabad. {open ? "Replies usually the same day." : "Back at 9 in the morning, IST."}
+        {time} in Patan. {open ? "Replies usually the same day." : "Back at 9 in the morning, IST."}
       </span>
     </p>
   );

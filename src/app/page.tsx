@@ -137,7 +137,7 @@ export default async function Home() {
       />
 
       {/* ------------------------------------------------------------ the records */}
-      <Marquee items={["New releases", "Pressed from commits", "33⅓ RPM", "Side A", "Shipped, not mocked", "Ahmedabad"]} />
+      <Marquee items={["New releases", "Pressed from commits", "33⅓ RPM", "Side A", "Shipped, not mocked", "Patan"]} />
 
       <section id="work" className="records" aria-labelledby="records-title">
         <div className="frame section-head records-head">
