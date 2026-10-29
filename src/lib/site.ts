@@ -8,6 +8,7 @@ export const SITE = {
   githubHandle: "VED2107",
   linkedin: "https://www.linkedin.com/in/ved-chauhan2107/",
   studioUrl: "https://snowbros.me",
+  studioLinkedin: "https://www.linkedin.com/company/snowbros-studio/",
   resume: "/Ved_Chauhan_RESUME.pdf",
   location: "Patan, Gujarat, India",
 } as const;
@@ -16,8 +17,13 @@ export const SITE = {
 export type NowRow = { verb: string; what: string; detail: string; href?: string };
 
 export const NOW: { updated: string; rows: NowRow[] } = {
-  updated: "2026-10-25",
+  updated: "2026-10-30",
   rows: [
+    {
+      verb: "Launching",
+      what: "SNOWBROS, rebranded",
+      detail: "A new mark, a LinkedIn page and a twice-weekly series of real case studies.",
+    },
     {
       verb: "Shipping",
       what: "NOVA 0.3.0",

@@ -20,6 +20,7 @@ const SIDE_B = [
   { label: "GitHub", href: SITE.github },
   { label: "LinkedIn", href: SITE.linkedin },
   { label: "SNOWBROS studio", href: SITE.studioUrl },
+  { label: "SNOWBROS on LinkedIn", href: SITE.studioLinkedin },
   { label: "Résumé (PDF)", href: SITE.resume },
 ];
 
