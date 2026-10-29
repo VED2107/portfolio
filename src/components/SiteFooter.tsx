@@ -58,7 +58,7 @@ export function SiteFooter() {
       <div className="frame footer-inner">
         <div className="footer-top">
           {/* The closing sign: its tubes stutter on as the footer comes into view. */}
-          <p className="footer-sign rv" aria-label="Ved Records">
+          <p className="footer-sign rv" role="img" aria-label="Ved Records">
             {[..."Ved Records"].map((ch, k) =>
               ch === " " ? (
                 " "

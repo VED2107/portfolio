@@ -37,7 +37,7 @@ export function NowPlaying() {
   }, [playing]);
 
   return (
-    <button type="button" className="now-playing" data-playing={playing || undefined} onClick={toggle} aria-pressed={playing}>
+    <button type="button" className="now-playing" data-playing={playing || undefined} onClick={toggle} aria-label={`${playing ? "Pause" : "Play"} ${SONG.title}`} aria-pressed={playing}>
       <span className="np-disc" aria-hidden>
         <span className="np-icon">{playing ? <Pause weight="fill" /> : <Play weight="fill" />}</span>
       </span>

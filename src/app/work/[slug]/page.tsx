@@ -26,7 +26,9 @@ export async function generateMetadata({ params }: PageProps<"/work/[slug]">): P
   return {
     title: f.title,
     description: f.short,
-    openGraph: { title: `${f.title} · Ved Chauhan`, description: f.short, images: [{ url: `/api/og?slug=${f.slug}`, width: 1200, height: 630 }] },
+    alternates: { canonical: `/work/${f.slug}` },
+    twitter: { card: "summary_large_image", title: f.title, description: f.short, images: [`/api/og?slug=${f.slug}`] },
+    openGraph: { type: "article", url: `/work/${f.slug}`, title: `${f.title} · Ved Chauhan`, description: f.short, images: [{ url: `/api/og?slug=${f.slug}`, width: 1200, height: 630 }] },
   };
 }
 

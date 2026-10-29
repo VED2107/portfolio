@@ -3,7 +3,7 @@ export const SITE = {
   person: "Ved S. Chauhan",
   studio: "SNOWBROS",
   url: "https://ved.exe.snowbros.me",
-  email: "vedchauhan2107@gmail.com",
+  email: "ved@snowbros.me",
   github: "https://github.com/VED2107",
   githubHandle: "VED2107",
   linkedin: "https://www.linkedin.com/in/ved-chauhan2107/",

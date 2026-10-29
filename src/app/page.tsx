@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, CheckCircle } from "@phosphor-icons/react/dist/ssr";
@@ -12,6 +13,10 @@ import { MixingDesk, ScratchDeck, Spectrum, Tilt } from "@/components/Interactiv
 
 // The GitHub data is live; revalidate hourly, like the fetch inside fetchActivity.
 export const revalidate = 3600;
+
+export const metadata: Metadata = {
+  alternates: { canonical: "/" },
+};
 
 const fmtDay = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
 const fmtWeek = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", timeZone: "Asia/Kolkata" });

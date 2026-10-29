@@ -87,6 +87,7 @@ html {
   -webkit-tap-highlight-color: transparent;
   scroll-behavior: smooth;
   scroll-padding-top: 88px;
+  overflow-x: clip;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1186,6 +1187,7 @@ button {
 
 .figures {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: clamp(48px, 7vw, 96px);
 }
 
@@ -1214,6 +1216,10 @@ button {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(40px, 5vw, 72px) clamp(32px, 5vw, 80px);
+}
+
+.decision {
+  min-width: 0;
 }
 
 .decision h3 {
@@ -4161,10 +4167,12 @@ body {
 }
 
 .marquee-skew {
+  background: inherit;
   will-change: transform;
 }
 
 .marquee-track {
+  background: inherit;
   display: flex;
   width: max-content;
   animation: marquee 38s linear infinite;
