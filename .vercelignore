@@ -1,0 +1,6 @@
+pnpm-lock.yaml
+pnpm-workspace.yaml
+.playwright-mcp
+test-results
+playwright-report
+.impeccable

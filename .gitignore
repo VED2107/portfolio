@@ -77,3 +77,4 @@ public/score/*.mp3
 # test output
 test-results/
 playwright-report/
+.env*
