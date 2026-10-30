@@ -78,3 +78,6 @@ public/score/*.mp3
 test-results/
 playwright-report/
 .env*
+
+# launch video renders
+brag-output/
