@@ -11,6 +11,11 @@ export const SITE = {
   studioLinkedin: "https://www.linkedin.com/company/snowbros-studio/",
   resume: "/Ved_Chauhan_RESUME.pdf",
   location: "Patan, Gujarat, India",
+  /**
+   * The shop radio: any public SoundCloud playlist or track URL. Played through SoundCloud's
+   * embeddable widget and credited on screen. Empty: the shop plays its own synthesised lo-fi loop.
+   */
+  radio: "https://soundcloud.com/user-296696768/sets/weathering-your-name" as string,
 } as const;
 
 /** NOW. Edit this block when the work changes; `updated` is shown on the page. */
@@ -51,10 +56,15 @@ export const NOW: { updated: string; rows: NowRow[] } = {
 };
 
 /** Taken from the LinkedIn profile and posts. Dates are as published there. */
-export type Honor = { title: string; by: string; when: string; detail: string; href?: string };
+/**
+ * `id` names the photo for that honour: drop public/awards/<id>.jpg (or .png / .webp) and it
+ * appears on the plaque in the store and in Quick View. No file, no photo.
+ */
+export type Honor = { id: string; title: string; by: string; when: string; detail: string; href?: string };
 
 export const HONORS: Honor[] = [
   {
+    id: "research-conclave-2026",
     title: "1st Rank, Research Conclave 2026",
     by: "Ganpat University",
     when: "Oct 2026",
@@ -62,6 +72,7 @@ export const HONORS: Honor[] = [
       "Emerging Researchers, Engineering & Technology (Non-Core) track, for “AI Human Activity Recognition for On-board BAS Experiments”. Next stop: a research event in Mumbai.",
   },
   {
+    id: "amr-letter-of-appreciation",
     title: "Letter of Appreciation",
     by: "Shree S. K. Patel College of Pharmaceutical Education & Research",
     when: "Oct 2026",
@@ -70,12 +81,14 @@ export const HONORS: Honor[] = [
     href: "/work/amr-drug-repurposing",
   },
   {
+    id: "arduino-edge-ai-bootcamp",
     title: "Arduino Edge AI Bootcamp",
     by: "Arduino",
     when: "Oct 2026",
     detail: "An IMU gesture classifier running on the Arduino UNO Q, watched for prediction confidence and inference latency.",
   },
   {
+    id: "forage-aws-deloitte",
     title: "Solutions Architecture and Data Analytics job simulations",
     by: "AWS and Deloitte Australia",
     when: "Forage",

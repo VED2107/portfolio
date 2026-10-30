@@ -11,9 +11,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
-  // React <ViewTransition> for the plate -> case study morph (docs: guides/view-transitions).
-  experimental: {
-    viewTransition: true,
+  // Pin the workspace root: a parent folder has its own lockfile, which confuses inference.
+  turbopack: {
+    root: process.cwd(),
   },
   images: {
     qualities: [75, 90],
