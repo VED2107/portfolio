@@ -73,3 +73,7 @@ pnpm-workspace.yaml
 *.mp3
 public/score/*.mp3
 !public/score/our-song.mp3
+
+# test output
+test-results/
+playwright-report/
