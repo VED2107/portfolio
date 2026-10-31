@@ -307,7 +307,7 @@ function Counter({ data }: { data: StoreData }) {
   const [copied, setCopied] = useState(false);
   const email = data.site.email;
   const subject = why === "Hiring" ? "A role for you" : why === "Building" ? "Something to build" : "Hello from the Recordverse";
-  const href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(note)}`;
+  const href = `mailto:${email}?cc=${data.site.emailCc}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(note)}`;
   const bars = useMemo(() => Array.from({ length: 38 }, (_, k) => 1 + ((k * 7 + 3) % 4)), []);
   const copy = async () => {
     try {

@@ -33,7 +33,7 @@ export default function QuickView() {
           <p>{ABOUT.statement}</p>
           <p className="flex items-start gap-3"><span className="dot" aria-hidden="true" />{STATUS}</p>
           <div className="intro-actions">
-            <a href={`mailto:${SITE.email}`} className="btn btn-primary">{SITE.email}</a>
+            <a href={`mailto:${SITE.email}?cc=${SITE.emailCc}`} className="btn btn-primary">{SITE.email}</a>
             <a href={SITE.resume} className="btn" target="_blank" rel="noreferrer">Résumé PDF</a>
             <a href={SITE.github} className="btn" target="_blank" rel="noreferrer">GitHub</a>
           </div>
@@ -178,7 +178,7 @@ export default function QuickView() {
         <section id="contact" className="qv-section" aria-labelledby="contact-title">
           <div className="wrap">
             <div className="qv-section-head"><h2 id="contact-title" className="display">Checkout</h2></div>
-            <p><a href={`mailto:${SITE.email}`} className="display link text-3xl sm:text-5xl">{SITE.email}</a></p>
+            <p><a href={`mailto:${SITE.email}?cc=${SITE.emailCc}`} className="display link text-3xl sm:text-5xl">{SITE.email}</a></p>
             <ul className="stack">
               {contactLinks.map((link) => <li key={link.href}><a href={link.href} className="chip link" target="_blank" rel="noreferrer">{link.label}</a></li>)}
             </ul>

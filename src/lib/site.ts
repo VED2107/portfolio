@@ -4,6 +4,8 @@ export const SITE = {
   studio: "SNOWBROS",
   url: "https://ved.exe.snowbros.me",
   email: "ved@snowbros.me",
+  /** Copied on every mailto link, so mail still lands if the snowbros.me forward drops it. */
+  emailCc: "vedchauhan2107@gmail.com",
   github: "https://github.com/VED2107",
   githubHandle: "VED2107",
   linkedin: "https://www.linkedin.com/in/ved-chauhan2107/",

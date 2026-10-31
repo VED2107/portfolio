@@ -34,7 +34,7 @@ export function QuickFooter() {
             <li><Link href="/quick" className="link">Quick View</Link></li>
             <li><Link href="/" className="link">The store</Link></li>
             <li><a href={SITE.github} className="link" target="_blank" rel="noreferrer">GitHub</a></li>
-            <li><a href={`mailto:${SITE.email}`} className="link">Email</a></li>
+            <li><a href={`mailto:${SITE.email}?cc=${SITE.emailCc}`} className="link">Email</a></li>
           </ul>
         </nav>
       </div>
