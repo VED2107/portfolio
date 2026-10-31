@@ -351,14 +351,17 @@ kbd,
   text-transform: uppercase;
   color: #e9d9c3;
 }
-.hud-brand .room-dot {
+.hud-brand .vmark {
   grid-row: span 2;
-  width: 12px;
-  height: 12px;
-  border-radius: 99px;
-  background: var(--room, var(--tangerine));
-  box-shadow: 0 0 0 3px rgb(255 255 255 / 0.12);
-  transition: background-color 300ms ease;
+  width: 34px;
+  height: 34px;
+  margin: -4px -2px;
+  --vmark-record: var(--room, var(--tangerine));
+}
+.intro-card .vmark {
+  width: 76px;
+  height: 76px;
+  margin: -14px 0 -6px -8px;
 }
 
 .hud-actions {
@@ -1483,11 +1486,69 @@ button.jack {
   text-decoration: none;
   font: 800 1.05rem / 1 var(--font-display), system-ui, sans-serif;
 }
-.qv-brand i {
-  width: 12px;
-  height: 12px;
-  border-radius: 99px;
-  background: var(--tangerine);
+.qv-brand .vmark {
+  width: 34px;
+  height: 34px;
+  margin: -6px -4px;
+}
+
+.qv-foot-sign {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* the mark: the record rolls out of the sleeve, and turns while anything plays or loads */
+.vmark {
+  display: block;
+  flex: none;
+  overflow: visible;
+}
+.vmark-sleeve {
+  fill: currentColor;
+}
+.vmark-disc {
+  fill: var(--vmark-record, var(--tangerine));
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.vmark[data-motion="intro"] .vmark-slide {
+  animation: vmark-out 950ms var(--ease-out) 180ms both;
+}
+.vmark[data-motion="intro"] .vmark-disc {
+  animation: vmark-roll-in 950ms var(--ease-out) 180ms both;
+}
+.vmark[data-motion="lost"] .vmark-slide {
+  animation: vmark-lost 2600ms var(--ease-in-out) 400ms both;
+}
+.vmark[data-motion="lost"] .vmark-disc {
+  animation: vmark-roll-lost 2600ms var(--ease-in-out) 400ms both;
+}
+.vmark[data-spinning] .vmark-disc,
+a:is(:hover, :focus-visible) > .vmark .vmark-disc,
+.vmark-host:is(:hover, :focus-within) .vmark .vmark-disc {
+  animation: vmark-spin 1.8s linear infinite;
+}
+@keyframes vmark-out {
+  from { translate: -82px 0; }
+}
+@keyframes vmark-roll-in {
+  from { rotate: -320deg; }
+}
+@keyframes vmark-lost {
+  0% { translate: -82px 0; }
+  40% { translate: 0 0; }
+  55% { translate: 0 0; }
+  100% { translate: 104px 0; }
+}
+@keyframes vmark-roll-lost {
+  0% { rotate: -320deg; }
+  40% { rotate: 0deg; }
+  55% { rotate: 0deg; }
+  100% { rotate: 420deg; }
+}
+@keyframes vmark-spin {
+  to { rotate: 360deg; }
 }
 .qv-nav {
   display: flex;

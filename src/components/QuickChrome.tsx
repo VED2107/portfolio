@@ -1,5 +1,6 @@
 ﻿import Link from "next/link";
 import { SITE } from "@/lib/content";
+import { VedMark } from "@/components/VedMark";
 
 const sections = ["work", "studio", "releases", "about", "playground", "contact"] as const;
 
@@ -9,7 +10,7 @@ export function QuickHeader({ inQuickView = false }: { inQuickView?: boolean }) 
       <a href="#main" className="skip">Skip to content</a>
       <header className="qv-head">
         <div className="wrap">
-          <Link href="/quick" className="qv-brand">{SITE.name}<i aria-hidden="true" /></Link>
+          <Link href="/quick" className="qv-brand"><VedMark />{SITE.name}</Link>
           <nav className="qv-nav" aria-label="Main navigation">
             {sections.map((section) => (
               <Link key={section} href={`${inQuickView ? "" : "/quick"}#${section}`}>
@@ -28,7 +29,7 @@ export function QuickFooter() {
   return (
     <footer className="qv-foot">
       <div className="wrap">
-        <p>© 2026 Ved S. Chauhan · Built by hand, every number traceable to a repo or a live product.</p>
+        <p className="qv-foot-sign"><VedMark size={22} motion="none" />© 2026 Ved S. Chauhan · Built by hand, every number traceable to a repo or a live product.</p>
         <nav aria-label="Footer navigation">
           <ul>
             <li><Link href="/quick" className="link">Quick View</Link></li>

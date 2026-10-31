@@ -1,11 +1,11 @@
 {
-  "name": "VED.EXE",
-  "short_name": "VED.EXE",
+  "name": "Ved Chauhan · The Recordverse",
+  "short_name": "Recordverse",
   "description": "Ved S. Chauhan, software engineer. Developer tools and full-stack products, filed with their evidence.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#eef0f1",
-  "theme_color": "#eef0f1",
+  "background_color": "#fff6e8",
+  "theme_color": "#fff6e8",
   "icons": [
     {
       "src": "/icon-192x192.png",

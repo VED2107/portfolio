@@ -16,6 +16,7 @@ import { close, goUse, unstuck } from "@/world/control";
 import { setSound, disposeAudio } from "@/world/audio";
 import { disposeRadio, onNowPlaying, setRadio, skipTrack, type NowPlaying } from "@/world/radio";
 import { Panels, type StoreData } from "./Panels";
+import { VedMark } from "@/components/VedMark";
 
 const World = dynamic(() => import("@/world/World"), { ssr: false });
 
@@ -132,6 +133,7 @@ export function Explore(props: Props) {
       {mode.kind === "intro" && (
         <div className="intro">
           <section className="intro-card" aria-labelledby="door-title">
+            <VedMark spinning={gl === "loading"} />
             <p className="cat">Ved Chauhan · Software engineer · {site.location}</p>
             <h1 id="door-title" className="display">
               Welcome to the <em>Recordverse.</em>
@@ -194,7 +196,8 @@ export function Explore(props: Props) {
         <>
           <header className="hud-top">
             <div className="hud-brand hud-surface" style={{ "--room": roomInfo?.tint } as React.CSSProperties} aria-live="polite">
-              <span className="room-dot" aria-hidden />
+              {/* Keyed by room, so a fresh record rolls out in each room's colour. */}
+              <VedMark key={room ?? "store"} />
               <b>{roomInfo ? roomInfo.name : "The Recordverse"}</b>
               <span>{roomInfo ? `${roomInfo.no} · ${roomInfo.what}` : "Ved Chauhan"}</span>
             </div>
