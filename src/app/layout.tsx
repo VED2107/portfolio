@@ -3,8 +3,8 @@ import { Bricolage_Grotesque, Instrument_Sans, JetBrains_Mono } from "next/font/
 import "./globals.css";
 import { SITE } from "@/lib/site";
 
-// Shop lettering: wide, characterful, with an optical-size axis so headlines and labels both hold up.
-const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-display", display: "swap", axes: ["opsz", "wdth"] });
+// Shop lettering: characterful, with an optical-size axis so headlines and labels both hold up.
+const display = Bricolage_Grotesque({ subsets: ["latin"], variable: "--font-display", display: "swap", axes: ["opsz"] });
 // Everything you read.
 const text = Instrument_Sans({ subsets: ["latin"], variable: "--font-text", display: "swap" });
 // Catalogue numbers, keys and code.

@@ -13,6 +13,7 @@ import { ease, handles, wants } from "./attention";
 
 const GROUPS = ["LANGUAGES", "FRONTEND", "BACKEND & DATA", "SYSTEMS", "TEST & DEVOPS"];
 const GROUP_TINT = [P.tangerine, P.coral, P.teal, P.violet, P.butter];
+const TINTS = GROUP_TINT.map((c) => new THREE.Color(c));
 
 /** The middle screen: a waveform redrawn ten times a second from the music level. */
 function useScope() {
@@ -80,6 +81,7 @@ function Speaker({ x, z, y = 0, s = 1 }: { x: number; z: number; y?: number; s?:
 function Synth() {
   const keys = useRef<THREE.InstancedMesh>(null);
   const col = useMemo(() => new THREE.Color(), []);
+  const settled = useRef(false);
   useEffect(() => {
     const m = keys.current;
     if (!m) return;
@@ -94,7 +96,12 @@ function Synth() {
   useFrame(() => {
     const m = keys.current;
     if (!m) return;
-    for (let i = 0; i < 12; i++) m.setColorAt(i, col.set(P.cream).lerp(new THREE.Color(GROUP_TINT[i % 5]), sim.keys[i]));
+    // Nothing lit and nothing fading: the colours from last frame still stand.
+    let lit = false;
+    for (let i = 0; i < 12; i++) lit ||= sim.keys[i] > 0;
+    if (!lit && settled.current) return;
+    settled.current = !lit;
+    for (let i = 0; i < 12; i++) m.setColorAt(i, col.set(P.cream).lerp(TINTS[i % 5], sim.keys[i]));
     if (m.instanceColor) m.instanceColor.needsUpdate = true;
   });
   return (

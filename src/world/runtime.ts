@@ -9,6 +9,11 @@ import type { Body, Disc } from "./sim";
 
 export const sim = {
   player: { x: SPAWN.at[0], z: SPAWN.at[1], vx: 0, vz: 0 } as Body,
+  /**
+   * Where to draw the player this frame: the fixed-step body interpolated between its last two
+   * steps, so motion stays even when frame times and physics steps don't line up.
+   */
+  view: { x: SPAWN.at[0], z: SPAWN.at[1] },
   yaw: SPAWN.face,
   /** 0..1 how hard the character is walking; drives the gait. */
   stride: 0,
@@ -56,6 +61,7 @@ export const sim = {
 
 export function resetSim() {
   sim.player = { x: SPAWN.at[0], z: SPAWN.at[1], vx: 0, vz: 0 };
+  sim.view = { x: SPAWN.at[0], z: SPAWN.at[1] };
   sim.yaw = SPAWN.face;
   sim.path = [];
   sim.stick = { x: 0, y: 0 };

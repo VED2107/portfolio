@@ -7,6 +7,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import { ArrowCounterClockwise, MapTrifold, MusicNotes, SkipForward, SpeakerHigh, SpeakerSlash, SquaresFour, X } from "@phosphor-icons/react";
 import type { WorldContent } from "@/world/World";
 import { ROOMS, SPAWN } from "@/world/layout";
@@ -18,7 +19,8 @@ import { disposeRadio, onNowPlaying, setRadio, skipTrack, type NowPlaying } from
 import { Panels, type StoreData } from "./Panels";
 import { VedMark } from "@/components/VedMark";
 
-const World = dynamic(() => import("@/world/World"), { ssr: false });
+const loadWorld = () => import("@/world/World");
+const World = dynamic(loadWorld, { ssr: false });
 
 type Props = StoreData & { world: WorldContent };
 
@@ -58,13 +60,15 @@ export function Explore(props: Props) {
     apply();
     calm.addEventListener("change", apply);
     coarse.addEventListener("change", apply);
+    let frame = 0;
     if (!webgl()) world.set({ gl: "unsupported" });
     else {
-      // Let the front door paint first; then start the GPU work.
-      const id = requestAnimationFrame(() => setMount(true));
-      return () => cancelAnimationFrame(id);
+      // Fetch the shop's code now, while the front door paints; start the GPU work a frame later.
+      void loadWorld();
+      frame = requestAnimationFrame(() => setMount(true));
     }
     return () => {
+      cancelAnimationFrame(frame);
       calm.removeEventListener("change", apply);
       coarse.removeEventListener("change", apply);
     };
@@ -130,8 +134,14 @@ export function Explore(props: Props) {
       {mount && gl !== "unsupported" && <World content={content} />}
 
       {/* ------------------------------------------------------------ the front door */}
+      <AnimatePresence>
       {mode.kind === "intro" && (
-        <div className="intro">
+        <motion.div
+          key="intro"
+          className="intro"
+          // Walking in: the card sinks away while the camera flies down to the door.
+          exit={sim.calm ? { opacity: 0, transition: { duration: 0.15 } } : { opacity: 0, y: 24, scale: 0.98, transition: { duration: 0.32, ease: [0.23, 1, 0.32, 1] } }}
+        >
           <section className="intro-card" aria-labelledby="door-title">
             <VedMark spinning={gl === "loading"} />
             <p className="cat">Ved Chauhan · Software engineer · {site.location}</p>
@@ -188,8 +198,9 @@ export function Explore(props: Props) {
               </ol>
             </details>
           </section>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
 
       {/* ------------------------------------------------------------ HUD */}
       {mode.kind !== "intro" && (

@@ -176,7 +176,7 @@ export function Character() {
     const sideSwing = spring(m.springs, 10, calm ? 0 : -lateral * 0.012 - turn * 0.018, 8, dt);
     const pose = spring(m.springs, 12, inspect ? 1 : 0, 14, dt);
 
-    root.current.position.set(p.x, sim.y, p.z);
+    root.current.position.set(sim.view.x, sim.y, sim.view.z);
     root.current.rotation.y = sim.yaw;
     hips.current.position.set(sway * 0.009, bob - footfall, 0);
     hips.current.rotation.z = -sway * 0.035;

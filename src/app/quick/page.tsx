@@ -3,7 +3,8 @@ import Link from "next/link";
 import type { CSSProperties } from "react";
 import { Cover } from "@/components/CaseStudy";
 import { QuickFooter, QuickHeader } from "@/components/QuickChrome";
-import { ABOUT, ALL_RECORDS, ARCHIVE, DISCOGRAPHY, EDUCATION, HONORS, ROLES, SITE, STATUS, getFiling, proofOf, studio } from "@/lib/content";
+import { VedMark } from "@/components/VedMark";
+import { ABOUT, ALL_RECORDS, ARCHIVE, DISCOGRAPHY, EDUCATION, HONORS, NOW, ROLES, SITE, STATUS, getFiling, proofOf, studio } from "@/lib/content";
 import { sleeveOf } from "@/lib/covers";
 import { album, awardPhotos } from "@/lib/photos";
 
@@ -28,15 +29,38 @@ export default function QuickView() {
       <QuickHeader inQuickView />
       <main id="main">
         <div className="wrap qv-hero">
-          <div className="cat">Software engineer · Founder, SNOWBROS · {SITE.location}</div>
-          <h1 className="display">Ved Chauhan</h1>
-          <p>{ABOUT.statement}</p>
-          <p className="flex items-start gap-3"><span className="dot" aria-hidden="true" />{STATUS}</p>
-          <div className="intro-actions">
-            <a href={`mailto:${SITE.email}?cc=${SITE.emailCc}`} className="btn btn-primary">{SITE.email}</a>
-            <a href={SITE.resume} className="btn" target="_blank" rel="noreferrer">Résumé PDF</a>
-            <a href={SITE.github} className="btn" target="_blank" rel="noreferrer">GitHub</a>
+          <div>
+            <div className="cat">Software engineer · Founder, SNOWBROS · {SITE.location}</div>
+            <h1 className="display">Ved Chauhan</h1>
+            <p>{ABOUT.statement}</p>
+            <p className="flex items-start gap-3"><span className="dot" aria-hidden="true" />{STATUS}</p>
+            <div className="intro-actions">
+              <a href={`mailto:${SITE.email}?cc=${SITE.emailCc}`} className="btn btn-primary">{SITE.email}</a>
+              <a href={SITE.resume} className="btn" target="_blank" rel="noreferrer">Résumé PDF</a>
+              <a href={SITE.github} className="btn" target="_blank" rel="noreferrer">GitHub</a>
+            </div>
           </div>
+          <aside className="now-card" aria-labelledby="now-title">
+            <div className="now-card-head">
+              <VedMark size={44} spinning />
+              <div>
+                <h2 id="now-title" className="cat">Now spinning</h2>
+                <span className="muted">Updated <time dateTime={NOW.updated}>{new Date(NOW.updated).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</time></span>
+              </div>
+            </div>
+            <ol>
+              {NOW.rows.map((row, i) => (
+                <li key={row.what}>
+                  <span className="now-track">{String.fromCharCode(65 + Math.floor(i / 3))}{(i % 3) + 1}</span>
+                  <div>
+                    <span className="cat">{row.verb}</span>
+                    <b>{row.href ? <Link href={row.href} className="link">{row.what}</Link> : row.what}</b>
+                    <p>{row.detail}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </aside>
         </div>
 
         <section id="work" className="qv-section" aria-labelledby="work-title">

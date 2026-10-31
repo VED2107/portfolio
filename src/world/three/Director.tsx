@@ -97,7 +97,10 @@ export function Director() {
   const stall = useRef(0);
   const lastStep = useRef(0);
   const look = useRef(new THREE.Vector3());
+  const prev = useRef({ x: sim.player.x, z: sim.player.z });
 
+  // Priority -1: step the world before anything draws from it, so the character and the camera
+  // read the same frame's position.
   useFrame((_, rawDt) => {
     // A long frame (tab switch, a hitch) is clamped so nothing teleports through a wall.
     const dt = Math.min(rawDt, 1 / 20);
@@ -112,6 +115,8 @@ export function Director() {
       sim.yaw = sim.warp.face;
       sim.warp = null;
       collide(p);
+      prev.current.x = p.x;
+      prev.current.z = p.z;
       tgt.current.set(p.x, 0.9, p.z);
     }
 
@@ -162,10 +167,16 @@ export function Director() {
     acc.current += dt;
     let hit = false;
     while (acc.current >= FIXED) {
+      prev.current.x = p.x;
+      prev.current.z = p.z;
       hit = step(p, ix, iz, FIXED, speed) || hit;
       if (sim.discs.length) stepDiscs(sim.discs, p, FIXED);
       acc.current -= FIXED;
     }
+    // Draw between the last two steps by how far into the next one this frame is.
+    const alpha = acc.current / FIXED;
+    sim.view.x = prev.current.x + (p.x - prev.current.x) * alpha;
+    sim.view.z = prev.current.z + (p.z - prev.current.z) * alpha;
     // Jump: a quick, slightly floaty arc. Gravity is stronger on the way down so it lands crisp.
     const canMove = mode.kind === "explore" || mode.kind === "travel";
     if (sim.jump) {
@@ -232,7 +243,7 @@ export function Director() {
     const halfV = Math.tan(THREE.MathUtils.degToRad(CAM.fov / 2));
     // Keep at least ~11 m of floor across on a narrow phone, ~17 m on a desktop.
     const fit = (w: number) => w / (2 * halfV * aspect);
-    const want = V.want.set(p.x + p.vx * 0.28, 0.85, p.z + p.vz * 0.28);
+    const want = V.want.set(sim.view.x + p.vx * 0.28, 0.85, sim.view.z + p.vz * 0.28);
     let d = Math.max(17.5, fit(aspect < 1 ? 10.5 : 16));
     let rate = 4.2;
     let sx = 0, sy = 0;
@@ -279,7 +290,7 @@ export function Director() {
     look.current.copy(tgt.current).addScaledVector(right, shift.current.x).addScaledVector(up, shift.current.y);
     camera.position.copy(look.current).addScaledVector(dir, dist.current);
     camera.lookAt(look.current);
-  });
+  }, -1);
 
   // Escape from a canvas-focused state (the panels handle their own).
   useEffect(() => {
