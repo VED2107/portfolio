@@ -1,8 +1,9 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CaseStudy } from "@/components/CaseStudy";
 import { QuickFooter, QuickHeader } from "@/components/QuickChrome";
+import { TopOnArrival } from "@/components/TopOnArrival";
 import { ALL_RECORDS, FILINGS, SITE, getFiling, proofOf } from "@/lib/content";
 
 export function generateStaticParams() {
@@ -48,10 +49,11 @@ export default async function WorkPage({ params }: PageProps<"/work/[slug]">) {
   return (
     <>
       <QuickHeader />
+      <TopOnArrival />
       <main id="main" className="case-page">
         <div className="wrap">
           <div className="flex flex-wrap items-center justify-between gap-4">
-            <Link href="/quick#work" className="back">← All records</Link>
+            <Link href={`/quick#record-${slug}`} className="back">← All records</Link>
             <Link href={`/?at=${slug}`} className="btn">Open it in the store</Link>
           </div>
           <div className="case-body"><CaseStudy f={f} proof={proofOf(slug) ?? null} headingLevel={1} /></div>

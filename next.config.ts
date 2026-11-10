@@ -18,6 +18,11 @@ const nextConfig: NextConfig = {
   images: {
     qualities: [75, 90],
   },
+  // Route navigations run as React transitions, so <ViewTransition> can carry a record's sleeve
+  // from a Quick View card into its case study. Browsers without the API just navigate.
+  experimental: {
+    viewTransition: true,
+  },
   async redirects() {
     return [
       { source: "/resume", destination: "/Ved_Chauhan_RESUME.pdf", permanent: false },

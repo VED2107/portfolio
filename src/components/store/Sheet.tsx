@@ -75,7 +75,12 @@ export function Sheet({ label, kicker, wide, onClose, children, tint }: { label:
     };
   }, [onClose]);
 
-  const offscreen = side === "right" ? { x: "105%" } : { y: "100%" };
+  // The desktop sheet slides in while the camera flies and the panel's content mounts: the busiest
+  // frames the store has. A full transform string lets Motion hand the slide to the compositor
+  // (its x/y shorthands are CSS variables and stay on the main thread). The phone sheet keeps the
+  // y shorthand because the drag gesture writes that same value.
+  const offscreen = side === "right" ? { transform: "translateX(105%)" } : { y: "100%" };
+  const onscreen = side === "right" ? { transform: "translateX(0%)" } : { y: 0 };
   const spring = { type: "spring" as const, bounce: 0, duration: 0.44 };
 
   const onDragEnd = (_: unknown, info: PanInfo) => {
@@ -98,7 +103,7 @@ export function Sheet({ label, kicker, wide, onClose, children, tint }: { label:
         tabIndex={-1}
         style={{ "--accent-ink": tint } as React.CSSProperties}
         initial={calm ? { opacity: 0 } : offscreen}
-        animate={calm ? { opacity: 1 } : { x: 0, y: 0 }}
+        animate={calm ? { opacity: 1 } : onscreen}
         exit={calm ? { opacity: 0, transition: { duration: 0.15 } } : { ...offscreen, transition: { ...spring, duration: 0.36 } }}
         transition={calm ? { duration: 0.18 } : spring}
         drag={side === "bottom" && !calm ? "y" : false}

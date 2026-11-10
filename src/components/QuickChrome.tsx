@@ -1,4 +1,5 @@
-﻿import Link from "next/link";
+import Link from "next/link";
+import { ViewTransition } from "react";
 import { SITE } from "@/lib/content";
 import { VedMark } from "@/components/VedMark";
 
@@ -8,6 +9,8 @@ export function QuickHeader({ inQuickView = false }: { inQuickView?: boolean }) 
   return (
     <>
       <a href="#main" className="skip">Skip to content</a>
+      {/* Named, so page transitions leave the header standing still while the page under it changes. */}
+      <ViewTransition name="qv-head" default="none">
       <header className="qv-head">
         <div className="wrap">
           <Link href="/quick" className="qv-brand"><VedMark />{SITE.name}</Link>
@@ -21,6 +24,7 @@ export function QuickHeader({ inQuickView = false }: { inQuickView?: boolean }) 
           </nav>
         </div>
       </header>
+      </ViewTransition>
     </>
   );
 }

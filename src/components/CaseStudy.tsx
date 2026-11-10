@@ -7,10 +7,10 @@
  */
 import Image from "next/image";
 import { useId, useState } from "react";
-import { motion, useReducedMotion } from "motion/react";
 import { ArrowUpRight, GithubLogo } from "@phosphor-icons/react";
-import { coverSVG, sleeveOf } from "@/lib/covers";
+import { sleeveOf } from "@/lib/covers";
 import type { Filing } from "@/lib/work";
+import { Cover, SleeveTransition } from "./Cover";
 
 function trackNo(i: number, total: number) {
   const half = Math.ceil(total / 2);
@@ -23,13 +23,8 @@ function plain(claim: string) {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-export function Cover({ slug, label }: { slug: string; label?: string }) {
-  return <span role={label ? "img" : undefined} aria-label={label} aria-hidden={label ? undefined : true} dangerouslySetInnerHTML={{ __html: coverSVG(slug) }} style={{ display: "contents" }} />;
-}
-
 export function CaseStudy({ f, proof, headingLevel = 2, side: initial = "a" }: { f: Filing; proof?: { value: string; label: string } | null; headingLevel?: 1 | 2; side?: "a" | "b" }) {
   const [side, setSide] = useState<"a" | "b">(initial);
-  const calm = useReducedMotion();
   const id = useId();
   const s = sleeveOf(f.slug);
   const links = f.links.filter((l) => !l.href.includes("snowbros.me/#"));
@@ -38,7 +33,6 @@ export function CaseStudy({ f, proof, headingLevel = 2, side: initial = "a" }: {
   const images = f.figures.filter((x) => x.kind === "image");
   const codes = f.figures.filter((x) => x.kind === "code");
   const H = headingLevel === 1 ? "h1" : "h2";
-  const spring = calm ? { duration: 0 } : { type: "spring" as const, bounce: 0.12, duration: 0.6 };
 
   const tab = (k: "a" | "b") => ({
     role: "tab",
@@ -58,10 +52,13 @@ export function CaseStudy({ f, proof, headingLevel = 2, side: initial = "a" }: {
   });
 
   return (
-    <article className="case" style={{ "--sleeve": s.bg, "--sleeve-ink": s.ink } as React.CSSProperties}>
+    <article className="case" data-side={side} style={{ "--sleeve": s.bg, "--sleeve-ink": s.ink } as React.CSSProperties}>
       <div className="case-top">
+        {/* CSS owns the flip and the tab thumb: both are plain state changes, so a transition
+            retargets mid-flight on its own and none of this page needs an animation library. */}
+        <SleeveTransition slug={f.slug}>
         <button type="button" className="flipper" onClick={() => setSide(side === "a" ? "b" : "a")} aria-label={`Flip the sleeve to side ${side === "a" ? "B" : "A"}`} style={{ border: 0, padding: 0, background: "none", cursor: "pointer" }}>
-          <motion.span className="flipper-card" animate={{ rotateY: side === "a" ? 0 : 180 }} transition={spring} style={{ display: "block" }}>
+          <span className="flipper-card">
             <span className="flipper-face">
               <Cover slug={f.slug} />
             </span>
@@ -73,8 +70,9 @@ export function CaseStudy({ f, proof, headingLevel = 2, side: initial = "a" }: {
                 </span>
               ))}
             </span>
-          </motion.span>
+          </span>
         </button>
+        </SleeveTransition>
         <div>
           <p className="cat">
             {s.cat} · {f.field} · {f.year}
@@ -85,7 +83,7 @@ export function CaseStudy({ f, proof, headingLevel = 2, side: initial = "a" }: {
       </div>
 
       <div className="sides" role="tablist" aria-label="Sides of the record">
-        <motion.span className="sides-thumb" aria-hidden animate={{ x: side === "a" ? "0%" : "calc(100% + 4px)" }} transition={calm ? { duration: 0 } : { type: "spring", bounce: 0, duration: 0.35 }} />
+        <span className="sides-thumb" aria-hidden />
         <button type="button" {...tab("a")}>
           <span>A-SIDE</span>The experience
         </button>

@@ -43,6 +43,7 @@ export function Explore(props: Props) {
   const hint = useWorld((s) => s.hint);
   const touch = useWorld((s) => s.touch);
   const gl = useWorld((s) => s.gl);
+  const progress = useWorld((s) => s.progress);
   const [mount, setMount] = useState(false);
   const enterRef = useRef<HTMLButtonElement>(null);
 
@@ -60,14 +61,19 @@ export function Explore(props: Props) {
     apply();
     calm.addEventListener("change", apply);
     coarse.addEventListener("change", apply);
+    let alive = true;
     let frame = 0;
     if (!webgl()) world.set({ gl: "unsupported" });
     else {
+      world.set({ progress: Math.max(world.get().progress, 0.08) });
       // Fetch the shop's code now, while the front door paints; start the GPU work a frame later.
-      void loadWorld();
+      void loadWorld().then(() => {
+        if (alive) world.set({ progress: Math.max(world.get().progress, 0.35) });
+      });
       frame = requestAnimationFrame(() => setMount(true));
     }
     return () => {
+      alive = false;
       cancelAnimationFrame(frame);
       calm.removeEventListener("change", apply);
       coarse.removeEventListener("change", apply);
@@ -166,8 +172,8 @@ export function Explore(props: Props) {
               </a>
             </div>
             {gl === "loading" && mount && (
-              <div className="loading-bar" role="progressbar" aria-label="Loading the store" aria-valuemin={0} aria-valuemax={100}>
-                <i style={{ transform: "scaleX(0.6)" }} />
+              <div className="loading-bar" role="progressbar" aria-label="Loading the store" aria-valuemin={0} aria-valuemax={100} aria-valuenow={Math.round(progress * 100)}>
+                <i style={{ transform: `scaleX(${Math.max(0.04, progress)})` }} />
               </div>
             )}
             {gl === "unsupported" && <p className="small" style={{ marginTop: 14 }}>This browser can&rsquo;t draw the 3D shop, so Quick View is the way in. Everything is there.</p>}

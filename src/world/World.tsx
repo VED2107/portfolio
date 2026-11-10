@@ -261,6 +261,7 @@ function Ready() {
       for (const mat of Array.isArray(m) ? m : m ? [m] : [])
         for (const v of Object.values(mat)) if (v instanceof THREE.Texture) gl.initTexture(v);
     });
+    world.set({ progress: Math.max(world.get().progress, 0.85) });
     const compile = (gl as THREE.WebGLRenderer & { compileAsync?: (s: THREE.Object3D, c: THREE.Camera) => Promise<unknown> }).compileAsync;
     const finish = () => world.set({ gl: "ready", progress: 1 });
     if (compile) compile.call(gl, scene, camera).then(finish, finish);
@@ -302,6 +303,7 @@ export default function World({ content }: { content: WorldContent }) {
       gl={{ antialias: false, powerPreference: "high-performance", alpha: true }}
       camera={{ fov: CAM.fov, near: 2, far: 220, position: [30, 30, 30] }}
       onCreated={({ gl }) => {
+        world.set({ progress: Math.max(world.get().progress, 0.55) });
         gl.toneMapping = THREE.ACESFilmicToneMapping;
         gl.toneMappingExposure = 0.92;
         const canvas = gl.domElement;

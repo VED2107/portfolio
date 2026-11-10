@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import type { CSSProperties } from "react";
-import { Cover } from "@/components/CaseStudy";
+import { Cover, SleeveTransition } from "@/components/Cover";
 import { QuickFooter, QuickHeader } from "@/components/QuickChrome";
+import { TopOnArrival } from "@/components/TopOnArrival";
 import { VedMark } from "@/components/VedMark";
 import { ABOUT, ALL_RECORDS, ARCHIVE, DISCOGRAPHY, EDUCATION, HONORS, NOW, ROLES, SITE, STATUS, getFiling, proofOf, studio } from "@/lib/content";
 import { sleeveOf } from "@/lib/covers";
@@ -27,6 +28,7 @@ export default function QuickView() {
   return (
     <>
       <QuickHeader inQuickView />
+      <TopOnArrival />
       <main id="main">
         <div className="wrap qv-hero">
           <div>
@@ -73,11 +75,14 @@ export default function QuickView() {
                 const sleeve = sleeveOf(slug);
                 const proof = proofOf(slug);
                 return (
-                  <li key={slug}>
+                  <li key={slug} id={`record-${slug}`}>
                     <Link href={`/work/${slug}`} className="record-card">
                       <div className="sleeve" style={{ "--label": sleeve.label } as CSSProperties}>
                         <span className="disc" aria-hidden="true" />
-                        <Cover slug={slug} />
+                        {/* The cover alone carries the name, so it flies into the case study's flipper; the disc stays in the card. */}
+                        <SleeveTransition slug={slug}>
+                          <span className="sleeve-art"><Cover slug={slug} /></span>
+                        </SleeveTransition>
                       </div>
                       <div>
                         <div className="meta cat"><span>{sleeve.cat}</span><span>{f.field} · {f.year}</span></div>
