@@ -142,3 +142,32 @@ test("content renders without JavaScript", async ({ browser }) => {
   expect(hidden).toBe(0);
   await ctx.close();
 });
+
+test("the photo stack opens the About page, as on the reference", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("link", { name: "About Ved" }).click();
+  await expect(page).toHaveURL(/\/about$/);
+  await expect(page.getByRole("heading", { level: 1 })).toContainText("Based in Patan, Gujarat.");
+});
+
+test("notes switch shows every note and survives a reload", async ({ page, isMobile }) => {
+  test.skip(isMobile, "notes are a desktop layer");
+  await page.goto("/");
+  const toggle = page.getByRole("button", { name: "Notes" });
+  await expect(toggle).toHaveAttribute("aria-pressed", "false");
+  await toggle.click();
+  await expect(page.locator("html")).toHaveAttribute("data-notes", "on");
+  await page.reload();
+  await expect(page.getByRole("button", { name: "Notes" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.locator(".note-card").first()).toHaveCSS("opacity", "1");
+});
+
+test("same input, same result: both runs match for any input", async ({ page }) => {
+  await page.goto("/");
+  const input = page.getByLabel("Try it: type anything");
+  await input.fill("Ved Chauhan 2026");
+  const runs = page.locator(".same-run code");
+  await expect(runs.nth(0)).toHaveText(/^[0-9a-f]{16}$/);
+  expect(await runs.nth(0).textContent()).toBe(await runs.nth(1).textContent());
+  await expect(page.getByText("Byte-identical. Every time.")).toBeVisible();
+});

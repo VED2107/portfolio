@@ -29,7 +29,7 @@ export function Footer() {
               <section className="card wide" aria-labelledby="now-title">
                 <div style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
                   <h3 id="now-title" className="t-meta" style={{ margin: 0 }}>
-                    Currently
+                    Changelog · now
                   </h3>
                   <p className="t-meta" style={{ margin: 0 }}>
                     Updated <time dateTime={CONFIRMED}>{formatDate(CONFIRMED)}</time>
@@ -38,7 +38,10 @@ export function Footer() {
                 <div style={{ marginTop: 10 }}>
                   {NOW.rows.map((r) => (
                     <div className="now-row" key={r.what}>
-                      <span className="t-small">{r.verb}</span>
+                      <span className="now-verb" data-verb={r.verb.toLowerCase()}>
+                        <i aria-hidden />
+                        {r.verb}
+                      </span>
                       <span>
                         {r.href ? (
                           <Link href={r.href} className="link">
@@ -103,7 +106,7 @@ export function Footer() {
                 </ul>
               </nav>
             </div>
-            <div className="footer-base">
+            <div className="footer-base" id="page-end">
               <span>© 2026 Ved S. Chauhan · {SITE.location}</span>
               <span>Built by hand with Next.js. No trackers.</span>
             </div>

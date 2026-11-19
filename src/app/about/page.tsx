@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { ViewTransition } from "react";
 import { MAILTO } from "@/components/CopyEmail";
 import { ABOUT, CONFIRMED, DISCOGRAPHY, EDUCATION, HONORS, PHOTOS, SITE, STATUS, formatDate } from "@/lib/content";
 
@@ -21,42 +22,60 @@ export default function About() {
     <main id="main">
       <section className="wrap about-top" aria-labelledby="about-h">
         <figure className="about-photo enter" style={{ "--i": 0, margin: 0 } as React.CSSProperties}>
-          <Image src={PHOTOS.letter.src} alt={PHOTOS.letter.alt} width={PHOTOS.letter.w} height={PHOTOS.letter.h} priority sizes="(max-width: 860px) 380px, 34vw" />
+          <ViewTransition name="ved-photo" share="photo-morph">
+            <Image src={PHOTOS.portrait.src} alt={PHOTOS.portrait.alt} width={PHOTOS.portrait.w} height={PHOTOS.portrait.h} priority sizes="(max-width: 860px) 380px, 30vw" />
+          </ViewTransition>
         </figure>
-        <div>
-          <h1 id="about-h" className="t-display enter" style={{ "--i": 1, maxWidth: "19ch" } as React.CSSProperties}>
-            From Patan, Gujarat. Studying computer engineering, building SNOWBROS, shipping what clients actually use.
+        <div className="about-intro">
+          <h1 id="about-h" className="t-display enter" style={{ "--i": 1 } as React.CSSProperties}>
+            Based in Patan, Gujarat. Studying computer engineering at Ganpat University. Running SNOWBROS on the side, and sometimes the other way round.
           </h1>
-          <p className="photo-cap enter" style={{ "--i": 2, marginTop: 28 } as React.CSSProperties}>
-            Pictured: {PHOTOS.letter.caption}
-          </p>
         </div>
       </section>
 
-      <section className="wrap about-float" aria-label="Research Conclave 2026">
+      <section className="wrap about-float" aria-label="Dubai">
         <figure data-reveal>
-          <Image src={PHOTOS.conclave.src} alt={PHOTOS.conclave.alt} width={PHOTOS.conclave.w} height={PHOTOS.conclave.h} sizes="(max-width: 860px) 100vw, 34vw" />
-          <figcaption className="photo-cap">{PHOTOS.conclave.caption}</figcaption>
+          <Image src={PHOTOS.dubai.src} alt={PHOTOS.dubai.alt} width={PHOTOS.dubai.w} height={PHOTOS.dubai.h} sizes="(max-width: 860px) 100vw, 40vw" />
+          <figcaption className="photo-cap">{PHOTOS.dubai.caption}</figcaption>
         </figure>
       </section>
 
       <section className="wrap section" aria-labelledby="story-h" style={{ paddingTop: "clamp(48px, 6vw, 96px)" }}>
         <div className="inset" data-reveal>
-          <h2 id="story-h" className="t-h2" style={{ maxWidth: "24ch" }}>
-            {ABOUT.statement}
+          <h2 id="story-h" className="t-h2" style={{ maxWidth: "22ch" }}>
+            I build for people who will notice when it breaks, and I would rather they never have to.
           </h2>
-          <div className="t-lead prose" style={{ marginTop: 32 }}>
-            {ABOUT.body.map((p) => (
-              <p key={p.slice(0, 20)}>{p}</p>
-            ))}
+          <div className="t-lead prose about-story" style={{ marginTop: 36 }}>
             <p>
-              The studio is how that happens. SNOWBROS is where a boutique&apos;s till, an academy&apos;s portal and a pharmacy college&apos;s research software got built, mostly by me, with credit given where it&apos;s shared: the AMR platform was co-led with Yash Prajapati.
+              I study computer engineering at U.V. Patel College of Engineering, Ganpat University, class of 2028. The coursework is the foundation: data structures, operating systems, databases, algorithms. Almost everything on this site was built alongside it.
             </p>
             <p>
-              The rule I keep coming back to is my own: <strong>{ABOUT.principle}</strong> It is why the numbers on this site come with their source.
+              {ABOUT.statement.replace("I started SNOWBROS", "In February 2026 I started SNOWBROS")} The first clients were a family bridal boutique, then a tuition academy teaching two boards and two entrance exams. The boutique now bills its customers on a till I built, online or off.
             </p>
+            <p>
+              Alongside client work I build my own products. Atlas is a static analyzer in Rust, published to npm and crates.io. NOVA is a media player that only shows what its engine confirms. SwiftDrop moves files across a room instead of around the internet.
+            </p>
+            <p>
+              In October 2026 two things landed in the same month. The research software I co-led with Yash Prajapati for a pharmacy college earned a letter of appreciation, and an AI project on human activity recognition took first rank at Ganpat University&apos;s Research Conclave.
+            </p>
+            <p>{ABOUT.body[1]}</p>
+            <p>
+              The rule I keep coming back to is my own: <strong>{ABOUT.principle}</strong> It is why every number on this site comes with its source.
+            </p>
+            <p>Away from the keyboard, I travel when I can. The pictures on this page are mine.</p>
           </div>
         </div>
+      </section>
+
+      <section className="wrap about-wide" aria-label="Sunset on the dunes">
+        <figure data-reveal>
+          <Image src={PHOTOS.dunes.src} alt={PHOTOS.dunes.alt} width={PHOTOS.dunes.w} height={PHOTOS.dunes.h} sizes="(max-width: 860px) 100vw, 46vw" />
+          <figcaption className="photo-cap">{PHOTOS.dunes.caption}</figcaption>
+        </figure>
+        <figure data-reveal style={{ "--reveal-delay": "100ms" } as React.CSSProperties}>
+          <Image src={PHOTOS.letter.src} alt={PHOTOS.letter.alt} width={PHOTOS.letter.w} height={PHOTOS.letter.h} sizes="(max-width: 860px) 100vw, 46vw" />
+          <figcaption className="photo-cap">{PHOTOS.letter.caption}</figcaption>
+        </figure>
       </section>
 
       <section className="wrap" aria-labelledby="exp-h">

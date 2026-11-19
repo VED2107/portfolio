@@ -195,6 +195,34 @@ export type Photo = Img & { caption: string };
 
 /** Real photographs only. Nothing staged for the site. */
 export const PHOTOS = {
+  portrait: {
+    src: "/me/ved-portrait.webp",
+    w: 960,
+    h: 1280,
+    alt: "Ved in a cream sweater, sitting in the back of a car with a hand at his ear, looking out of the window.",
+    caption: "Ved S. Chauhan.",
+  },
+  dunes: {
+    src: "/me/ved-dunes.webp",
+    w: 960,
+    h: 1280,
+    alt: "Ved, seen from behind in a striped shirt, walking over rippled sand dunes towards an orange sunset.",
+    caption: "Sunset on the dunes.",
+  },
+  dubai: {
+    src: "/me/ved-dubai.webp",
+    w: 1440,
+    h: 1080,
+    alt: "Ved in glasses and a grey sweatshirt at dusk in front of Dubai's Museum of the Future, its steel ring covered in Arabic calligraphy.",
+    caption: "Dubai, in front of the Museum of the Future.",
+  },
+  window: {
+    src: "/me/ved-window.webp",
+    w: 1440,
+    h: 1080,
+    alt: "Ved in glasses, looking out of a car window in bright sunlight.",
+    caption: "Looking out of the window.",
+  },
   letter: {
     src: "/album/02-amr-letter-handed-over.webp",
     w: 960,

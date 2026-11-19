@@ -3,7 +3,8 @@ import Link from "next/link";
 import { Experiments } from "@/components/Experiments";
 import { Feature } from "@/components/Feature";
 import { PhotoStack } from "@/components/PhotoStack";
-import { ARCHIVE, CONFIRMED, EXPERIMENTS, PAIRED, PRINCIPLES, SELECTED, SITE, STATUS, formatDate, getFiling, storyOf } from "@/lib/content";
+import { SameInput } from "@/components/SameInput";
+import { ARCHIVE, EXPERIMENTS, PAIRED, PRINCIPLES, SELECTED, SITE, getFiling, storyOf } from "@/lib/content";
 
 const ARCHIVE_ROWS = [
   ...["swiftdrop", "vinnys-vogue"].map((slug) => {
@@ -36,13 +37,11 @@ export default function Home() {
               Hey, I&apos;m Ved.
             </span>
             <span className="enter" style={{ display: "block", "--i": 2 } as React.CSSProperties}>
-              I build software for real people, real work, and the details that matter.
+              I build software for real people, real work, and the details that matter.{" "}
+              <span className="soft">Engineer and founder of SNOWBROS, in Gujarat, India.</span>
             </span>
           </h1>
-          <p className="intro-sub enter" style={{ "--i": 3 } as React.CSSProperties}>
-            Software engineer and founder of SNOWBROS, based in Patan, Gujarat, India.
-          </p>
-          <div className="intro-actions enter" style={{ "--i": 4 } as React.CSSProperties}>
+          <div className="intro-actions enter" style={{ "--i": 3 } as React.CSSProperties}>
             <a href="#work" className="arrow-link">
               <span className="label">Selected work</span> <span className="ar down">↓</span>
             </a>
@@ -50,15 +49,9 @@ export default function Home() {
               <span className="label">About me</span> <span className="ar up">↗</span>
             </Link>
             <a href={SITE.resume} className="arrow-link">
-              <span className="label">Résumé, PDF</span> <span className="ar down">↓</span>
+              <span className="label">Résumé</span> <span className="ar down">↓</span>
             </a>
           </div>
-          <p className="status enter" style={{ "--i": 5 } as React.CSSProperties}>
-            <span className="status-dot" aria-hidden />
-            <span>
-              {STATUS} <span style={{ color: "var(--ink-3)" }}>As of {formatDate(CONFIRMED)}.</span>
-            </span>
-          </p>
         </div>
       </section>
 
@@ -69,11 +62,11 @@ export default function Home() {
         </h2>
         <div className="work">
           {SELECTED.map((slug, i) => (
-            <Feature key={slug} slug={slug} priority={i === 0} />
+            <Feature key={slug} slug={slug} priority={i === 0} index={i} total={SELECTED.length + PAIRED.length} />
           ))}
           <div className="pair">
-            {PAIRED.map((slug) => (
-              <Feature key={slug} slug={slug} />
+            {PAIRED.map((slug, i) => (
+              <Feature key={slug} slug={slug} index={SELECTED.length + i} total={SELECTED.length + PAIRED.length} />
             ))}
           </div>
         </div>
@@ -122,13 +115,18 @@ export default function Home() {
       {/* ---------------------------------------------------------------- approach */}
       <section className="approach section" style={{ marginTop: "clamp(96px, 12vw, 176px)" }} aria-labelledby="approach-title">
         <div className="wrap">
-          <div className="inset" data-reveal>
-            <p className="t-meta" style={{ margin: "0 0 18px" }}>
-              How I work
-            </p>
-            <h2 id="approach-title" className="t-display">
-              Same input in, same result out. <span style={{ color: "var(--ink-2)" }}>Accuracy over quantity.</span>
-            </h2>
+          <div className="approach-top">
+            <div data-reveal>
+              <p className="t-meta" style={{ margin: "0 0 18px" }}>
+                How I work
+              </p>
+              <h2 id="approach-title" className="t-display">
+                Same input in, same result out. <span style={{ color: "var(--ink-2)" }}>Accuracy over quantity.</span>
+              </h2>
+            </div>
+            <div data-reveal style={{ "--reveal-delay": "120ms" } as React.CSSProperties}>
+              <SameInput />
+            </div>
           </div>
           <div className="principles">
             {PRINCIPLES.map((p) => (

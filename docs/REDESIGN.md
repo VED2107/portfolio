@@ -124,3 +124,13 @@ Sampled live on piet.website at 1440×1000 with computed styles every 110 ms, th
 | Edge | 8 fixed bands across the bottom 150px, blur 0.156 → 20px doubling, 12.5% mask steps | Identical, disabled on touch and small screens |
 | Experiments | Equal-width items, varied heights, mono "Scroll →" label at left, title inset; about 53 px/s drift | Same layout; 40 px/s, with pause rules and reduced-motion stop |
 | Project hover | No transform | Kept a 1.012 image scale and a 4px arrow nudge as feedback |
+
+## Third pass: Ved's own signatures (19 Nov 2026)
+
+- **Photo stack opens About**, as on the reference, and the front photo morphs into the About lead photo (shared view transition). Photos are Ved's own (portrait, Dubai, dunes), re-encoded with all EXIF and GPS removed; originals are not in the repository.
+- **About is a story**, Piet-like in structure (tall portrait, large statement, offset photo, narrative, photo pair), written only from verified facts in `site.ts` and `work.ts`.
+- **Notes**: engineering annotations pinned to each stage (light glass card, neutral ringed marker, hairline leader). Shown on hover or focus, or everywhere with the header "Notes" switch (persisted, applied before paint). Desktop only.
+- **Same input, same result**: a live FNV-1a demo beside the working principle; both runs always match.
+- **Changelog footer** in place of a reading list.
+- **Edge glass** now steps aside when the end of the page is on screen, so the last footer line is never blurred. Fixed a build issue where only `-webkit-backdrop-filter` survived compilation.
+- **Restraint**: vermilion is limited to the snowflake mark, the sun and the copied check. No looping motion; buttons scale to 0.96 on press; hover effects only on fine pointers.

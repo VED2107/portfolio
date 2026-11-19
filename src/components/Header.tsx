@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MAILTO, CopyEmail } from "./CopyEmail";
 import { MoonIcon, SunIcon } from "./icons";
 
@@ -20,6 +20,33 @@ function Clock() {
     <span className="clock" aria-label={now ? `Local time in India: ${now}` : undefined}>
       <span aria-hidden>{now ?? "--:--"}</span> IST
     </span>
+  );
+}
+
+/** Shows every note on every project at once. Off, notes still appear on hover and focus.
+ *  The state lives on <html data-notes>, set before paint by the boot script. */
+function NotesToggle() {
+  const btn = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    btn.current?.setAttribute("aria-pressed", String(document.documentElement.dataset.notes === "on"));
+  }, []);
+  function toggle() {
+    const root = document.documentElement;
+    const next = root.dataset.notes !== "on";
+    if (next) root.dataset.notes = "on";
+    else delete root.dataset.notes;
+    btn.current?.setAttribute("aria-pressed", String(next));
+    try {
+      localStorage.setItem("notes", next ? "on" : "off");
+    } catch {}
+  }
+  return (
+    <button ref={btn} type="button" className="notes-toggle" aria-pressed="false" onClick={toggle} title="Show Ved's notes on every project">
+      <span className="notes-switch" aria-hidden>
+        <i />
+      </span>
+      Notes
+    </button>
   );
 }
 
@@ -69,6 +96,7 @@ export function Header() {
             Email
           </a>
           <Clock />
+          <NotesToggle />
           <ThemeToggle />
         </nav>
       </div>

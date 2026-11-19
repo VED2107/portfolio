@@ -195,7 +195,7 @@ button {
   }
 }
 .t-intro .soft {
-  color: var(--ink-2);
+  color: var(--ink-soft);
 }
 .t-display {
   font-size: clamp(32px, 1.3rem + 2.2vw, 52px);
@@ -317,7 +317,6 @@ button {
   .site-header {
     background: color-mix(in oklab, var(--canvas) 86%, transparent);
     backdrop-filter: saturate(1.4) blur(14px);
-    -webkit-backdrop-filter: saturate(1.4) blur(14px);
   }
 }
 @media (prefers-reduced-transparency: reduce) {
@@ -511,6 +510,10 @@ button {
   height: 150px;
   z-index: 30;
   pointer-events: none;
+  transition: opacity 240ms var(--ease-ui);
+}
+.edge[data-rest] {
+  opacity: 0;
 }
 .edge > i {
   position: absolute;
@@ -519,42 +522,34 @@ button {
 @supports (backdrop-filter: blur(1px)) {
   .edge > i:nth-child(1) {
     backdrop-filter: blur(0.15625px);
-    -webkit-backdrop-filter: blur(0.15625px);
     mask: linear-gradient(transparent 0%, #000 12.5%, #000 25%, transparent 37.5%);
   }
   .edge > i:nth-child(2) {
     backdrop-filter: blur(0.3125px);
-    -webkit-backdrop-filter: blur(0.3125px);
     mask: linear-gradient(transparent 12.5%, #000 25%, #000 37.5%, transparent 50%);
   }
   .edge > i:nth-child(3) {
     backdrop-filter: blur(0.625px);
-    -webkit-backdrop-filter: blur(0.625px);
     mask: linear-gradient(transparent 25%, #000 37.5%, #000 50%, transparent 62.5%);
   }
   .edge > i:nth-child(4) {
     backdrop-filter: blur(1.25px);
-    -webkit-backdrop-filter: blur(1.25px);
     mask: linear-gradient(transparent 37.5%, #000 50%, #000 62.5%, transparent 75%);
   }
   .edge > i:nth-child(5) {
     backdrop-filter: blur(2.5px);
-    -webkit-backdrop-filter: blur(2.5px);
     mask: linear-gradient(transparent 50%, #000 62.5%, #000 75%, transparent 87.5%);
   }
   .edge > i:nth-child(6) {
     backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
     mask: linear-gradient(transparent 62.5%, #000 75%, #000 87.5%, transparent 100%);
   }
   .edge > i:nth-child(7) {
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     mask: linear-gradient(transparent 75%, #000 87.5%, #000 100%);
   }
   .edge > i:nth-child(8) {
     backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
     mask: linear-gradient(transparent 87.5%, #000 100%);
   }
 }
@@ -573,10 +568,13 @@ button {
 .intro-actions {
   display: flex;
   flex-wrap: wrap;
-  column-gap: 24px;
+  column-gap: 28px;
   row-gap: 0;
-  margin-top: 28px;
-  font-size: 17px;
+  margin-top: 36px;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink-2);
 }
 .intro-sub {
   margin-top: 22px;
@@ -687,26 +685,28 @@ button {
   z-index: 5;
   border-radius: 14px;
 }
-.stack[data-open="true"] .stack-card,
+.stack:focus-visible .stack-card,
 .stack:hover .stack-card {
   box-shadow: 0 2px 4px rgb(0 0 0 / 0.08), 0 16px 34px -10px rgb(0 0 0 / 0.35);
 }
-.stack[data-open="true"] .c0,
+.stack:focus-visible .c0,
 .stack:hover .c0 {
   transform: scale(1.12) rotate(-8deg);
 }
-.stack[data-open="true"] .c1,
+.stack:focus-visible .c1,
 .stack:hover .c1 {
   transform: translate(-70px, 12px) scale(1.02) rotate(-14deg);
   transition-delay: 30ms;
 }
-.stack[data-open="true"] .c2,
+.stack:focus-visible .c2,
 .stack:hover .c2 {
   transform: translate(82px, 6px) scale(1.06) rotate(10deg);
   transition-delay: 15ms;
 }
-.stack[data-open="true"] .stack-mark,
-.stack:hover .stack-mark {
+.stack:focus-visible .stack-mark,
+.stack:hover .stack-mark,
+.stack:focus-visible .stack-tag,
+.stack:hover .stack-tag {
   opacity: 1;
   transform: none;
   transition: transform 700ms var(--spring-wave) 70ms, opacity 160ms var(--ease-ui) 70ms;
@@ -1207,15 +1207,6 @@ button {
 .exp-scroll span {
   display: inline-block;
   margin-left: 6px;
-}
-@media (prefers-reduced-motion: no-preference) {
-  .exp-scroll span {
-    animation: nudge 2.4s var(--ease-ui) infinite;
-  }
-}
-@keyframes nudge {
-  0%, 70%, 100% { transform: none; }
-  80% { transform: translateX(5px); }
 }
 @media (max-width: 960px) {
   .exp-title {
@@ -1825,7 +1816,7 @@ details.more summary {
   place-items: center;
   font-family: var(--font-mono);
   font-size: 11px;
-  background: var(--accent);
+  background: #242422;
   color: #fff;
   box-shadow: 0 0 0 3px rgb(255 255 255 / 0.9), 0 4px 10px rgb(0 0 0 / 0.25);
 }
@@ -2086,4 +2077,568 @@ details.more summary {
   display: grid;
   align-content: center;
   padding-block: 80px;
+}
+
+
+/* ================================================================== signatures
+   What makes this site Ved's rather than a reference copy: the thinking left in. */
+
+/* ---------------------------------------------------------------- the stack as a door */
+.stack {
+  cursor: pointer;
+  border-radius: 10px;
+}
+.stack:focus-visible {
+  outline-offset: 10px;
+}
+.stack-card img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.stack-tag {
+  position: absolute;
+  z-index: 4;
+  left: calc(100% + 96px);
+  top: 46px;
+  padding: 6px 11px 6px 12px;
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--canvas);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-14px, 6px) rotate(-6deg) scale(0.9);
+  transition: transform 300ms var(--ease-ui), opacity 160ms var(--ease-ui);
+  pointer-events: none;
+}
+.stack-tag span {
+  display: inline-block;
+  margin-left: 2px;
+}
+.stack:hover .stack-tag,
+.stack:focus-visible .stack-tag {
+  transform: rotate(3deg);
+  transition: transform 640ms var(--spring-wave) 120ms, opacity 180ms var(--ease-ui) 120ms;
+}
+@media (hover: none), (max-width: 760px) {
+  .stack-tag {
+    display: none;
+  }
+}
+@media (max-width: 760px) {
+  .intro-actions {
+    column-gap: 22px;
+    font-size: 17px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stack-tag {
+    transition: opacity 160ms linear;
+    transform: rotate(3deg);
+  }
+}
+/* the front photo flies into the About page's lead photo */
+::view-transition-group(.photo-morph) {
+  animation-duration: 520ms;
+  animation-timing-function: var(--ease-reveal);
+  z-index: 60;
+}
+::view-transition-image-pair(.photo-morph) {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+/* ---------------------------------------------------------------- caption index */
+.caption-index {
+  color: var(--ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------------------------------------------------------------- notes */
+/* Review comments on a screenshot: a ringed marker on the exact spot, a hairline leader, and a
+   light glass card. They grow out of the marker (origin-aware), stagger by 70ms, and leave
+   faster than they arrive. */
+.notes {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+}
+.note {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+.note-dot {
+  position: absolute;
+  left: -9px;
+  top: -9px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgb(255 255 255 / 0.3), 0 4px 14px rgb(0 0 0 / 0.28);
+  opacity: 0;
+  transform: scale(0.6);
+  transition: transform 120ms var(--ease-exit), opacity 120ms var(--ease-exit);
+}
+.note-dot::after {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  background: #242422;
+}
+.note-card {
+  position: absolute;
+  top: -17px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: baseline;
+  gap: 9px;
+  width: max-content;
+  max-width: 236px;
+  padding: 8px 12px 9px 10px;
+  border-radius: 11px;
+  background: rgb(252 252 250 / 0.96);
+  color: #242422;
+  font-size: 13.5px;
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.012em;
+  box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.1), 0 2px 4px rgb(0 0 0 / 0.06), 0 16px 34px -14px rgb(0 0 0 / 0.42);
+  opacity: 0;
+  transition: transform 120ms var(--ease-exit), opacity 120ms var(--ease-exit);
+}
+@supports (backdrop-filter: blur(1px)) {
+  .note-card {
+    background: rgb(252 252 250 / 0.84);
+    backdrop-filter: blur(16px) saturate(1.5);
+  }
+}
+/* the hairline from the marker to the card */
+.note-card::before {
+  content: "";
+  position: absolute;
+  top: 16px;
+  width: 22px;
+  height: 1px;
+  background: rgb(255 255 255 / 0.9);
+  box-shadow: 0 0 2px rgb(0 0 0 / 0.35);
+}
+.note-no {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  color: #8a8a83;
+  font-variant-numeric: tabular-nums;
+}
+.note-r .note-card {
+  left: 30px;
+  transform-origin: 0 50%;
+  transform: translateX(-6px) scale(0.96);
+}
+.note-r .note-card::before {
+  left: -22px;
+}
+.note-l .note-card {
+  right: 30px;
+  transform-origin: 100% 50%;
+  transform: translateX(6px) scale(0.96);
+}
+.note-l .note-card::before {
+  right: -22px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .feature-link:hover .note-dot {
+    opacity: 1;
+    transform: none;
+    transition: transform 240ms var(--ease-ui) calc(var(--n) * 70ms + 160ms), opacity 160ms var(--ease-ui) calc(var(--n) * 70ms + 160ms);
+  }
+  .feature-link:hover .note-card {
+    opacity: 1;
+    transform: none;
+    transition: transform 240ms var(--ease-ui) calc(var(--n) * 70ms + 220ms), opacity 180ms var(--ease-ui) calc(var(--n) * 70ms + 220ms);
+  }
+}
+.feature-link:focus-visible .note-dot,
+:root[data-notes="on"] .note-dot {
+  opacity: 1;
+  transform: none;
+  transition: transform 240ms var(--ease-ui) calc(var(--n) * 70ms), opacity 160ms var(--ease-ui) calc(var(--n) * 70ms);
+}
+.feature-link:focus-visible .note-card,
+:root[data-notes="on"] .note-card {
+  opacity: 1;
+  transform: none;
+  transition: transform 240ms var(--ease-ui) calc(var(--n) * 70ms + 60ms), opacity 180ms var(--ease-ui) calc(var(--n) * 70ms + 60ms);
+}
+:root[data-theme="dark"] .note-card {
+  background: rgb(34 35 31 / 0.88);
+  color: #f2f2ec;
+  box-shadow: 0 0 0 0.5px rgb(255 255 255 / 0.12), 0 16px 34px -14px rgb(0 0 0 / 0.7);
+}
+@media (max-width: 960px), (hover: none) {
+  .notes {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .note-dot,
+  .note-card,
+  .note-r .note-card,
+  .note-l .note-card {
+    transform: none;
+    transition-property: opacity;
+  }
+}
+
+/* the header switch */
+.notes-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding-inline: 10px;
+  border-radius: 10px;
+  color: var(--ink-2);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  transition: color 160ms var(--ease-ui);
+}
+.notes-toggle:hover,
+.notes-toggle[aria-pressed="true"] {
+  color: var(--ink);
+}
+.notes-switch {
+  position: relative;
+  width: 26px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--line);
+  transition: background-color 180ms var(--ease-ui);
+}
+.notes-switch i {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.25);
+  transition: transform 220ms var(--ease-ui);
+}
+:root[data-notes="on"] .notes-switch {
+  background: var(--ink);
+}
+:root[data-notes="on"] .notes-switch i {
+  transform: translateX(10px);
+}
+@media (max-width: 960px), (hover: none) {
+  .notes-toggle {
+    display: none;
+  }
+}
+
+/* ---------------------------------------------------------------- same input, same result */
+.approach-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(32px, 6vw, 96px);
+  align-items: end;
+}
+@media (max-width: 960px) {
+  .approach-top {
+    grid-template-columns: 1fr;
+  }
+}
+.same {
+  background: var(--canvas);
+  border-radius: 14px;
+  padding: 22px 24px 20px;
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.05), 0 18px 40px -24px rgb(0 0 0 / 0.25);
+}
+.same-label {
+  display: block;
+  margin-bottom: 10px;
+}
+.same-input {
+  width: 100%;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--panel);
+  color: var(--ink);
+  font: 500 17px/1 var(--font-mono);
+  letter-spacing: -0.01em;
+  transition: border-color 160ms var(--ease-ui), background-color 160ms var(--ease-ui);
+}
+.same-input:focus {
+  outline: none;
+  border-color: var(--ink);
+  background: var(--canvas);
+}
+.same-input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+.same-runs {
+  margin-top: 14px;
+  display: grid;
+  gap: 6px;
+}
+.same-run {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr);
+  align-items: baseline;
+}
+.same-run code {
+  font: 500 16px/1.4 var(--font-mono);
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.same-verdict {
+  margin: 8px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  color: #2f7a52;
+}
+.same-check {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #e2f1e8;
+  font-size: 12px;
+}
+.same-note {
+  margin: 14px 0 0;
+  font-size: 13.5px;
+  color: var(--ink-3);
+}
+
+/* ---------------------------------------------------------------- changelog */
+.now-verb {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.now-verb i {
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--ink-3);
+  translate: 0 -1px;
+}
+.now-verb[data-verb="shipping"] i,
+.now-verb[data-verb="launching"] i {
+  background: #2f8f5b;
+}
+.now-verb[data-verb="building"] i,
+.now-verb[data-verb="running"] i {
+  background: var(--ink);
+}
+
+/* ---------------------------------------------------------------- the footer mark turns as you arrive */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .footer-mark {
+      animation: flake-turn linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 45%;
+    }
+  }
+}
+@keyframes flake-turn {
+  from {
+    transform: rotate(-120deg) scale(0.6);
+    opacity: 0.2;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+
+/* ---------------------------------------------------------------- about, second pass */
+.about-intro .t-display {
+  max-width: 21ch;
+}
+.about-float {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.62fr);
+  margin-top: clamp(-120px, -6vw, -40px);
+}
+.about-float figure {
+  max-width: none;
+}
+.about-wide {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(16px, 2vw, 24px);
+  align-items: end;
+  padding-bottom: clamp(48px, 6vw, 96px);
+}
+.about-wide figure {
+  margin: 0;
+}
+.about-wide img {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: var(--r);
+}
+@media (max-width: 860px) {
+  .about-float {
+    margin-top: 40px;
+  }
+  .about-wide {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* ================================================================== polish pass
+   Press feedback on everything pressable, hover only for real pointers, one radius scale. */
+.icon-btn,
+.ctrl,
+.notes-toggle,
+.copy-btn,
+.exp,
+.same-input {
+  -webkit-tap-highlight-color: transparent;
+}
+.icon-btn,
+.ctrl,
+.notes-toggle {
+  transition: color 160ms var(--ease-ui), background-color 160ms var(--ease-ui), border-color 160ms var(--ease-ui), transform 160ms var(--ease-ui);
+}
+.icon-btn:active,
+.ctrl:active:not(:disabled),
+.notes-toggle:active {
+  transform: scale(0.96);
+}
+.exp {
+  transition: transform 160ms var(--ease-ui);
+}
+.exp:active {
+  transform: scale(0.985);
+}
+.stack:active .c0 {
+  transform: scale(1.08) rotate(-8deg);
+}
+
+/* hover effects only where a pointer can actually hover */
+@media (hover: none) {
+  .feature-link:hover .stage-inner,
+  .exp:hover .exp-media img {
+    transform: none;
+  }
+}
+
+/* archive rows: a quiet hover surface and a travelling arrow */
+.archive-row {
+  position: relative;
+  border-radius: 10px;
+  padding-inline: 10px;
+  margin-inline: -10px;
+  transition: background-color 180ms var(--ease-ui);
+}
+.archive li + li .archive-row {
+  border-top: 0;
+}
+@media (hover: hover) and (pointer: fine) {
+  .archive-row:hover {
+    background: var(--panel);
+  }
+  .archive-row:hover .archive-thumb img {
+    transform: scale(1.04);
+  }
+}
+.archive-thumb img {
+  transition: transform 300ms var(--ease-ui);
+}
+.archive-thumb {
+  width: 108px;
+  border-radius: 7px;
+  outline: 1px solid color-mix(in oklab, var(--ink) 8%, transparent);
+  outline-offset: -1px;
+}
+.archive-row {
+  grid-template-columns: 108px minmax(0, 1.1fr) minmax(0, 1.4fr) auto;
+}
+@media (max-width: 760px) {
+  .archive-row {
+    grid-template-columns: 72px minmax(0, 1fr) auto;
+  }
+  .archive-thumb {
+    width: 72px;
+  }
+}
+
+/* repository cards in the experiments strip: set like a book spine, not an empty box */
+.exp-type {
+  padding: 24px 22px 22px;
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgb(255 255 255 / 0.55), transparent 60%),
+    var(--tone, var(--panel));
+}
+.exp-type::after {
+  content: "";
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  top: 52px;
+  height: 1px;
+  background: rgb(36 36 34 / 0.14);
+}
+.exp-type b {
+  font-size: clamp(16px, 0.9rem + 0.4vw, 21px);
+  line-height: 1.25;
+}
+
+/* principles: number, title, text and link sit on one rhythm */
+.principle .arrow-link {
+  font-weight: 500;
+}
+.principle {
+  padding-top: 24px;
+}
+
+/* cards share one radius and one hairline */
+.card,
+.fact-card,
+.same {
+  border-radius: 14px;
+}
+.card {
+  box-shadow: 0 0 0 0.5px color-mix(in oklab, var(--ink) 6%, transparent);
+}
+
+/* selection colour and focus ring follow the accent everywhere */
+.same-input::selection,
+.note-card::selection {
+  background: color-mix(in oklab, var(--accent) 28%, transparent);
 }
