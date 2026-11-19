@@ -70,9 +70,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           </div>
         </ViewTransition>
         <div className="edge" aria-hidden>
-          <i />
-          <i />
-          <i />
+          {Array.from({ length: 8 }, (_, i) => (
+            <i key={i} />
+          ))}
         </div>
         <Reveal />
       </body>

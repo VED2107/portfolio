@@ -108,3 +108,19 @@ All motion is CSS (transitions, keyframes, `linear()` easing) plus the View Tran
 - **Field metrics**: LCP, CLS and INP have only been checked in the local lab; there is no field data until deployment.
 - **`pnpm-lock.yaml`**: stale after the dependency removal. The README names npm as the package manager. Delete or regenerate it before deploying, because some hosts prefer pnpm when that file exists.
 - **Deployment**: not done; it needs separate authorization.
+
+## Reference measurements (second pass, 19 Nov 2026)
+
+Sampled live on piet.website at 1440×1000 with computed styles every 110 ms, then applied here.
+
+| What | Measured on the reference | Applied |
+|---|---|---|
+| Type | Geist 500 everywhere; intro 52px, line-height 1.0, -0.03em; header 18px; section title 48px, -0.05em; mono labels 16px grey | Same metrics (`.t-intro`, header, `.t-h2`, `.exp-scroll`) |
+| Feature image | 1377×1000 (nearly a full viewport), radius 8px, the product in a browser window floating on a blurred photograph | Stages at 1377/1000; window chrome with traffic lights and an address pill; 1 KB pre-blurred fields made from Ved's own photos (college lobby, his bench, the conclave hall) or the product's own frame |
+| Paired images | 676×555 | Same ratio |
+| First paint | Text rises 20px and fades over about 300 ms on a light spring; the photo settles from 1.25× | `enter-y` and `enter-scale` on `--spring-soft` |
+| Scroll entrance | Each project rises 60px and fades, 70% done by about 300 ms, settled by about 900 ms | `[data-reveal]`: 60px, 950 ms, `cubic-bezier(.16,1,.3,1)` |
+| Photo hover | Variant swap: front photo +13% and -10°, rear photo +10°, hand waves in about 56° with overshoot, settled by about 400 ms | Front 1.12× and -8°, rears ±10–14° fanned, snowflake waves in on `--spring-wave` (15% overshoot) |
+| Edge | 8 fixed bands across the bottom 150px, blur 0.156 → 20px doubling, 12.5% mask steps | Identical, disabled on touch and small screens |
+| Experiments | Equal-width items, varied heights, mono "Scroll →" label at left, title inset; about 53 px/s drift | Same layout; 40 px/s, with pause rules and reduced-motion stop |
+| Project hover | No transform | Kept a 1.012 image scale and a 4px arrow nudge as feedback |

@@ -5,12 +5,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Experiment } from "@/lib/content";
 import { ArrowLeft, ArrowRight, CloseIcon, PauseIcon, PlayIcon } from "./icons";
 
-const SPEED = 24; // px per second
+const SPEED = 40; // px per second; the reference ran near 53, a touch calmer here
 
-/** Width per item: the strip mixes proportions on purpose, like a pinboard. */
-function widthOf(e: Experiment, i: number) {
-  if (e.repo) return "clamp(230px, 22vw, 300px)";
-  return i % 3 === 0 ? "clamp(300px, 34vw, 500px)" : "clamp(270px, 28vw, 420px)";
+/** One column width, varied heights: screens sit wide, photos at their own shape, repositories tall like posters. */
+function aspectOf(e: Experiment) {
+  if (e.repo) return "3 / 4";
+  return e.img ? `${e.img.w} / ${e.img.h}` : "4 / 3";
 }
 
 /**
@@ -176,10 +176,10 @@ export function Experiments({ items, head }: { items: Experiment[]; head: React.
           if (!e.currentTarget.contains(e.relatedTarget as Node)) pause("focus", false);
         }}
       >
-        {items.map((e, i) => (
-          <li key={e.id} style={{ "--w": widthOf(e, i) } as React.CSSProperties}>
+        {items.map((e) => (
+          <li key={e.id}>
             <button type="button" className="exp" onClick={(ev) => open(e, ev.currentTarget)} aria-haspopup="dialog">
-              <span className="exp-media">
+              <span className="exp-media" style={{ aspectRatio: aspectOf(e) }}>
                 {e.img ? (
                   <Image src={e.img.src} alt={e.img.alt} fill sizes="(max-width: 760px) 80vw, 34vw" />
                 ) : (

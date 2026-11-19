@@ -151,11 +151,11 @@ export default function Home() {
         <Experiments
           items={EXPERIMENTS}
           head={
-            <div className="inset" style={{ marginLeft: 0 }}>
-              <p className="t-meta" style={{ margin: "0 0 14px" }}>
-                Experiments
+            <div className="exp-title">
+              <p className="exp-scroll" aria-hidden>
+                Scroll <span>→</span>
               </p>
-              <h2 id="exp-title-h" className="t-h2" style={{ maxWidth: "22ch" }}>
+              <h2 id="exp-title-h" className="t-h2">
                 Side builds, studio sites, a microcontroller, et cetera.
               </h2>
             </div>

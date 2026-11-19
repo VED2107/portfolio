@@ -41,6 +41,13 @@
   --ease-ui: cubic-bezier(0.2, 0.8, 0.2, 1);
   --ease-exit: cubic-bezier(0.4, 0, 1, 1);
   /* stiffness 260, damping 26, mass 1: a 1.4% overshoot, settled by 600ms */
+  /* stiffness 380, damping 20: a 15% overshoot that reads as a wave */
+  --spring-wave: linear(0, 0.078, 0.262, 0.488, 0.708, 0.892, 1.027, 1.11, 1.148, 1.151, 1.131, 1.099, 1.064, 1.032, 1.007, 0.99, 0.98, 0.977, 0.978, 0.982, 0.987, 0.992, 0.997, 1, 1.002, 1.003, 1.004, 1.003, 1.002, 1.002, 1.001, 1, 1);
+  /* stiffness 320, damping 30: the reference's intro, a hair of overshoot */
+  --spring-soft: linear(0, 0.04, 0.134, 0.254, 0.38, 0.501, 0.609, 0.703, 0.78, 0.843, 0.892, 0.929, 0.956, 0.976, 0.989, 0.998, 1.003, 1.006, 1.008, 1.008, 1.007, 1.007, 1.006, 1.005, 1.004, 1.003, 1.002, 1.002, 1.001, 1.001, 1.001, 1, 1);
+  /* the long settle used on project entrances, measured: 60px mostly gone by 300ms, the rest by 900ms */
+  --ease-arrive: cubic-bezier(0.16, 1, 0.3, 1);
+  --ink-soft: #8d8d86;
   --spring: linear(0, 0.044, 0.147, 0.276, 0.412, 0.539, 0.652, 0.748, 0.824, 0.884, 0.929, 0.961, 0.984, 0.998, 1.007, 1.012, 1.014, 1.014, 1.013, 1.011, 1.009, 1.007, 1.006, 1.004, 1.003, 1.002, 1.001, 1.001, 1);
 
   color-scheme: light;
@@ -176,28 +183,34 @@ button {
 /* ------------------------------------------------------------------ type */
 
 .t-intro {
-  font-size: clamp(32px, 1.45rem + 2.05vw, 54px);
-  line-height: 1.06;
-  letter-spacing: -0.038em;
+  font-size: clamp(32px, 1.2rem + 2.4vw, 52px);
+  line-height: 1;
+  letter-spacing: -0.03em;
   font-weight: 500;
   text-wrap: balance;
   margin: 0;
+}
+@media (max-width: 760px) {
+  .t-intro {
+    line-height: 1.06;
+    letter-spacing: -0.035em;
+  }
 }
 .t-intro .soft {
   color: var(--ink-2);
 }
 .t-display {
-  font-size: clamp(32px, 1.3rem + 2.2vw, 56px);
-  line-height: 1.06;
-  letter-spacing: -0.038em;
+  font-size: clamp(32px, 1.3rem + 2.2vw, 52px);
+  line-height: 1.02;
+  letter-spacing: -0.035em;
   font-weight: 500;
   text-wrap: balance;
   margin: 0;
 }
 .t-h2 {
-  font-size: clamp(28px, 1.2rem + 1.4vw, 42px);
-  line-height: 1.1;
-  letter-spacing: -0.032em;
+  font-size: clamp(28px, 1.2rem + 1.6vw, 48px);
+  line-height: 1.02;
+  letter-spacing: -0.045em;
   font-weight: 500;
   margin: 0;
   text-wrap: balance;
@@ -323,9 +336,9 @@ button {
   gap: 16px;
 }
 .hd-name {
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 500;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.03em;
   justify-self: start;
   min-height: 44px;
   display: inline-flex;
@@ -338,7 +351,9 @@ button {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
   color: var(--ink);
 }
 .hd-right {
@@ -346,7 +361,9 @@ button {
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 16px;
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.03em;
 }
 .hd-link {
   display: inline-flex;
@@ -487,12 +504,13 @@ button {
   }
 }
 
-/* Soft lower edge: a few masked blur bands so content softens into the bottom of the viewport.
-   Static, no scroll listener, off on small screens and when transparency is reduced. */
+/* Soft lower edge, as measured on the reference: eight fixed bands across the bottom 150px,
+   blur doubling from 0.156px to 20px, each masked to a 12.5% step. Static: no scroll listener.
+   Off on touch, small screens and when transparency is reduced. */
 .edge {
   position: fixed;
   inset: auto 0 0 0;
-  height: 56px;
+  height: 150px;
   z-index: 30;
   pointer-events: none;
 }
@@ -502,16 +520,44 @@ button {
 }
 @supports (backdrop-filter: blur(1px)) {
   .edge > i:nth-child(1) {
-    backdrop-filter: blur(0.5px);
-    mask: linear-gradient(to bottom, transparent 0%, #000 25%, #000 50%, transparent 75%);
+    backdrop-filter: blur(0.15625px);
+    -webkit-backdrop-filter: blur(0.15625px);
+    mask: linear-gradient(transparent 0%, #000 12.5%, #000 25%, transparent 37.5%);
   }
   .edge > i:nth-child(2) {
-    backdrop-filter: blur(1.5px);
-    mask: linear-gradient(to bottom, transparent 25%, #000 50%, #000 75%, transparent 100%);
+    backdrop-filter: blur(0.3125px);
+    -webkit-backdrop-filter: blur(0.3125px);
+    mask: linear-gradient(transparent 12.5%, #000 25%, #000 37.5%, transparent 50%);
   }
   .edge > i:nth-child(3) {
-    backdrop-filter: blur(4px);
-    mask: linear-gradient(to bottom, transparent 50%, #000 75%, #000 100%);
+    backdrop-filter: blur(0.625px);
+    -webkit-backdrop-filter: blur(0.625px);
+    mask: linear-gradient(transparent 25%, #000 37.5%, #000 50%, transparent 62.5%);
+  }
+  .edge > i:nth-child(4) {
+    backdrop-filter: blur(1.25px);
+    -webkit-backdrop-filter: blur(1.25px);
+    mask: linear-gradient(transparent 37.5%, #000 50%, #000 62.5%, transparent 75%);
+  }
+  .edge > i:nth-child(5) {
+    backdrop-filter: blur(2.5px);
+    -webkit-backdrop-filter: blur(2.5px);
+    mask: linear-gradient(transparent 50%, #000 62.5%, #000 75%, transparent 87.5%);
+  }
+  .edge > i:nth-child(6) {
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    mask: linear-gradient(transparent 62.5%, #000 75%, #000 87.5%, transparent 100%);
+  }
+  .edge > i:nth-child(7) {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    mask: linear-gradient(transparent 75%, #000 87.5%, #000 100%);
+  }
+  .edge > i:nth-child(8) {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    mask: linear-gradient(transparent 87.5%, #000 100%);
   }
 }
 @media (max-width: 760px), (prefers-reduced-transparency: reduce), (pointer: coarse) {
@@ -558,17 +604,31 @@ button {
   translate: 0 -1px;
 }
 
-/* First paint: a short, finished sequence. Never hides content when motion is reduced. */
+/* First paint, as measured on the reference: the text rises 20px and the photo settles from
+   1.25x, both on a soft spring, finished by about 450ms. Never hides content with reduced motion. */
 @media (prefers-reduced-motion: no-preference) {
   .enter {
-    animation: enter 520ms var(--ease-reveal) both;
-    animation-delay: calc(var(--i, 0) * 55ms);
+    animation: enter-y 520ms var(--spring-soft) both, enter-fade 360ms var(--ease-ui) both;
+    animation-delay: calc(60ms + var(--i, 0) * 40ms);
+  }
+  .stack.enter {
+    animation: enter-scale 560ms var(--spring-soft) both, enter-fade 300ms var(--ease-ui) both;
+    animation-delay: 40ms;
   }
 }
-@keyframes enter {
+@keyframes enter-y {
+  from {
+    transform: translateY(20px);
+  }
+}
+@keyframes enter-scale {
+  from {
+    transform: scale(1.25);
+  }
+}
+@keyframes enter-fade {
   from {
     opacity: 0;
-    transform: translateY(10px);
   }
 }
 
@@ -613,14 +673,14 @@ button {
 .stack-mark {
   position: absolute;
   z-index: 4;
-  right: -112px;
-  top: -14px;
+  right: -128px;
+  top: -18px;
   width: 52px;
   height: 52px;
   color: var(--accent);
   opacity: 0;
-  transform: scale(0.4) rotate(-40deg);
-  transition: transform 600ms var(--spring), opacity 200ms var(--ease-ui);
+  transform: translate(-40px, 30px) scale(0.3) rotate(-110deg);
+  transition: transform 380ms var(--ease-ui), opacity 160ms var(--ease-ui);
   pointer-events: none;
 }
 .stack-toggle {
@@ -631,25 +691,27 @@ button {
 }
 .stack[data-open="true"] .stack-card,
 .stack:hover .stack-card {
-  box-shadow: var(--shadow-lift);
+  box-shadow: 0 2px 4px rgb(0 0 0 / 0.08), 0 16px 34px -10px rgb(0 0 0 / 0.35);
 }
 .stack[data-open="true"] .c0,
 .stack:hover .c0 {
-  transform: rotate(-4deg);
+  transform: scale(1.12) rotate(-8deg);
 }
 .stack[data-open="true"] .c1,
 .stack:hover .c1 {
-  transform: translate(-62px, 10px) rotate(-10deg);
+  transform: translate(-70px, 12px) scale(1.02) rotate(-14deg);
+  transition-delay: 30ms;
 }
 .stack[data-open="true"] .c2,
 .stack:hover .c2 {
-  transform: translate(70px, 12px) rotate(9deg);
+  transform: translate(82px, 6px) scale(1.06) rotate(10deg);
+  transition-delay: 15ms;
 }
 .stack[data-open="true"] .stack-mark,
 .stack:hover .stack-mark {
   opacity: 1;
   transform: none;
-  transition-delay: 60ms;
+  transition: transform 700ms var(--spring-wave) 70ms, opacity 160ms var(--ease-ui) 70ms;
 }
 @media (prefers-reduced-motion: reduce) {
   .stack-card,
@@ -711,7 +773,17 @@ button {
   overflow: hidden;
   background: var(--stage, var(--panel));
   isolation: isolate;
-  aspect-ratio: 16 / 9.4;
+  aspect-ratio: 1377 / 1000;
+}
+.stage-field {
+  position: absolute;
+  inset: -6%;
+  width: 112%;
+  height: 112%;
+  max-width: none;
+  object-fit: cover;
+  z-index: 0;
+  pointer-events: none;
 }
 .stage-inner {
   position: absolute;
@@ -728,10 +800,10 @@ button {
   align-items: start;
 }
 .caption-title {
-  font-size: clamp(20px, 1.05rem + 0.45vw, 24px);
+  font-size: clamp(20px, 1.05rem + 0.55vw, 24px);
   font-weight: 500;
-  letter-spacing: -0.02em;
-  line-height: 1.25;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
   margin: 0;
   display: flex;
   align-items: center;
@@ -748,12 +820,12 @@ button {
   color: var(--ink);
 }
 .caption-benefit {
-  font-size: clamp(19px, 1.02rem + 0.42vw, 24px);
-  letter-spacing: -0.02em;
-  line-height: 1.3;
-  color: var(--ink-2);
+  font-size: clamp(20px, 1.05rem + 0.55vw, 24px);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--ink-soft);
   margin: 0;
-  max-width: 34ch;
   grid-column: 1;
   text-wrap: pretty;
 }
@@ -777,75 +849,77 @@ button {
   }
 }
 
-/* Screens inside a stage. A "shot" is a real capture in a minimal window frame. */
+/* Screens inside a stage: a real capture in a window with real chrome. */
 .shot {
   position: absolute;
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
   background: #fff;
-  box-shadow: var(--shadow-shot);
-  outline: 1px solid rgb(0 0 0 / 0.06);
+  box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.12), 0 2px 6px rgb(0 0 0 / 0.08), 0 28px 70px -18px rgb(0 0 0 / 0.42);
 }
-.shot img {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: top left;
+.shot.app {
+  border-radius: 10px;
 }
 .shot.dark {
   background: #0d0d0f;
-  outline-color: rgb(255 255 255 / 0.08);
+  box-shadow: 0 0 0 0.5px rgb(255 255 255 / 0.1), 0 2px 6px rgb(0 0 0 / 0.2), 0 28px 70px -18px rgb(0 0 0 / 0.6);
 }
 .chrome {
-  height: 22px;
-  display: flex;
+  height: clamp(20px, 2.3vw, 34px);
+  display: grid;
+  grid-template-columns: 1fr minmax(0, 2.4fr) 1fr;
   align-items: center;
-  gap: 5px;
-  padding-inline: 9px;
-  background: #f4f4f1;
-  border-bottom: 1px solid rgb(0 0 0 / 0.06);
+  padding-inline: clamp(8px, 1vw, 14px);
+  background: #f6f6f4;
+  border-bottom: 1px solid rgb(0 0 0 / 0.07);
 }
-.chrome i {
-  width: 7px;
-  height: 7px;
+.chrome .lights {
+  display: flex;
+  gap: clamp(4px, 0.45vw, 7px);
+}
+.chrome .lights i {
+  width: clamp(6px, 0.7vw, 11px);
+  aspect-ratio: 1;
   border-radius: 50%;
-  background: #d9d9d4;
+  background: #ff5f57;
+  box-shadow: inset 0 0 0 0.5px rgb(0 0 0 / 0.12);
 }
-.chrome span {
-  margin-left: auto;
-  margin-right: auto;
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  letter-spacing: 0.02em;
-  color: #8a8a83;
-  translate: -14px 0;
+.chrome .lights i:nth-child(2) {
+  background: #febc2e;
+}
+.chrome .lights i:nth-child(3) {
+  background: #28c840;
+}
+.chrome .url {
+  justify-self: center;
+  max-width: 100%;
+  padding: 0.25em 1.6em;
+  border-radius: 7px;
+  background: rgb(0 0 0 / 0.045);
+  font-size: clamp(8px, 0.72vw, 12px);
+  color: #6e6e69;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .shot.dark .chrome {
-  background: #1b1c1f;
+  background: #1c1d20;
   border-color: rgb(255 255 255 / 0.06);
 }
-.shot.dark .chrome i {
-  background: #3a3b40;
-}
-.shot.dark .chrome span {
-  color: #77787e;
+.shot.dark .chrome .url {
+  background: rgb(255 255 255 / 0.06);
+  color: #8c8d93;
 }
 .shot .viewport {
-  position: absolute;
-  inset: 22px 0 0 0;
-}
-.shot .viewport.full {
-  inset: 0;
+  position: relative;
 }
 /* A loupe: a tighter crop of the same capture, so a detail can be read at small sizes. */
 .loupe {
   position: absolute;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
   background: #fff;
-  box-shadow: var(--shadow-shot);
-  outline: 1px solid rgb(0 0 0 / 0.07);
+  box-shadow: 0 0 0 0.5px rgb(0 0 0 / 0.12), 0 2px 6px rgb(0 0 0 / 0.08), 0 30px 70px -16px rgb(0 0 0 / 0.45);
 }
 .loupe img {
   position: absolute;
@@ -947,6 +1021,13 @@ button {
 .chain-edge.bad {
   background: var(--accent);
 }
+.chain-src {
+  margin: 14px 0 0;
+  font-size: 10.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
 .chain-tag {
   font-size: 10.5px;
   letter-spacing: 0.04em;
@@ -962,7 +1043,7 @@ button {
   gap: clamp(16px, 1.7vw, 24px);
 }
 .pair .stage {
-  aspect-ratio: 4 / 3.3;
+  aspect-ratio: 676 / 555;
 }
 @media (max-width: 760px) {
   .pair {
@@ -1107,6 +1188,43 @@ button {
     grid-template-columns: 1fr;
   }
 }
+.exp-title {
+  display: grid;
+  grid-template-columns: calc((min(100vw, var(--max)) - 2 * var(--gutter)) * 0.32) minmax(0, 1fr);
+  align-items: start;
+}
+.exp-title .t-h2 {
+  max-width: 17ch;
+}
+.exp-scroll {
+  margin: 0;
+  padding-top: 0.5em;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.exp-scroll span {
+  display: inline-block;
+  margin-left: 6px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .exp-scroll span {
+    animation: nudge 2.4s var(--ease-ui) infinite;
+  }
+}
+@keyframes nudge {
+  0%, 70%, 100% { transform: none; }
+  80% { transform: translateX(5px); }
+}
+@media (max-width: 960px) {
+  .exp-title {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+}
 .exp-controls {
   display: flex;
   gap: 6px;
@@ -1159,6 +1277,9 @@ button {
 .strip[data-snap="true"] {
   scroll-snap-type: x proximity;
 }
+.strip {
+  align-items: flex-start;
+}
 .strip > li {
   flex: none;
   scroll-snap-align: start;
@@ -1167,12 +1288,12 @@ button {
   display: grid;
   gap: 12px;
   text-align: left;
-  width: var(--w, 320px);
+  width: clamp(260px, 25vw, 360px);
   border-radius: var(--r);
 }
 .exp-media {
   position: relative;
-  height: clamp(220px, 24vw, 340px);
+  display: block;
   border-radius: var(--r);
   overflow: hidden;
   background: var(--panel);
@@ -1321,7 +1442,7 @@ dialog.lightbox .sheet-close {
   background: var(--panel);
   padding-top: clamp(72px, 9vw, 128px);
   padding-bottom: 40px;
-  margin-top: clamp(48px, 6vw, 96px);
+  margin-top: clamp(24px, 3vw, 48px);
 }
 .footer-grid {
   display: grid;
@@ -1904,16 +2025,21 @@ details.more summary {
 
 /* ------------------------------------------------------------------ reveal */
 
-/* Hidden only once scripts have run, so content never depends on JavaScript to appear. */
+/* Hidden only once scripts have run, so content never depends on JavaScript to appear.
+   As measured on the reference: projects rise 60px and settle over about 900ms. */
 @media (prefers-reduced-motion: no-preference) {
   .js [data-reveal] {
     opacity: 0;
-    transform: translateY(16px);
-    transition: opacity 560ms var(--ease-reveal), transform 560ms var(--ease-reveal);
+    transform: translateY(60px);
+    transition: opacity 700ms var(--ease-arrive), transform 950ms var(--ease-arrive);
+    transition-delay: var(--reveal-delay, 0ms);
   }
   .js [data-reveal][data-in] {
     opacity: 1;
     transform: none;
+  }
+  .js .pair > [data-reveal]:nth-child(2) {
+    --reveal-delay: 90ms;
   }
 }
 

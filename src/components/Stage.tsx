@@ -1,7 +1,8 @@
 /**
- * Art-directed project stages. Every pixel inside is a real capture of the product; a "loupe" is
- * a tighter crop of the same capture so a detail stays legible. Desktop and mobile are composed
- * separately rather than shrinking one picture.
+ * Art-directed project stages. A stage is a photographic field (a heavily blurred crop of one of
+ * Ved's own photos or of the product itself, pre-rendered in public/stage) with the real product
+ * floating on it in a window. A "loupe" is a tighter crop of the same capture so the proof stays
+ * legible. Desktop and mobile are composed separately rather than shrinking one picture.
  */
 import Image from "next/image";
 import type { CSSProperties, ReactNode } from "react";
@@ -18,21 +19,40 @@ const STC_PATHS: Img = { src: "/work/stc-scroll.webp", alt: "", w: 1440, h: 900 
 const ATELIER: Img = { src: "/work/atelier.webp", alt: "", w: 1920, h: 1200 };
 const ACCOUNIC: Img = { src: "/work/accounic-dash.webp", alt: "", w: 1440, h: 900 };
 
-/** A capture in a minimal window frame. `bar` is the address shown, or false for a native app. */
+/** Where each backdrop comes from, so nobody mistakes it for decoration. */
+const FIELD: Record<string, string> = {
+  "amr-drug-repurposing": "/stage/amr.webp", // the pharmacy college lobby where the work was recognised
+  nova: "/stage/nova.webp", // NOVA's own playback frame
+  "snowbros-atlas": "/stage/atlas.webp", // Ved's bench
+  "stc-academy": "/stage/stc.webp", // the university conclave hall
+  "vinnys-atelier": "/stage/atelier.webp", // the till's own palette
+};
+
+function Field({ slug }: { slug: string }) {
+  const src = FIELD[slug];
+  if (!src) return null;
+  // eslint-disable-next-line @next/next/no-img-element -- a 1 KB pre-blurred field; the optimiser would only add weight
+  return <img className="stage-field" src={src} alt="" aria-hidden decoding="async" />;
+}
+
+/** A capture in a window. `bar` is the address shown, or false for a native app window. */
 function Shot({ img, box, bar, dark, priority, sizes, z }: { img: Img; box: Box; bar?: string | false; dark?: boolean; priority?: boolean; sizes: string; z?: number }) {
   const chrome = bar !== false;
-  const style: CSSProperties = { ...box, aspectRatio: chrome ? undefined : `${img.w} / ${img.h}`, zIndex: z };
+  const style: CSSProperties = { ...box, zIndex: z };
   return (
-    <div className={`shot${dark ? " dark" : ""}`} style={style}>
+    <div className={`shot${dark ? " dark" : ""}${chrome ? "" : " app"}`} style={style}>
       {chrome && (
         <div className="chrome" aria-hidden>
-          <i />
-          <i />
-          <i />
-          {bar && <span>{bar}</span>}
+          <span className="lights">
+            <i />
+            <i />
+            <i />
+          </span>
+          {bar ? <span className="url">{bar}</span> : <span />}
+          <span />
         </div>
       )}
-      <div className={`viewport${chrome ? "" : " full"}`} style={chrome ? { position: "relative", inset: "auto", aspectRatio: `${img.w} / ${img.h}` } : undefined}>
+      <div className="viewport" style={{ aspectRatio: `${img.w} / ${img.h}` }}>
         <Image src={img.src} alt="" fill sizes={sizes} priority={priority} quality={90} style={{ objectFit: "cover", objectPosition: "top left" }} />
       </div>
     </div>
@@ -71,75 +91,84 @@ export function Chain({ box, compact }: { box?: CSSProperties; compact?: boolean
         <span className="chain-node bad">lib/db.ts</span>
         <span style={{ color: "var(--accent-ink)" }}>&quot;server-only&quot;</span>
       </div>
-      <p style={{ margin: "14px 0 0", fontSize: 10.5, letterSpacing: "0.04em", textTransform: "uppercase", color: "var(--ink-3)" }}>From the sample run in the Atlas README</p>
+      <p className="chain-src">From the sample run in the Atlas README</p>
     </div>
   );
 }
 
-const DESK = "(max-width: 760px) 100vw, 70vw";
+const DESK = "(max-width: 760px) 1px, 80vw";
+const MOB = "(max-width: 760px) 92vw, 1px";
 
 export function StageArt({ slug, priority }: { slug: string; priority?: boolean }) {
-  switch (slug) {
-    case "amr-drug-repurposing":
-      return (
-        <>
-          <div className="only-desktop">
-            <Shot img={AMR} bar="amr-drug-repurposing.vercel.app" box={{ left: "6%", top: "9%", width: "66%" }} sizes={DESK} priority={priority} />
-            <Loupe img={AMR} r={[0.555, 0.515, 0.405, 0.375]} box={{ right: "5%", bottom: "9%", width: "37%" }} />
-          </div>
-          <div className="only-mobile">
-            <Loupe img={AMR} r={[0.02, 0.17, 0.46, 0.36]} box={{ left: "6%", top: "6%", width: "88%" }} z={2} />
-            <Loupe img={AMR} r={[0.555, 0.515, 0.405, 0.375]} box={{ right: "6%", bottom: "6%", width: "88%" }} />
-          </div>
-        </>
-      );
-    case "nova":
-      return (
-        <>
-          <div className="only-desktop">
-            <Shot img={NOVA_HOME} bar={false} box={{ left: "5%", top: "13%", width: "40%" }} sizes="30vw" z={1} />
-            <Shot img={NOVA} bar={false} dark box={{ right: "5%", top: "8%", width: "62%" }} sizes={DESK} priority={priority} z={2} />
-            <Loupe img={NOVA} r={[0.0, 0.0, 0.3, 0.07]} box={{ left: "8%", bottom: "10%", width: "33%" }} />
-          </div>
-          <div className="only-mobile">
-            <Shot img={NOVA} bar={false} dark box={{ left: "5%", top: "9%", width: "90%" }} sizes="(max-width: 760px) 90vw, 1px" priority={priority} />
-            <Loupe img={NOVA} r={[0.0, 0.0, 0.3, 0.07]} box={{ left: "5%", bottom: "11%", width: "84%" }} />
-          </div>
-        </>
-      );
-    case "snowbros-atlas":
-      return (
-        <>
-          <div className="only-desktop">
-            <Shot img={ATLAS} bar="" dark box={{ left: "6%", top: "9%", width: "60%" }} sizes={DESK} priority={priority} />
-            <Chain box={{ right: "5%", top: "50%", translate: "0 -50%" }} />
-          </div>
-          <div className="only-mobile">
-            <Loupe img={ATLAS} r={[0, 0.03, 0.62, 0.6]} box={{ left: "6%", top: "6%", width: "88%" }} z={1} />
-            <Chain compact box={{ left: "6%", bottom: "6%", right: "6%" }} />
-          </div>
-        </>
-      );
-    case "stc-academy":
-      return (
-        <>
-          <div className="only-desktop">
-            <Shot img={STC} bar="stc.vercel.app" box={{ left: "6%", top: "9%", width: "62%" }} sizes={DESK} priority={priority} z={1} />
-            <Shot img={STC_PATHS} bar="stc.vercel.app" box={{ right: "5%", bottom: "-6%", width: "40%" }} sizes="30vw" z={2} />
-          </div>
-          <div className="only-mobile">
-            <Loupe img={STC} r={[0.16, 0.28, 0.68, 0.52]} box={{ left: "6%", top: "6%", width: "88%" }} z={1} />
-            <Loupe img={STC_PATHS} r={[0.02, 0.24, 0.66, 0.5]} box={{ left: "6%", bottom: "6%", width: "88%" }} />
-          </div>
-        </>
-      );
-    case "vinnys-atelier":
-      return <Shot img={ATELIER} bar="Vinny's Atelier · till" box={{ left: "7%", top: "11%", width: "86%" }} sizes="(max-width: 760px) 100vw, 45vw" />;
-    case "accounic":
-      return <Shot img={ACCOUNIC} bar="accounic · web" box={{ left: "7%", top: "11%", width: "86%" }} sizes="(max-width: 760px) 100vw, 45vw" />;
-    default:
-      return null;
-  }
+  const body = (() => {
+    switch (slug) {
+      case "amr-drug-repurposing":
+        return (
+          <>
+            <div className="only-desktop">
+              <Shot img={AMR} bar="amr-drug-repurposing.vercel.app" box={{ left: "6%", top: "9%", width: "79%" }} sizes={DESK} priority={priority} />
+              <Loupe img={AMR} r={[0.555, 0.515, 0.405, 0.375]} box={{ right: "4%", bottom: "6%", width: "37%" }} />
+            </div>
+            <div className="only-mobile">
+              <Loupe img={AMR} r={[0.02, 0.17, 0.46, 0.36]} box={{ left: "6%", top: "7%", width: "88%" }} z={2} />
+              <Loupe img={AMR} r={[0.555, 0.515, 0.405, 0.375]} box={{ right: "6%", bottom: "7%", width: "88%" }} />
+            </div>
+          </>
+        );
+      case "nova":
+        return (
+          <>
+            <div className="only-desktop">
+              <Shot img={NOVA_HOME} bar={false} box={{ left: "4%", top: "24%", width: "40%" }} sizes="(max-width: 760px) 1px, 40vw" z={1} />
+              <Shot img={NOVA} bar={false} dark box={{ right: "4%", top: "9%", width: "71%" }} sizes={DESK} priority={priority} z={2} />
+              <Loupe img={NOVA} r={[0.0, 0.0, 0.3, 0.07]} box={{ left: "7%", bottom: "9%", width: "36%" }} />
+            </div>
+            <div className="only-mobile">
+              <Shot img={NOVA} bar={false} dark box={{ left: "5%", top: "10%", width: "90%" }} sizes={MOB} priority={priority} />
+              <Loupe img={NOVA} r={[0.0, 0.0, 0.3, 0.07]} box={{ left: "5%", bottom: "12%", width: "84%" }} />
+            </div>
+          </>
+        );
+      case "snowbros-atlas":
+        return (
+          <>
+            <div className="only-desktop">
+              <Shot img={ATLAS} bar="file:// atlas report" dark box={{ left: "6%", top: "9%", width: "70%" }} sizes={DESK} priority={priority} />
+              <Chain box={{ right: "5%", top: "52%", translate: "0 -50%" }} />
+            </div>
+            <div className="only-mobile">
+              <Loupe img={ATLAS} r={[0, 0.03, 0.62, 0.6]} box={{ left: "6%", top: "7%", width: "88%" }} z={1} />
+              <Chain compact box={{ left: "6%", bottom: "6%", right: "6%" }} />
+            </div>
+          </>
+        );
+      case "stc-academy":
+        return (
+          <>
+            <div className="only-desktop">
+              <Shot img={STC} bar="stc.vercel.app" box={{ left: "6%", top: "9%", width: "70%" }} sizes={DESK} priority={priority} z={1} />
+              <Shot img={STC_PATHS} bar="stc.vercel.app" box={{ right: "5%", bottom: "-5%", width: "44%" }} sizes="(max-width: 760px) 1px, 40vw" z={2} />
+            </div>
+            <div className="only-mobile">
+              <Loupe img={STC} r={[0.16, 0.28, 0.68, 0.52]} box={{ left: "6%", top: "7%", width: "88%" }} z={1} />
+              <Loupe img={STC_PATHS} r={[0.02, 0.24, 0.66, 0.5]} box={{ left: "6%", bottom: "7%", width: "88%" }} />
+            </div>
+          </>
+        );
+      case "vinnys-atelier":
+        return <Shot img={ATELIER} bar="Vinny's Atelier" box={{ left: "7%", top: "12%", width: "86%" }} sizes="(max-width: 760px) 92vw, 46vw" />;
+      case "accounic":
+        return <Shot img={ACCOUNIC} bar="accounic" box={{ left: "7%", top: "12%", width: "86%" }} sizes="(max-width: 760px) 92vw, 46vw" />;
+      default:
+        return null;
+    }
+  })();
+  return (
+    <>
+      <Field slug={slug} />
+      {body}
+    </>
+  );
 }
 
 export const STAGE_CLASS: Record<string, string> = {
