@@ -43,8 +43,6 @@
   /* stiffness 260, damping 26, mass 1: a 1.4% overshoot, settled by 600ms */
   /* stiffness 380, damping 20: a 15% overshoot that reads as a wave */
   --spring-wave: linear(0, 0.078, 0.262, 0.488, 0.708, 0.892, 1.027, 1.11, 1.148, 1.151, 1.131, 1.099, 1.064, 1.032, 1.007, 0.99, 0.98, 0.977, 0.978, 0.982, 0.987, 0.992, 0.997, 1, 1.002, 1.003, 1.004, 1.003, 1.002, 1.002, 1.001, 1, 1);
-  /* stiffness 320, damping 30: the reference's intro, a hair of overshoot */
-  --spring-soft: linear(0, 0.04, 0.134, 0.254, 0.38, 0.501, 0.609, 0.703, 0.78, 0.843, 0.892, 0.929, 0.956, 0.976, 0.989, 0.998, 1.003, 1.006, 1.008, 1.008, 1.007, 1.007, 1.006, 1.005, 1.004, 1.003, 1.002, 1.002, 1.001, 1.001, 1.001, 1, 1);
   /* the long settle used on project entrances, measured: 60px mostly gone by 300ms, the rest by 900ms */
   --ease-arrive: cubic-bezier(0.16, 1, 0.3, 1);
   --ink-soft: #8d8d86;
@@ -605,14 +603,14 @@ button {
 }
 
 /* First paint, as measured on the reference: the text rises 20px and the photo settles from
-   1.25x, both on a soft spring, finished by about 450ms. Never hides content with reduced motion. */
+   1.25x, decelerating smoothly (ease-out-quint), finished by about 600ms. Never hides content with reduced motion. */
 @media (prefers-reduced-motion: no-preference) {
   .enter {
-    animation: enter-y 520ms var(--spring-soft) both, enter-fade 360ms var(--ease-ui) both;
+    animation: enter-y 560ms var(--ease-reveal) both, enter-fade 360ms var(--ease-ui) both;
     animation-delay: calc(60ms + var(--i, 0) * 40ms);
   }
   .stack.enter {
-    animation: enter-scale 560ms var(--spring-soft) both, enter-fade 300ms var(--ease-ui) both;
+    animation: enter-scale 620ms var(--ease-reveal) both, enter-fade 300ms var(--ease-ui) both;
     animation-delay: 40ms;
   }
 }
