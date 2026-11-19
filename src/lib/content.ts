@@ -277,7 +277,7 @@ export const EXPERIMENTS: Experiment[] = [
     detail: "The studio's own site. The name forms out of frost crystals above the line “Software that holds its shape.” Vite, TypeScript, canvas and GSAP.",
     role: "Design and development",
     href: "https://snowbros.me",
-    img: { src: "/work/snowbros-home.webp", alt: "The SNOWBROS studio site: the name formed from frost crystals above the headline 'Software that holds its shape.'", w: 1440, h: 900 },
+    img: { src: "/hero/snowbros.webp", alt: "The SNOWBROS studio site, the name formed from frost crystals above 'Software that holds its shape.', in a browser window over frost on glass.", w: 1536, h: 1024 },
   },
   {
     id: "edge-ai",
@@ -304,7 +304,7 @@ export const EXPERIMENTS: Experiment[] = [
     detail: "A small e-commerce site for a bouquet studio: “Flowers Fade. Memories Don't.” Next.js, Supabase, GSAP and shadcn/ui.",
     role: "Sole developer",
     href: "https://lunorastudio.vercel.app",
-    img: { src: "/work/lunora-home.webp", alt: "Lunora Studio: 'Flowers Fade. Memories Don't.'", w: 1440, h: 900 },
+    img: { src: "/hero/lunora.webp", alt: "Lunora Studio, 'Flowers Fade. Memories Don't.', in a browser window over a florist's table.", w: 1536, h: 1024 },
   },
   {
     id: "cipher-clash",

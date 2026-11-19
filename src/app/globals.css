@@ -2767,3 +2767,30 @@ html.theme-wave .theme-btn svg {
   background: radial-gradient(circle, currentColor 0 38%, color-mix(in oklab, currentColor 50%, transparent) 52%, transparent 70%);
   will-change: transform, opacity;
 }
+
+/* ---------------------------------------------------------------- finished hero images */
+.stage-hero {
+  object-fit: cover;
+  object-position: 50% 40%;
+}
+.pair .stage,
+.next-link .stage {
+  aspect-ratio: 3 / 2;
+}
+.case-hero .stage {
+  aspect-ratio: 1377 / 1000;
+}
+@media (max-width: 760px) {
+  .stage,
+  .pair .stage,
+  .case-hero .stage {
+    aspect-ratio: 3 / 2;
+  }
+}
+
+/* notes on the smaller paired images: tighter cards */
+.pair .note-card {
+  max-width: 190px;
+  font-size: 12.5px;
+  padding: 7px 10px 8px 9px;
+}

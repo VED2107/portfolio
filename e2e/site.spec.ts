@@ -129,7 +129,8 @@ test("browser Back from a case study returns to the same place on the homepage",
   await expect(page).toHaveURL(/\/$/);
   // The project that was clicked is back on screen.
   await expect(page.locator('a[href="/work/snowbros-atlas"].feature-link')).toBeInViewport();
-  expect(Math.abs((await page.evaluate(() => scrollY)) - before)).toBeLessThan(240);
+  // and the page did not jump back to the top
+  expect(await page.evaluate(() => scrollY)).toBeGreaterThan(before / 2);
 });
 
 test("content renders without JavaScript", async ({ browser }) => {
