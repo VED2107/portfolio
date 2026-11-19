@@ -1,22 +1,28 @@
 ﻿import Link from "next/link";
-import { QuickHeader } from "@/components/QuickChrome";
-import { VedMark } from "@/components/VedMark";
+import { Flake } from "@/components/icons";
 
 export const metadata = { title: "Page not found" };
 
 export default function NotFound() {
   return (
-    <>
-      <QuickHeader />
-      <main id="main" className="wrap grid min-h-[70vh] content-center justify-items-center gap-6 py-16 text-center">
-        <VedMark size={120} motion="lost" />
-        <p className="cat">404</p>
-        <h1 className="display text-4xl sm:text-6xl">This record isn&apos;t in the shop.</h1>
-        <div className="intro-actions justify-center">
-          <Link href="/" className="btn btn-accent">Walk into the store</Link>
-          <Link href="/quick" className="btn">Quick View</Link>
+    <main id="main" className="wrap lost">
+      <div className="inset">
+        <Flake className="footer-mark" />
+        <p className="t-meta" style={{ margin: "24px 0 12px" }}>
+          404
+        </p>
+        <h1 className="t-display" style={{ maxWidth: "18ch" }}>
+          This page doesn&apos;t exist, or it moved when the site was rebuilt.
+        </h1>
+        <div className="intro-actions">
+          <Link href="/" className="arrow-link">
+            <span className="label">Go to the homepage</span> <span className="ar">→</span>
+          </Link>
+          <Link href="/#work" className="arrow-link">
+            <span className="label">See the work</span> <span className="ar">→</span>
+          </Link>
         </div>
-      </main>
-    </>
+      </div>
+    </main>
   );
 }

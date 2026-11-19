@@ -18,8 +18,8 @@ const nextConfig: NextConfig = {
   images: {
     qualities: [75, 90],
   },
-  // Route navigations run as React transitions, so <ViewTransition> can carry a record's sleeve
-  // from a Quick View card into its case study. Browsers without the API just navigate.
+  // Route navigations run as React transitions, so <ViewTransition> can soften page changes.
+  // Browsers without the API just navigate.
   experimental: {
     viewTransition: true,
   },
@@ -27,6 +27,10 @@ const nextConfig: NextConfig = {
     return [
       { source: "/resume", destination: "/Ved_Chauhan_RESUME.pdf", permanent: false },
       { source: "/cv", destination: "/Ved_Chauhan_RESUME.pdf", permanent: false },
+      // The old Quick View was the readable version of the record shop; the homepage is that now.
+      { source: "/quick", destination: "/", permanent: true },
+      { source: "/work", destination: "/#work", permanent: false },
+      { source: "/profile", destination: "/about", permanent: false },
     ];
   },
   async headers() {

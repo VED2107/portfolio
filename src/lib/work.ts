@@ -10,7 +10,7 @@ export type Callout = { n: number; x: number; y: number; label: string };
 
 export type Figure =
   | { kind: "image"; img: Img; caption: string; callouts?: Callout[] }
-  | { kind: "drawing"; drawing: "atlas-crates" | "accounic-arch" | "ved-sheet"; caption: string }
+  | { kind: "drawing"; drawing: "atlas-chain" | "accounic-arch"; caption: string }
   | { kind: "code"; lang: string; title: string; code: string; caption: string };
 
 export type Decision = { title: string; body: string; code?: { lang: string; code: string } };
@@ -102,7 +102,6 @@ export const FILINGS: Filing[] = [
     stack: ["Rust", "Tree-sitter", "petgraph", "LSP", "VS Code API", "SARIF"],
     links: [
       { label: "Repository", href: "https://github.com/snowbros-labs/atlas" },
-      { label: "Case study", href: "https://snowbros.me/#case-atlas" },
     ],
     plate: { src: "/work/atlas-site.webp", alt: "An Atlas HTML report: health 93 overall, 66 architecture, above findings for a server-only module reachable from a client component and a circular import chain.", w: 1440, h: 900 },
     facts: [
@@ -117,7 +116,7 @@ export const FILINGS: Filing[] = [
       "Per-file linters see one file at a time. The expensive bugs live between files: a circular import that survives for years, a server-only module that leaks into a client bundle, a dependency nobody uses anymore. Atlas is built for that layer. It runs alongside ESLint or Biome, not instead of them.",
     figures: [
       { kind: "code", lang: "text", title: "sb analyze", code: ATLAS_RUN, caption: "A run from the README. The finding names the rule, the confidence, and the import chain that proves it." },
-      { kind: "drawing", drawing: "atlas-crates", caption: "Crate architecture. Dependencies flow one way, from a shared vocabulary up to the CLI and the language server." },
+      { kind: "drawing", drawing: "atlas-chain", caption: "The finding above, drawn. A client component reaches a server-only module through two ordinary imports; Atlas reports the whole chain, not just the last file." },
       {
         kind: "image",
         img: { src: "/work/atlas-report.webp", alt: "Snowbros Atlas HTML report: health scores followed by six findings with evidence.", w: 1240, h: 2000 },
@@ -402,7 +401,6 @@ export const FILINGS: Filing[] = [
     ],
     plate: { src: "/work/stc-home.webp", alt: "STC Academy home page: 'Cultivating the Intellect of Tomorrow.'", w: 1440, h: 900 },
     facts: [
-      { value: "100+", label: "students, teachers and staff on it" },
       { value: "2", label: "boards, CBSE and GSEB, plus JEE and NEET tracks" },
     ],
     abstract:
@@ -629,44 +627,40 @@ export const FILINGS: Filing[] = [
   {
     slug: "ved-exe",
     no: 800,
-    title: "VED.EXE",
-    short: "This site. A plain, fast portfolio where every number traces back to a repository or a live product.",
+    title: "This website",
+    short: "A quiet, editorial portfolio where every number traces back to a repository or a live product.",
     field: "Interface",
     year: "2026",
     role: "Designer and developer.",
-    status: "Live. You're reading it.",
-    stack: ["Next.js 16", "React 19", "TypeScript", "View Transitions API", "GitHub GraphQL API"],
+    status: "Live. You're reading it. Rebuilt from scratch in November 2026.",
+    stack: ["Next.js 16", "React 19", "TypeScript", "View Transitions API", "Geist"],
     links: [{ label: "Repository", href: "https://github.com/VED2107/portfolio" }],
     facts: [
-      { value: "1", label: "typeface, two weights doing the work" },
-      { value: "⌘K", label: "reaches every page, project and link" },
+      { value: "1", label: "typeface family, Geist, with a mono for labels" },
+      { value: "0", label: "animation libraries; CSS and the View Transitions API" },
     ],
     abstract:
-      "The work is the interface. Each project leads with a real screenshot and the one number that proves it, then a case study for anyone who wants the engineering.",
+      "The work is the interface. Each project leads with its own screenshots and a plain sentence about what it does, then a case study for anyone who wants the engineering.",
     background:
-      "Earlier versions were a retro arcade, a patent filing and a record shop. Each was fun to build and each put a costume between a visitor and the work. This one takes the costume off.",
+      "Earlier versions were a retro arcade, a patent filing and a walkable 3D record shop. Each was fun to build and each put a costume between a visitor and the work. This one takes the costume off.",
     figures: [],
     decisions: [
       {
         title: "Show the working thing first",
-        body: "Every project opens on its own screenshot, from the product itself, never a mockup. The number beside it comes from the project's README or its live site.",
+        body: "Every project opens on its own screenshots, from the product itself, never a mockup. Where a crop helps, it is a crop of the same capture, not a redrawn screen.",
       },
       {
         title: "Content first, motion second",
-        body: "Every page is complete HTML before any script runs. Entrances are opacity and a short rise, staggered, and with reduced motion they are simply absent.",
+        body: "Every page is complete HTML before any script runs. Motion is opacity and a few pixels of rise, a small photo fan and a gentle strip of experiments; with reduced motion all of it stops.",
       },
       {
-        title: "Live, with a fallback",
-        body: "GitHub activity is fetched on the server and revalidated hourly. If the API is slow or down, the section falls back to a committed snapshot instead of an empty box.",
-      },
-      {
-        title: "Keyboard complete",
-        body: "⌘K or / opens a command menu that reaches every section, project, link and the theme. It opens instantly, because something used this often should not animate.",
+        title: "Native scrolling, native links",
+        body: "No scroll hijacking and no entry screen. Page changes use the browser's View Transitions API, and Back always lands where it should.",
       },
     ],
     claims: [
       "Every number on the site is traceable to a repository or a live product.",
-      "Every page can be reached from the keyboard.",
+      "Every page can be reached and used from the keyboard.",
       "No testimonial was invented.",
     ],
   },
@@ -738,71 +732,4 @@ export function filingTitle(slug: string) {
 
 export function filingNo(slug: string) {
   return getFiling(slug)?.no ?? 0;
-}
-
-/**
- * The home page's selected work, in order, each led by the one number that proves it.
- * The number is one of the filing's own facts; nothing here is new.
- */
-export const FEATURED: { slug: string; proof: number }[] = [
-  { slug: "amr-drug-repurposing", proof: 0 },
-  { slug: "nova", proof: 0 },
-  { slug: "vinnys-atelier", proof: 1 },
-  { slug: "accounic", proof: 2 },
-  { slug: "snowbros-atlas", proof: 1 },
-  { slug: "swiftdrop", proof: 0 },
-];
-
-/** Smaller client builds shown as a pair under the featured work. */
-export const ALSO = ["vinnys-vogue", "stc-academy"];
-
-/** The case-study reading order: featured first, then the rest. */
-export const ORDER = [...FEATURED.map((f) => f.slug), ...ALSO, "ved-exe"];
-
-/** How many projects each technology shipped on, counted from their stacks. */
-export function equipment() {
-  const count = new Map<string, number>();
-  const norm = (s: string) => s.replace(/\s+\d[\d.]*$/, "").replace(/^Tailwind( CSS)?$/, "Tailwind CSS").trim();
-  for (const f of FILINGS) for (const s of f.stack) count.set(norm(s), (count.get(norm(s)) ?? 0) + 1);
-  return [...count.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
-}
-
-/* ------------------------------------------------------------------ pressing */
-
-/**
- * How each project is pressed: sleeve colour, the ink printed on it, the centre label, and the
- * line etched in the run-out groove. Packaging only; no new facts.
- */
-export type Pressing = { cat: string; sleeve: string; ink: string; label: string; labelInk: string; runout: string };
-
-export const PRESSING: Record<string, Pressing> = {
-  "vinnys-atelier": { cat: "VED 300", sleeve: "#c9a46a", ink: "#1c140b", label: "#f6efe2", labelInk: "#1c140b", runout: "only the webhook says paid" },
-  accounic: { cat: "VED 200", sleeve: "#dfe6d6", ink: "#0f3d2a", label: "#16865c", labelInk: "#f2fbf6", runout: "zero floats in the money path" },
-  "amr-drug-repurposing": { cat: "VED 700", sleeve: "#e7efee", ink: "#0b3f45", label: "#127c86", labelInk: "#effafb", runout: "a prediction, not a cure" },
-  "snowbros-atlas": { cat: "VED 100", sleeve: "#1f6f6a", ink: "#f3ead8", label: "#e3a72f", labelInk: "#1d1712", runout: "same code in, same findings out" },
-  swiftdrop: { cat: "VED 600", sleeve: "#d8392b", ink: "#fff4ec", label: "#16130f", labelInk: "#ffb4a8", runout: "resume, never restart" },
-  nova: { cat: "VED 900", sleeve: "#0f1115", ink: "#e9ecf2", label: "#e9ecf2", labelInk: "#0f1115", runout: "only what the engine confirms" },
-  "vinnys-vogue": { cat: "VED 400", sleeve: "#5b1328", ink: "#f6e6dd", label: "#a3355f", labelInk: "#fff0f5", runout: "one lehenga left, two buyers" },
-  "stc-academy": { cat: "VED 500", sleeve: "#14213d", ink: "#efe6cf", label: "#efe6cf", labelInk: "#14213d", runout: "two boards, one catalogue" },
-  "ved-exe": { cat: "VED 800", sleeve: "#1d1712", ink: "#f3ead8", label: "#9b2316", labelInk: "#f3ead8", runout: "the work is the interface" },
-};
-
-/** Side A takes the first half of the decisions, side B the rest, like a real LP. */
-export function trackNo(i: number, total: number) {
-  const half = Math.ceil(total / 2);
-  return i < half ? `A${i + 1}` : `B${i - half + 1}`;
-}
-
-/** Liner credits: each tool, how many records it played on, and which ones. */
-export function credits(limit = 16) {
-  const norm = (s: string) => s.replace(/\s+\d[\d.]*$/, "").replace(/^Tailwind( CSS)?$/, "Tailwind CSS").trim();
-  const map = new Map<string, string[]>();
-  for (const f of FILINGS) {
-    if (f.slug === "ved-exe") continue;
-    for (const s of new Set(f.stack.map(norm))) map.set(s, [...(map.get(s) ?? []), f.title]);
-  }
-  return [...map.entries()]
-    .map(([name, records]) => ({ name, count: records.length, records }))
-    .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name))
-    .slice(0, limit);
 }

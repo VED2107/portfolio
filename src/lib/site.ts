@@ -2,7 +2,7 @@ export const SITE = {
   name: "Ved Chauhan",
   person: "Ved S. Chauhan",
   studio: "SNOWBROS",
-  url: "https://ved.exe.snowbros.me",
+  url: "https://ved.snowbros.me",
   email: "ved@snowbros.me",
   /** Copied on every mailto link, so mail still lands if the snowbros.me forward drops it. */
   emailCc: "vedchauhan2107@gmail.com",
@@ -13,11 +13,6 @@ export const SITE = {
   studioLinkedin: "https://www.linkedin.com/company/snowbros-studio/",
   resume: "/Ved_Chauhan_RESUME.pdf",
   location: "Patan, Gujarat, India",
-  /**
-   * The shop radio: any public SoundCloud playlist or track URL. Played through SoundCloud's
-   * embeddable widget and credited on screen. Empty: the shop plays its own synthesised lo-fi loop.
-   */
-  radio: "https://soundcloud.com/user-296696768/sets/weathering-your-name" as string,
 } as const;
 
 /** NOW. Edit this block when the work changes; `updated` is shown on the page. */
@@ -57,11 +52,7 @@ export const NOW: { updated: string; rows: NowRow[] } = {
   ],
 };
 
-/** Taken from the LinkedIn profile and posts. Dates are as published there. */
-/**
- * `id` names the photo for that honour: drop public/awards/<id>.jpg (or .png / .webp) and it
- * appears on the plaque in the store and in Quick View. No file, no photo.
- */
+/** Taken from the LinkedIn profile and posts. Dates are as published there. `id` matches the photos in public/awards. */
 export type Honor = { id: string; title: string; by: string; when: string; detail: string; href?: string };
 
 export const HONORS: Honor[] = [
@@ -110,18 +101,18 @@ export const EDUCATION = {
   coursework: "Data structures and algorithms, operating systems, database systems, software engineering, design and analysis of algorithms.",
 } as const;
 
-/** The discography: when each record came out, from the résumé. Oldest first. */
+/** When each project first shipped, from the résumé. Oldest first. */
 export const DISCOGRAPHY: { when: string; title: string; what: string; slug?: string; href?: string }[] = [
   { when: "Feb 2026", title: "SNOWBROS", what: "Founded the studio", href: "https://snowbros.me" },
   { when: "Feb 2026", title: "Vinny's Vogue", what: "Storefront for a bridal boutique", slug: "vinnys-vogue" },
-  { when: "Mar 2026", title: "STC Academy", what: "Academy portal for 100+ people", slug: "stc-academy" },
+  { when: "Mar 2026", title: "STC Academy", what: "Portal for an academy's students and staff", slug: "stc-academy" },
   { when: "Jun 2026", title: "VED.EXE", what: "The terminal-era portfolio", slug: "ved-exe" },
   { when: "Jul 2026", title: "Mentor", what: "Open-source AI orchestration skill", href: "https://github.com/snowbros-labs/mentor-skill" },
   { when: "Jul 2026", title: "Snowbros Atlas", what: "Rust static analysis, on npm and crates.io", slug: "snowbros-atlas" },
   { when: "Aug 2026", title: "Vinny's Atelier", what: "The till a boutique runs on", slug: "vinnys-atelier" },
   { when: "2026", title: "Accounic", what: "Multi-currency ledger, v1.16", slug: "accounic" },
   { when: "Oct 2026", title: "SwiftDrop", what: "Phone to PC over Wi-Fi, v1.1.0", slug: "swiftdrop" },
-  { when: "Oct 2026", title: "AMR Drug Repurposing", what: "7,044 docking jobs, a college's thanks", slug: "amr-drug-repurposing" },
+  { when: "Oct 2026", title: "AMR Drug Repurposing", what: "Research screening platform, co-led; a college's thanks", slug: "amr-drug-repurposing" },
   { when: "Oct 2026", title: "NOVA", what: "Media player, Windows and Android", slug: "nova" },
 ];
 
