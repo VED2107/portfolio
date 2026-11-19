@@ -1,5 +1,5 @@
 ﻿import Link from "next/link";
-import { Flake } from "@/components/icons";
+import { Mark } from "@/components/icons";
 
 export const metadata = { title: "Page not found" };
 
@@ -7,7 +7,7 @@ export default function NotFound() {
   return (
     <main id="main" className="wrap lost">
       <div className="inset">
-        <Flake className="footer-mark" />
+        <Mark className="footer-mark" />
         <p className="t-meta" style={{ margin: "24px 0 12px" }}>
           404
         </p>

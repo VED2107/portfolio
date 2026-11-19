@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { CONFIRMED, NOW, SITE, STATUS, formatDate } from "@/lib/content";
-import { CopyEmail, MAILTO } from "./CopyEmail";
-import { Flake } from "./icons";
+import { CopyEmail, MAILTO, STUDIO_MAILTO } from "./CopyEmail";
+import { Mark } from "./icons";
 
 export function Footer() {
   return (
@@ -9,7 +9,7 @@ export function Footer() {
       <div className="wrap">
         <div className="footer-grid">
           <div>
-            <Flake className="footer-mark" />
+            <Mark className="footer-mark" title="Ved Chauhan" />
           </div>
           <div>
             <p className="chapter-mark" style={{ marginBottom: 28 }}>
@@ -86,7 +86,10 @@ export function Footer() {
                 </h3>
                 <ul>
                   <li>
-                    <a href={MAILTO}>Email</a>
+                    <a href={MAILTO}>Email, personal</a>
+                  </li>
+                  <li>
+                    <a href={STUDIO_MAILTO}>Email, studio</a>
                   </li>
                   <li>
                     <a href={SITE.github} rel="noopener">

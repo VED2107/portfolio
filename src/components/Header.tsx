@@ -2,7 +2,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { MAILTO, CopyEmail } from "./CopyEmail";
+import { MAILTO } from "./CopyEmail";
+import { MailMenu } from "./MailMenu";
 import { MoonIcon, SunIcon } from "./icons";
 
 const fmt = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Kolkata" });
@@ -106,7 +107,7 @@ export function Header() {
           <span className="short">Ved</span>
         </Link>
         <div className="hd-mid">
-          <CopyEmail showAddress />
+          <MailMenu />
         </div>
         <nav className="hd-right" aria-label="Main">
           <Link href="/#work" className="hd-link">

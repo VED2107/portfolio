@@ -1442,9 +1442,9 @@ dialog.lightbox .sheet-close {
   gap: 32px;
 }
 .footer-mark {
-  width: 56px;
-  height: 56px;
-  color: var(--accent);
+  width: 64px;
+  height: 64px;
+  color: var(--ink);
 }
 .footer-cards {
   display: grid;
@@ -2793,4 +2793,98 @@ html.theme-wave .theme-btn svg {
   max-width: 190px;
   font-size: 12.5px;
   padding: 7px 10px 8px 9px;
+}
+
+
+/* ---------------------------------------------------------------- header mail panel */
+.mail-menu {
+  position: relative;
+}
+.mail-pop {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  z-index: 60;
+  display: grid;
+  gap: 2px;
+  width: max-content;
+  padding: 8px;
+  border-radius: 14px;
+  background: color-mix(in oklab, var(--canvas) 92%, transparent);
+  box-shadow: 0 0 0 0.5px color-mix(in oklab, var(--ink) 12%, transparent), 0 2px 6px rgb(0 0 0 / 0.06), 0 22px 48px -18px rgb(0 0 0 / 0.35);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, -4px) scale(0.98);
+  transform-origin: 50% 0;
+  transition: opacity 140ms var(--ease-exit), transform 140ms var(--ease-exit), visibility 0s linear 140ms;
+}
+@supports (backdrop-filter: blur(1px)) {
+  .mail-pop {
+    background: color-mix(in oklab, var(--canvas) 78%, transparent);
+    backdrop-filter: blur(18px) saturate(1.4);
+  }
+}
+/* a bridge so the pointer can travel from the address into the panel */
+.mail-pop::before {
+  content: "";
+  position: absolute;
+  inset: -10px 0 auto 0;
+  height: 10px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .mail-menu:hover .mail-pop {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, 0);
+    transition: opacity 180ms var(--ease-ui), transform 220ms var(--ease-ui), visibility 0s;
+  }
+}
+.mail-menu:focus-within .mail-pop {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+  transition: opacity 180ms var(--ease-ui), transform 220ms var(--ease-ui), visibility 0s;
+}
+.mail-row {
+  display: grid;
+  grid-template-columns: 74px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 2px 2px 12px;
+  border-radius: 10px;
+  transition: background-color 160ms var(--ease-ui);
+}
+.mail-row:hover {
+  background: var(--panel);
+}
+.mail-kind {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+.mail-addr {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.mail-addr:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.22em;
+  text-decoration-thickness: 1px;
+}
+.mail-row .copy-tip {
+  top: 50%;
+  left: auto;
+  right: calc(100% + 6px);
+  translate: 0 -50%;
+}
+@media (prefers-reduced-motion: reduce) {
+  .mail-pop,
+  .mail-menu:hover .mail-pop,
+  .mail-menu:focus-within .mail-pop {
+    transform: translate(-50%, 0);
+  }
 }

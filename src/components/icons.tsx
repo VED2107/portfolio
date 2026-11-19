@@ -65,3 +65,16 @@ export const Flake = ({ className }: P) => (
     <circle cx="32" cy="32" r="3.2" fill="currentColor" stroke="none" />
   </svg>
 );
+
+/**
+ * Ved's mark, "Open seal": a ring left open by exactly 60° (the C of Chauhan), a V drawn with
+ * the ring's own 22-unit stroke on a 70° arm, and one point in the opening, the work going out.
+ * Source and variants: brand/ved-2026 (final.py). Ink follows currentColor, the point the accent.
+ */
+export const Mark = ({ className, title }: P & { title?: string }) => (
+  <svg viewBox="0 0 256 256" className={className} role={title ? "img" : undefined} aria-label={title} aria-hidden={title ? undefined : true}>
+    <path fill="currentColor" d="M218.07 76 A104 104 0 1 0 218.07 180 L199.01 169 A82 82 0 1 1 199.01 87 Z" />
+    <path fill="currentColor" d="M81.33 79 L104.74 79 L128 142.9 L151.26 79 L174.67 79 L139 177 L117 177 Z" />
+    <circle fill="var(--accent)" cx="221" cy="128" r="12" />
+  </svg>
+);

@@ -114,7 +114,7 @@ test("copy email reports success to assistive tech", async ({ page, context, isM
   await page.goto("/");
   await page.getByRole("button", { name: "Copy email address" }).first().click();
   await expect(page.getByRole("status").filter({ hasText: "Email address copied" })).toHaveCount(1);
-  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe("ved@snowbros.me");
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe("vedchauhan2107@gmail.com");
 });
 
 test("browser Back from a case study returns to the same place on the homepage", async ({ page }) => {

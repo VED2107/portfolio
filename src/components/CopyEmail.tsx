@@ -3,13 +3,14 @@ import { useEffect, useRef, useState } from "react";
 import { SITE } from "@/lib/site";
 import { CheckIcon, CopyIcon } from "./icons";
 
-export const MAILTO = `mailto:${SITE.email}?cc=${encodeURIComponent(SITE.emailCc)}`;
+export const MAILTO = `mailto:${SITE.email}`;
+export const STUDIO_MAILTO = `mailto:${SITE.studioEmail}`;
 
 /**
  * Copies the address. Success shows a check and "Copied"; if the clipboard refuses (permissions,
  * an insecure origin), it says so and selects the address so it can be copied by hand.
  */
-export function CopyEmail({ label = "Copy email address", showAddress = false, className = "" }: { label?: string; showAddress?: boolean; className?: string }) {
+export function CopyEmail({ label = "Copy email address", showAddress = false, className = "", address = SITE.email }: { label?: string; showAddress?: boolean; className?: string; address?: string }) {
   const [state, setState] = useState<"idle" | "copied" | "failed">("idle");
   const timer = useRef<number | undefined>(undefined);
   const addr = useRef<HTMLSpanElement>(null);
@@ -19,7 +20,7 @@ export function CopyEmail({ label = "Copy email address", showAddress = false, c
   async function copy() {
     window.clearTimeout(timer.current);
     try {
-      await navigator.clipboard.writeText(SITE.email);
+      await navigator.clipboard.writeText(address);
       setState("copied");
     } catch {
       setState("failed");
@@ -38,13 +39,13 @@ export function CopyEmail({ label = "Copy email address", showAddress = false, c
   return (
     <span className={`copy inline-flex items-center ${className}`}>
       {showAddress && (
-        <a href={MAILTO} className="hd-link" style={{ color: "var(--ink)" }}>
-          <span ref={addr}>{SITE.email}</span>
+        <a href={`mailto:${address}`} className="hd-link" style={{ color: "var(--ink)" }}>
+          <span ref={addr}>{address}</span>
         </a>
       )}
       {!showAddress && (
         <span ref={addr} className="sr-only">
-          {SITE.email}
+          {address}
         </span>
       )}
       <button type="button" className="icon-btn copy-btn" data-state={state} onClick={copy} aria-label={label}>
