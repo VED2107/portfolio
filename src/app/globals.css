@@ -30,6 +30,7 @@
 
   --font-sans: var(--font-geist), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --font-voice: var(--font-serif-face, "Instrument Serif"), "Iowan Old Style", Georgia, serif;
 
   --gutter: clamp(16px, 2.2vw, 32px);
   --max: 1440px;
@@ -2641,4 +2642,73 @@ details.more summary {
 .same-input::selection,
 .note-card::selection {
   background: color-mix(in oklab, var(--accent) 28%, transparent);
+}
+
+
+/* ================================================================== identity
+   What separates this site from its reference: an italic serif voice inside the sans, an
+   editorial chapter structure, and headlines that rise from behind a mask. */
+
+/* one serif word per display line; optically matched to the Geist cap height */
+em.serif,
+.serif {
+  font-family: var(--font-voice);
+  font-style: italic;
+  font-weight: 400;
+  font-size: 1.1em;
+  letter-spacing: -0.012em;
+  line-height: 0;
+  padding-right: 0.04em;
+}
+
+/* chapters: a mono label on a hairline that runs to the edge */
+.chapter-mark {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 clamp(28px, 3vw, 44px);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+.chapter-mark::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+.chapter-no {
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.exp-chapter {
+  grid-column: 1 / -1;
+}
+.exp-title {
+  row-gap: 0;
+}
+
+/* headline lines rise from behind a mask, one after another */
+.mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.12em;
+  margin-bottom: -0.12em;
+}
+.rise {
+  display: block;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .rise {
+    animation: rise 900ms var(--ease-arrive) both;
+    animation-delay: calc(80ms + var(--i, 0) * 110ms);
+  }
+}
+@keyframes rise {
+  from {
+    transform: translateY(105%);
+  }
 }

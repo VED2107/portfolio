@@ -12,8 +12,11 @@ export function Footer() {
             <Flake className="footer-mark" />
           </div>
           <div>
+            <p className="chapter-mark" style={{ marginBottom: 28 }}>
+              <span className="chapter-no">04</span> Contact
+            </p>
             <h2 id="footer-title" className="t-display" style={{ maxWidth: "18ch" }}>
-              Have something worth building?
+              Have something worth <em className="serif">building</em>?
             </h2>
             <p className="t-lead" style={{ marginTop: 18, maxWidth: "52ch" }}>
               {STATUS}

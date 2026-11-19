@@ -28,7 +28,7 @@ export default function About() {
         </figure>
         <div className="about-intro">
           <h1 id="about-h" className="t-display enter" style={{ "--i": 1 } as React.CSSProperties}>
-            Based in Patan, Gujarat. Studying computer engineering at Ganpat University. Running SNOWBROS on the side, and sometimes the other way round.
+            Based in Patan, Gujarat. Studying computer engineering at Ganpat University. Running SNOWBROS on the side, and sometimes the other way <em className="serif">round</em>.
           </h1>
         </div>
       </section>
@@ -43,7 +43,7 @@ export default function About() {
       <section className="wrap section" aria-labelledby="story-h" style={{ paddingTop: "clamp(48px, 6vw, 96px)" }}>
         <div className="inset" data-reveal>
           <h2 id="story-h" className="t-h2" style={{ maxWidth: "22ch" }}>
-            I build for people who will notice when it breaks, and I would rather they never have to.
+            I build for people who will notice when it breaks, and I would rather they <em className="serif">never</em> have to.
           </h2>
           <div className="t-lead prose about-story" style={{ marginTop: 36 }}>
             <p>

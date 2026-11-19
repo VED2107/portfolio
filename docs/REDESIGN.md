@@ -134,3 +134,11 @@ Sampled live on piet.website at 1440×1000 with computed styles every 110 ms, th
 - **Changelog footer** in place of a reading list.
 - **Edge glass** now steps aside when the end of the page is on screen, so the last footer line is never blurred. Fixed a build issue where only `-webkit-backdrop-filter` survived compilation.
 - **Restraint**: vermilion is limited to the snowflake mark, the sun and the copied check. No looping motion; buttons scale to 0.96 on press; hover effects only on fine pointers.
+
+## Fourth pass: an identity of its own (20 Nov 2026)
+
+Guided by the `top-design` (wondelai, `c526558`) and `design-motion-principles` (kylezantos, `4a9ca87`) skills, both reviewed before install (markdown only, no scripts). Their smooth-scroll recommendation conflicts with the brief's "native scrolling"; the brief wins.
+
+- **Voice**: Instrument Serif italic, one word per display line (*matter*, *result*, *cetera*, *building*, *round*, *never*). Self-hosted through `next/font`.
+- **Chapters**: 01 Selected work, 02 Method, 03 Lab, 04 Contact, as mono labels on a hairline that runs to the edge.
+- **Hero**: lines rise from behind a mask (900 ms, expo out, 110 ms apart); the availability line moved to the footer and About; role and place became the softer second half of the sentence.

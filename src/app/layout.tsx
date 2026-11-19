@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { ViewTransition } from "react";
 import "./globals.css";
 import { EdgeBlur } from "@/components/EdgeBlur";
@@ -11,6 +11,8 @@ import { SITE } from "@/lib/site";
 // One neutral sans for everything you read, self-hosted at build time; a mono for small labels.
 const sans = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap", weight: ["400", "500", "600"] });
 const mono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap", weight: ["400", "500"] });
+// One italic serif, used for a single word per display line: the voice inside the sentence.
+const serif = Instrument_Serif({ subsets: ["latin"], variable: "--font-serif-face", display: "swap", weight: "400", style: "italic" });
 
 const description =
   "Ved S. Chauhan, software engineer and founder of SNOWBROS in Gujarat, India. Research pipelines, native media software, static analysis and the applications real businesses run on, with the thinking left in.";
@@ -55,7 +57,7 @@ const boot = `(function(){var d=document.documentElement;d.classList.add("js");t
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en-IN" className={`${sans.variable} ${mono.variable}`} suppressHydrationWarning>
+    <html lang="en-IN" className={`${sans.variable} ${mono.variable} ${serif.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: boot }} />
       </head>

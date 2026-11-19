@@ -33,12 +33,16 @@ export default function Home() {
         <div className="inset">
           <PhotoStack />
           <h1 id="hello" className="t-intro">
-            <span className="enter" style={{ display: "block", "--i": 1 } as React.CSSProperties}>
-              Hey, I&apos;m Ved.
+            <span className="mask">
+              <span className="rise" style={{ "--i": 1 } as React.CSSProperties}>
+                Hey, I&apos;m Ved.
+              </span>
             </span>
-            <span className="enter" style={{ display: "block", "--i": 2 } as React.CSSProperties}>
-              I build software for real people, real work, and the details that matter.{" "}
-              <span className="soft">Engineer and founder of SNOWBROS, in Gujarat, India.</span>
+            <span className="mask">
+              <span className="rise" style={{ "--i": 2 } as React.CSSProperties}>
+                I build software for real people, real work, and the details that <em className="serif">matter</em>.{" "}
+                <span className="soft">Engineer and founder of SNOWBROS, in Gujarat, India.</span>
+              </span>
             </span>
           </h1>
           <div className="intro-actions enter" style={{ "--i": 3 } as React.CSSProperties}>
@@ -57,8 +61,8 @@ export default function Home() {
 
       {/* ---------------------------------------------------------------- selected work */}
       <section id="work" className="wrap" aria-labelledby="work-title" style={{ scrollMarginTop: 72 }}>
-        <h2 id="work-title" className="sr-only">
-          Selected work
+        <h2 id="work-title" className="chapter-mark">
+          <span className="chapter-no">01</span> Selected work
         </h2>
         <div className="work">
           {SELECTED.map((slug, i) => (
@@ -117,11 +121,11 @@ export default function Home() {
         <div className="wrap">
           <div className="approach-top">
             <div data-reveal>
-              <p className="t-meta" style={{ margin: "0 0 18px" }}>
-                How I work
+              <p className="chapter-mark" style={{ marginBottom: 28 }}>
+                <span className="chapter-no">02</span> Method
               </p>
               <h2 id="approach-title" className="t-display">
-                Same input in, same result out. <span style={{ color: "var(--ink-2)" }}>Accuracy over quantity.</span>
+                Same input in, same <em className="serif">result</em> out. <span style={{ color: "var(--ink-2)" }}>Accuracy over quantity.</span>
               </h2>
             </div>
             <div data-reveal style={{ "--reveal-delay": "120ms" } as React.CSSProperties}>
@@ -150,11 +154,14 @@ export default function Home() {
           items={EXPERIMENTS}
           head={
             <div className="exp-title">
+              <p className="chapter-mark exp-chapter">
+                <span className="chapter-no">03</span> Lab
+              </p>
               <p className="exp-scroll" aria-hidden>
                 Scroll <span>→</span>
               </p>
               <h2 id="exp-title-h" className="t-h2">
-                Side builds, studio sites, a microcontroller, et cetera.
+                Side builds, studio sites, a microcontroller, et <em className="serif">cetera</em>.
               </h2>
             </div>
           }

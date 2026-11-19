@@ -12,7 +12,7 @@ export default function NotFound() {
           404
         </p>
         <h1 className="t-display" style={{ maxWidth: "18ch" }}>
-          This page doesn&apos;t exist, or it moved when the site was rebuilt.
+          This page doesn&apos;t exist, or it moved when the site was <em className="serif">rebuilt</em>.
         </h1>
         <div className="intro-actions">
           <Link href="/" className="arrow-link">
