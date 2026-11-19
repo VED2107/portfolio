@@ -142,3 +142,9 @@ Guided by the `top-design` (wondelai, `c526558`) and `design-motion-principles` 
 - **Voice**: Instrument Serif italic, one word per display line (*matter*, *result*, *cetera*, *building*, *round*, *never*). Self-hosted through `next/font`.
 - **Chapters**: 01 Selected work, 02 Method, 03 Lab, 04 Contact, as mono labels on a hairline that runs to the edge.
 - **Hero**: lines rise from behind a mask (900 ms, expo out, 110 ms apart); the availability line moved to the footer and About; role and place became the softer second half of the sentence.
+
+## Theme wave and dark palette (20 Nov 2026)
+
+- **Theme wave** (requested by Ved, overriding the brief's "no circle wipe"): `document.startViewTransition` snapshots the page; the new theme is revealed through a radial mask that grows from the toggle's centre with a two-stop feathered edge, 1050 ms `cubic-bezier(0.65,0,0.35,1)`, radius animated as a registered `@property` length. Reduced motion or no API: instant switch with a 200 ms colour settle.
+- **Button wave**: the same idea in miniature on real buttons only (`.icon-btn`, `.ctrl`, `.notes-toggle`, close): a soft ripple from the pointer, 720 ms, transform and opacity only, one delegated listener, never on keyboard, off with reduced motion.
+- **Dark palette** measured from the reference: canvas `#0a0a0a`, text `#f5f5f5`, secondary `#a3a3a3`, tertiary `#7c7c7c`, panels `#141414`/`#1c1c1c`, lines `#262626`.

@@ -54,34 +54,36 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --canvas: #171816;
-    --ink: #f2f2ec;
-    --ink-2: #b4b5ae;
-    --ink-3: #8f9089;
-    --panel: #22231f;
-    --panel-2: #2a2b26;
-    --line: #3b3c36;
+    --canvas: #0a0a0a;
+    --ink: #f5f5f5;
+    --ink-2: #a3a3a3;
+    --ink-3: #7c7c7c;
+    --panel: #141414;
+    --panel-2: #1c1c1c;
+    --line: #262626;
     --accent: #e8664a;
     --accent-ink: #f08a70;
     --focus: #f08a70;
     --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 28px -12px rgb(0 0 0 / 0.7);
     --shadow-shot: 0 1px 1px rgb(0 0 0 / 0.3), 0 18px 48px -20px rgb(0 0 0 / 0.8);
+    --ink-soft: #8a8a8a;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --canvas: #171816;
-  --ink: #f2f2ec;
-  --ink-2: #b4b5ae;
-  --ink-3: #8f9089;
-  --panel: #22231f;
-  --panel-2: #2a2b26;
-  --line: #3b3c36;
+  --canvas: #0a0a0a;
+  --ink: #f5f5f5;
+  --ink-2: #a3a3a3;
+  --ink-3: #7c7c7c;
+  --panel: #141414;
+  --panel-2: #1c1c1c;
+  --line: #262626;
   --accent: #e8664a;
   --accent-ink: #f08a70;
   --focus: #f08a70;
   --shadow-lift: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 28px -12px rgb(0 0 0 / 0.7);
   --shadow-shot: 0 1px 1px rgb(0 0 0 / 0.3), 0 18px 48px -20px rgb(0 0 0 / 0.8);
+  --ink-soft: #8a8a8a;
   color-scheme: dark;
 }
 
@@ -2283,7 +2285,7 @@ details.more summary {
   transition: transform 240ms var(--ease-ui) calc(var(--n) * 70ms + 60ms), opacity 180ms var(--ease-ui) calc(var(--n) * 70ms + 60ms);
 }
 :root[data-theme="dark"] .note-card {
-  background: rgb(34 35 31 / 0.88);
+  background: rgb(23 23 23 / 0.86);
   color: #f2f2ec;
   box-shadow: 0 0 0 0.5px rgb(255 255 255 / 0.12), 0 16px 34px -14px rgb(0 0 0 / 0.7);
 }
@@ -2711,4 +2713,57 @@ em.serif,
   from {
     transform: translateY(105%);
   }
+}
+
+/* ---------------------------------------------------------------- theme wave */
+/* The new theme spreads from the toggle as a soft-edged ripple. The radius is a registered
+   length so it interpolates smoothly; the 90px feather keeps the front soft, like water. */
+@property --wave {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+html.theme-wave .site-header {
+  view-transition-name: none;
+}
+html.theme-wave::view-transition-old(root) {
+  animation: none;
+}
+html.theme-wave::view-transition-new(root) {
+  animation: theme-wave 1050ms cubic-bezier(0.65, 0, 0.35, 1) both;
+  -webkit-mask-image: radial-gradient(circle at var(--wave-x) var(--wave-y), #000 calc(var(--wave) - 140px), rgb(0 0 0 / 0.55) calc(var(--wave) - 60px), transparent var(--wave));
+  mask-image: radial-gradient(circle at var(--wave-x) var(--wave-y), #000 calc(var(--wave) - 140px), rgb(0 0 0 / 0.55) calc(var(--wave) - 60px), transparent var(--wave));
+}
+@keyframes theme-wave {
+  from {
+    --wave: 0px;
+  }
+  to {
+    --wave: var(--wave-reach);
+  }
+}
+.theme-btn svg {
+  transition: transform 500ms cubic-bezier(0.65, 0, 0.35, 1), opacity 300ms var(--ease-ui);
+}
+html.theme-wave .theme-btn svg {
+  transform: rotate(-90deg) scale(0.9);
+}
+
+
+/* ---------------------------------------------------------------- button wave */
+/* The theme wave in miniature, on real buttons only: a soft ripple from the point of contact. */
+.icon-btn,
+.ctrl,
+.notes-toggle {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.btn-wave {
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(circle, currentColor 0 38%, color-mix(in oklab, currentColor 50%, transparent) 52%, transparent 70%);
+  will-change: transform, opacity;
 }

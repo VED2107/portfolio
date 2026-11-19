@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import { ViewTransition } from "react";
 import "./globals.css";
+import { ButtonWave } from "@/components/ButtonWave";
 import { EdgeBlur } from "@/components/EdgeBlur";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -53,7 +54,7 @@ export const viewport: Viewport = {
 
 // Runs before first paint: restores a chosen theme (no flash) and marks that scripts are on, which
 // is the only condition under which reveal animations may hide anything.
-const boot = `(function(){var d=document.documentElement;d.classList.add("js");try{var t=localStorage.getItem("theme");if(t==="dark"||t==="light")d.setAttribute("data-theme",t);if(localStorage.getItem("notes")==="on")d.setAttribute("data-notes","on")}catch(e){}var dark=d.getAttribute("data-theme")==="dark"||(!d.getAttribute("data-theme")&&matchMedia("(prefers-color-scheme: dark)").matches);var m=document.querySelector('meta[name="theme-color"]');if(m&&dark)m.setAttribute("content","#171816")})()`;
+const boot = `(function(){var d=document.documentElement;d.classList.add("js");try{var t=localStorage.getItem("theme");if(t==="dark"||t==="light")d.setAttribute("data-theme",t);if(localStorage.getItem("notes")==="on")d.setAttribute("data-notes","on")}catch(e){}var dark=d.getAttribute("data-theme")==="dark"||(!d.getAttribute("data-theme")&&matchMedia("(prefers-color-scheme: dark)").matches);var m=document.querySelector('meta[name="theme-color"]');if(m&&dark)m.setAttribute("content","#0a0a0a")})()`;
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
@@ -74,6 +75,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </ViewTransition>
         <EdgeBlur />
         <Reveal />
+        <ButtonWave />
       </body>
     </html>
   );

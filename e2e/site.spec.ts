@@ -105,7 +105,7 @@ test("theme choice persists across reloads and is applied before paint", async (
   // The inline boot script sets it from storage before React hydrates.
   expect(await page.evaluate(() => document.documentElement.dataset.theme)).toBe("dark");
   const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
-  expect(bg).toBe("rgb(23, 24, 22)");
+  expect(bg).toBe("rgb(10, 10, 10)");
 });
 
 test("copy email reports success to assistive tech", async ({ page, context, isMobile }) => {

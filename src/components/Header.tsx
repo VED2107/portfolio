@@ -50,22 +50,45 @@ function NotesToggle() {
   );
 }
 
+/**
+ * The theme arrives as a wave from the button: the browser snapshots the page, then the new theme
+ * is revealed through a radial mask with a feathered edge that grows from the button's centre.
+ * Without the View Transitions API, or with reduced motion, colours simply settle in place.
+ */
 function ThemeToggle() {
+  const btn = useRef<HTMLButtonElement>(null);
   function toggle() {
     const root = document.documentElement;
     const dark = root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
     const next = dark ? "light" : "dark";
+    const apply = () => {
+      root.dataset.theme = next;
+      try {
+        localStorage.setItem("theme", next);
+      } catch {}
+      document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next === "dark" ? "#0a0a0a" : "#fcfcfa");
+    };
     const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (!calm) root.classList.add("theme-settle");
-    root.dataset.theme = next;
-    try {
-      localStorage.setItem("theme", next);
-    } catch {}
-    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", next === "dark" ? "#171816" : "#fcfcfa");
-    window.setTimeout(() => root.classList.remove("theme-settle"), 240);
+    if (calm || typeof document.startViewTransition !== "function") {
+      if (!calm) root.classList.add("theme-settle");
+      apply();
+      window.setTimeout(() => root.classList.remove("theme-settle"), 240);
+      return;
+    }
+    const r = btn.current?.getBoundingClientRect();
+    const x = r ? r.left + r.width / 2 : innerWidth;
+    const y = r ? r.top + r.height / 2 : 0;
+    // Far enough to cover the farthest corner, plus the feathered edge.
+    const reach = Math.hypot(Math.max(x, innerWidth - x), Math.max(y, innerHeight - y)) + 200;
+    root.style.setProperty("--wave-x", `${x}px`);
+    root.style.setProperty("--wave-y", `${y}px`);
+    root.style.setProperty("--wave-reach", `${reach}px`);
+    root.classList.add("theme-wave");
+    const t = document.startViewTransition(apply);
+    t.finished.finally(() => root.classList.remove("theme-wave"));
   }
   return (
-    <button type="button" className="icon-btn theme-btn" onClick={toggle} aria-label="Switch between light and dark theme">
+    <button ref={btn} type="button" className="icon-btn theme-btn" onClick={toggle} aria-label="Switch between light and dark theme">
       <SunIcon className="sun" />
       <MoonIcon className="moon" />
     </button>
